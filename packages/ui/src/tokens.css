@@ -1,0 +1,17 @@
+:root {
+  --navy-900: #0D2940;
+  --teal-600: #087E79;
+  --mint-100: #DDF4EA;
+  --canvas: #F7F9F6;
+  --amber-500: #E9AA40;
+  --coral-500: #F16A50;
+  --surface: #FFFFFF;
+  --text-muted: #566B75;
+  --divider: #DCE5E4;
+  --ink: #173544;
+  --background: var(--canvas);
+  --foreground: var(--ink);
+  --primary: var(--teal-600);
+  --border: var(--divider);
+  --focus: var(--navy-900);
+}

@@ -1,0 +1,24 @@
+@import "tailwindcss";
+@import "@unihood/ui/tokens.css";
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--background); color: var(--foreground); font-family: Arial, sans-serif; line-height: 1.65; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 5px; }
+.skip-link { position: absolute; top: -100px; left: 1rem; padding: .75rem; background: var(--surface); z-index: 10; }
+.skip-link:focus { top: 1rem; }
+header { background: var(--navy-900); color: var(--surface); padding: 1.25rem max(1.25rem, calc((100vw - 1120px)/2)); display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; justify-content: space-between; }
+.wordmark { text-decoration: none; font-size: 1.6rem; font-weight: 700; min-height: 44px; }
+.wordmark span { display: block; font-size: .75rem; font-weight: 400; }
+.preview { font-size: .8rem; border: 1px solid var(--divider); padding: .3rem .8rem; border-radius: 2rem; }
+main { max-width: 1160px; margin: auto; padding: clamp(2rem, 6vw, 6rem) 1.25rem; }
+h1, h2 { font-family: Georgia, serif; line-height: 1.15; }
+h1 { font-size: clamp(2.25rem, 5vw, 4.5rem); letter-spacing: -.035em; margin: 1rem 0 1.5rem; max-width: 1000px; }
+h2 { font-size: clamp(1.6rem, 3vw, 2.25rem); }
+h3 { font-size: 1.1rem; }
+.eyebrow { color: var(--primary); font-weight: 700; }
+.intro { max-width: 650px; font-size: 1.2rem; color: var(--text-muted); }
+.notice { background: var(--mint-100); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; margin: 3rem 0; }
+.notice h2 { margin-top: 0; }
+.principles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 2rem; }
+.principles p { color: var(--text-muted); }
+footer { border-top: 1px solid var(--border); padding: 1.5rem; text-align: center; color: var(--text-muted); }
