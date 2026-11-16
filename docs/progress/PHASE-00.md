@@ -1,6 +1,6 @@
 # Phase 0 — engineering bootstrap
 
-Phase status: **in progress**, not complete. UNI-003 is merged into `dev`, explicitly confirmed by the human developer during UNI-004 preparation; no Git history was audited. UNI-004 was committed and merged into `dev`, explicitly human-confirmed before UNI-005. UNI-005 implementation/verification is recorded below; its human Git checkpoint remains pending. UNI-006 has not been started. Earlier handoff entries are historical; the latest issue status supersedes them.
+Phase status: **in progress**, not complete. UNI-003 is merged into `dev`, explicitly confirmed by the human developer during UNI-004 preparation; no Git history was audited. UNI-004 was committed and merged into `dev`, explicitly human-confirmed before UNI-005. UNI-005 was committed and merged into dev, explicitly human-confirmed before UNI-006. UNI-006 tooling/docs are recorded below and await their own human checkpoint. Remote CI has not been observed, so Phase 0 is not declared complete. Earlier handoff entries are historical; the latest issue status supersedes them.
 
 ## UNI-001 — workspace bootstrap
 
@@ -203,7 +203,7 @@ No runtime/authentication, API/contracts, schema/migration, dependency, environm
 
 Owner: M5 contract/authorization foundation with M1–M4 consumers. Dependencies: existing UNI-001–003 workspace/API/database/UI foundations and UNI-004 product ADRs. The human explicitly confirmed UNI-004 committed and merged into dev. Branch metadata is `feat/uni-005-api-contracts`; no Git command/history audit was performed.
 
-Status: **implemented and verified locally; awaiting human Git checkpoint**.
+Status: **human-confirmed committed and merged into dev** before UNI-006. No merge hash/date or independent history audit is claimed; results below remain historical UNI-005 evidence.
 
 ### Delivered
 
@@ -232,6 +232,37 @@ See [UNI-005 verification](../verification/UNI-005/README.md) for coverage/limit
 
 ### Limits and checkpoint
 
-No final authentication, owner proof/delegation/recovery, domain CRUD/claim/contribution workflow, private contact/media pipeline, provider selection or persistent database change is implemented. Future free-text/media moderation, real consent/authorization evidence, cache revocation and full discovery E2E remain their owning issues. Public boardings are contract schemas only; tests do not prove those future surfaces exist or enforce all privacy obligations. All Git actions belong to the human; suggested commit `feat(api): add typed contracts and actor abstraction`. Stop before UNI-006 and integrate into dev only through the human fast-forward checkpoint.
+No final authentication, owner proof/delegation/recovery, domain CRUD/claim/contribution workflow, private contact/media pipeline, provider selection or persistent database change is implemented. Future free-text/media moderation, real consent/authorization evidence, cache revocation and full discovery E2E remain their owning issues. Public boardings are contract schemas only; tests do not prove those future surfaces exist or enforce all privacy obligations. All Git actions belong to the human; suggested commit `feat(api): add typed contracts and actor abstraction`. The original stop-before-UNI-006 gate is now resolved by the human-confirmed UNI-005 commit/merge and prepared UNI-006 branch. The human-only fast-forward workflow remains in effect for every later issue.
 
-Final UNI-005 handoff review: seven changed Markdown files and 43 local links/anchors, TypeScript/documentation whitespace, evidence JSON, regenerated OpenAPI parity and safe example defaults PASS. Test-only fixture controllers are absent from compiled production JavaScript. A historical input-hash comparison confirms 49 protected infrastructure/UI/dependency/environment/specification files unchanged; no Git diff/history audit is claimed. Branch metadata remains `feat/uni-005-api-contracts`. Stop at the human checkpoint; UNI-006 is not started.
+Final UNI-005 handoff review: seven changed Markdown files and 43 local links/anchors, TypeScript/documentation whitespace, evidence JSON, regenerated OpenAPI parity and safe example defaults PASS. Test-only fixture controllers are absent from compiled production JavaScript. A historical input-hash comparison confirms 49 protected infrastructure/UI/dependency/environment/specification files unchanged; no Git diff/history audit is claimed. Branch metadata remains `feat/uni-005-api-contracts`. That final UNI-005 handoff was historical; the human has since confirmed commit/merge, permitting the separately prepared UNI-006 issue.
+
+## UNI-006 — CI quality gates and contributor conventions
+
+Owner: M5 tooling/integration; existing module tests retained. Dependencies: UNI-001 workspace/commands, UNI-002 isolated DB, UNI-003 component/browser suite, UNI-004 ADRs and UNI-005 shared contracts/actor/OpenAPI tests. UNI-005 commit/merge into dev was explicitly confirmed by the human. Current branch metadata: chore/uni-006-ci. No Git command or history audit was performed.
+
+Status: **implemented and locally verified; awaiting the human Git checkpoint**. Remote CI is NOT RUN/NOT OBSERVED here. Phase 0 is not declared complete before remote and human gates.
+
+### Delivered
+
+- Existing workspace and isolated PostGIS jobs strengthened; separate existing component-browser acceptance job. Supported issue-branch pushes now run before optional-PR solo integration, with dev/main pushes, PR targets and manual dispatch retained.
+- Immutable official action revisions, explicit tested Node/pnpm/runner, lockfile-keyed store caching, contents-read-only token/no persisted checkout credentials, synthetic actors off, bounded jobs and cancellation of superseded runs. No deploy/commit/push/PR creation/merge automation or secrets-dependent gate.
+- Checksum-pinned actionlint workflow validation, locked YAML development parser and repository/template/security policy checker. Four regression tests reject weakened permissions/triggers, mutable actions, unsafe shell interpolation, masked failures, actor overrides and duplicate YAML keys.
+- UNI issue and sanitized bug templates, optional PR template, [human fast-forward workflow](../../CONTRIBUTING.md), [CI coverage](../contributing/ci.md), [coding conventions](../contributing/coding-conventions.md) and [synthetic fixture rules](../contributing/synthetic-fixtures.md). No signup/provider/owner-proof decision changed.
+- CI browser evidence uses temporary storage through a test-only UI_EVIDENCE_DIR option; default local behavior remains compatible and existing screenshot references need not be overwritten. No runtime UI/API/domain/database changes.
+
+### Verification
+
+Actual local results on 16 November 2026 (Asia/Colombo):
+
+- `pnpm install --frozen-lockfile --offline`, `pnpm check:repo`, `pnpm check:workflows`, `bash -n scripts/check-workflows.sh`: **PASS**. Actionlint 1.7.12 checksum verified; its initial runner.temp job-env error was fixed by moving paths to step env. No validation rule disabled. ShellCheck absent: **NOT RUN**.
+- `pnpm lint`, `pnpm typecheck`, `pnpm build`: **PASS**.
+- `pnpm test`: **PASS, 81 tests** (Node 7, contracts 17, API 47, web 10), including a successful CI-environment rerun. A restricted-sandbox rerun hit spawnSync EPERM in the unchanged DB CLI test; rerun with subprocess access passed without changing assertions. Existing Jest VM-module warning retained.
+- Compose test-profile config validation: **PASS**. `pnpm db:test` with CI actors disabled/test environment: **PASS, seven isolated Docker result groups**, including migration/rollback/checksum/ownership/seed safety and real API outage/recovery. Persistent development data and extension ownership preserved.
+- `pnpm test:ui` with CI environment and browser/evidence paths in /tmp: **PASS, eight Chromium tests**, 390×844 and 1440×900 plus intermediate-width checks. Twelve screenshots/two axe JSON reports checked in temporary storage; zero axe violations. Existing browser/system dependencies used; fresh-runner browser installation was **NOT RUN locally**. Checked-in UNI-003 evidence unchanged.
+- Read-only pre-edit content comparison and documentation review: **PASS**, exactly 20 intended files, no deletions; protected runtime/API/contracts/DB/environment/specification inputs unchanged; local links/anchors and changed-file whitespace valid.
+
+Remote GitHub Actions execution, hosted browser dependency installation, remote required-check/settings review, full product E2E, cross-browser/human screen-reader and separate legacy extension suite: **NOT RUN/NOT OBSERVED for UNI-006**. See the evidence for exact commands and coverage limits. Local checks do not execute hosted actions, dispatch events, modify branch protections or prove remote CI passed.
+
+### Human checkpoint and limits
+
+See [UNI-006 evidence](../verification/UNI-006/README.md). The human reviews/stages/commits/pushes and integrates into dev with git merge --ff-only; PR optional, no merge commit, main stable releases only. Suggested commit: `chore(ci): add quality gates and PR template`. Stop before UNI-007 or any next issue; UNI-007 is not listed in the specification, and no next task is begun. UNI-010 is merely the next listed task, not permission to proceed.

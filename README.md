@@ -31,6 +31,8 @@ The API reads root `.env` with Node's env-file support. Compose reads root `.env
 ## Checks
 
 ```bash
+pnpm check:repo
+pnpm check:workflows
 pnpm lint
 pnpm typecheck
 pnpm test
@@ -106,7 +108,7 @@ See [database strategy and recovery](docs/architecture/database.md) for checksum
 - `infra` — local PostGIS Compose and bootstrap extensions SQL.
 - `docs/design/references` — illustrative design references only; never use their synthetic photos, prices or geography as production content.
 
-See [REST contracts/OpenAPI and synthetic actors](docs/api/contracts-and-actors.md), [product ADRs](docs/decisions/README.md), [stack decisions](docs/architecture/stack.md), [current status](docs/progress/CURRENT_STATUS.md), and the master specification. CI runs install/lint/typecheck/test/build plus isolated database integration checks on PRs and pushes to `dev`/`main`, or manual dispatch; it does not deploy. Solo workflow: the human performs all Git operations, one branch per UNI issue, verified changes integrate into `dev` with `git merge --ff-only`; PRs are optional, no merge commits, and `main` is reserved for stable releases. Broader CI conventions remain UNI-006.
+See [REST contracts/OpenAPI and synthetic actors](docs/api/contracts-and-actors.md), [product ADRs](docs/decisions/README.md), [stack decisions](docs/architecture/stack.md), [current status](docs/progress/CURRENT_STATUS.md), and the master specification. CI runs frozen install, repository/workflow validation, lint/typecheck/test/build, isolated database integration and existing component browser acceptance. It triggers on supported issue-branch and dev/main pushes, optional PRs into dev/main, or human manual dispatch; it does not deploy. Solo workflow: the human performs all Git operations, one branch per UNI issue, verified changes integrate into `dev` with `git merge --ff-only`; PRs are optional, no merge commits, and `main` is reserved for stable releases. See [contributor workflow](CONTRIBUTING.md), [CI coverage and local/remote limits](docs/contributing/ci.md), [coding conventions](docs/contributing/coding-conventions.md) and [synthetic fixture guidelines](docs/contributing/synthetic-fixtures.md).
 
 ## Campus Teal component library (UNI-003)
 
@@ -125,10 +127,16 @@ pnpm build
 pnpm test:ui
 ```
 
-Playwright starts/stops its own production server on loopback port 3180 and writes evidence under `docs/verification/UNI-003`. The port must be free. Set `PLAYWRIGHT_BROWSERS_PATH` consistently for installation and testing if using a nondefault browser cache. Chromium system dependencies may need provision on a clean machine. Browser reports/traces use `/tmp/unihood-ui-test-results`; this is component acceptance, not the pending UNI-015 full-product `pnpm test:e2e` suite. Remote browser CI is not configured by this issue.
+Playwright starts/stops its own production server on loopback port 3180 and writes evidence under `docs/verification/UNI-003`. The port must be free. Set `PLAYWRIGHT_BROWSERS_PATH` consistently for installation and testing if using a nondefault browser cache. Chromium system dependencies may need provision on a clean machine. Browser reports/traces use `/tmp/unihood-ui-test-results`; this is component acceptance, not the pending UNI-015 full-product `pnpm test:e2e` suite. UNI-003 originally did not configure remote browser CI. UNI-006 now configures the existing component suite as a separate gate; remote execution is not claimed without an observed run. Set UI_EVIDENCE_DIR to a temporary directory to avoid replacing checked-in evidence when testing CI behavior.
 
 ## REST contract and actor baseline (UNI-005)
 
 The API exposes generated OpenAPI at `http://127.0.0.1:3001/api/v1/openapi.json`; the [saved baseline](docs/api/openapi.json) lists only live public read routes. Shared Zod/TypeScript enums, pagination, sanitized errors and strict public boarding payload patterns are in `packages/contracts`. Boarding/contribution/claim APIs and final authentication are not implemented. Readiness keeps its existing flat 200/503 monitoring contract; other failures use the error envelope.
 
 Synthetic actors default off. Explicit local/test configuration can select a server-side synthetic fixture for loopback-only development; deployed environments and arbitrary identity headers grant no privileges. No fixture controller ships with the API. See [configuration, permission boundaries and regeneration commands](docs/api/contracts-and-actors.md) and [verification results](docs/verification/UNI-005/README.md). Never expose the synthetic actor server through a public proxy or tunnel.
+
+## Contributing and CI (UNI-006)
+
+Start with [CONTRIBUTING.md](CONTRIBUTING.md), the [UNI task template](.github/ISSUE_TEMPLATE/uni-task.md), [bug report template](.github/ISSUE_TEMPLATE/bug-report.md) and optional [PR template](.github/pull_request_template.md). Human-only Git, one issue branch, optional PRs and git merge --ff-only integration into dev apply; main is stable releases only. No workflow commits, pushes, merges or deploys.
+
+`pnpm check:repo` validates policy/template metadata and isolated Compose test storage. `pnpm check:workflows` verifies/downloads pinned actionlint (Linux x86_64, HTTPS required) and validates workflow contexts/actions. Four repository-policy regression tests join the normal test command. CI uses immutable action revisions, read-only token permissions, disabled synthetic actors, bounded jobs and temporary browser evidence. See [coverage/configuration](docs/contributing/ci.md) and [actual local verification](docs/verification/UNI-006/README.md). Configuring CI is not evidence of a remote passing run.

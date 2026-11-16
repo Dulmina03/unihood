@@ -10,7 +10,7 @@
     "dev": "pnpm --filter @unihood/contracts build && pnpm --parallel --filter @unihood/web --filter @unihood/api dev",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "pnpm --filter @unihood/contracts build && pnpm -r typecheck",
-    "test": "node --test scripts/lib/database.test.mjs && pnpm --filter @unihood/contracts build && pnpm -r test",
+    "test": "node --test scripts/lib/database.test.mjs scripts/check-repository.test.mjs && pnpm --filter @unihood/contracts build && pnpm -r test",
     "build": "pnpm -r build",
     "test:e2e": "node scripts/e2e-pending.mjs",
     "db:up": "docker compose --env-file .env -f infra/compose.yaml up -d --wait db",
@@ -22,7 +22,9 @@
     "db:test:down": "docker compose --env-file .env -f infra/compose.yaml --profile test rm --stop --force db-test",
     "db:seed": "node --env-file-if-exists=.env scripts/db.mjs seed",
     "db:test:extensions": "node scripts/test-db-extensions.mjs",
-    "test:ui": "pnpm --filter @unihood/web test:ui"
+    "test:ui": "pnpm --filter @unihood/web test:ui",
+    "check:repo": "node scripts/check-repository.mjs",
+    "check:workflows": "bash scripts/check-workflows.sh"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",
@@ -30,6 +32,7 @@
     "eslint-config-next": "16.4.6",
     "pg": "8.23.1",
     "typescript": "~5.9.3",
-    "typescript-eslint": "^8.46.0"
+    "typescript-eslint": "^8.46.0",
+    "yaml": "2.9.1"
   }
 }

@@ -2,8 +2,9 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 
-const evidence = fileURLToPath(new URL('../../../docs/verification/UNI-003/', import.meta.url));
+const evidence = process.env.UI_EVIDENCE_DIR ? resolve(process.env.UI_EVIDENCE_DIR) : fileURLToPath(new URL('../../../docs/verification/UNI-003/', import.meta.url));
 test.beforeEach(async ({page}) => {
   await page.goto('/design-system');
   await page.evaluate(() => document.fonts.ready);
