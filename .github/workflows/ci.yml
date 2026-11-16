@@ -75,8 +75,11 @@ jobs:
         run: docker compose --env-file .env -f infra/compose.yaml --profile test config --quiet
       - run: pnpm --filter @unihood/contracts build
       - run: pnpm --filter @unihood/api build
-      - name: Run isolated tmpfs database and real API regression
+      - run: pnpm --filter @unihood/web build
+      - name: Run isolated tmpfs database, API and landing regression
         run: pnpm db:test
+        env:
+          TEST_LANDING_WEB: '1'
 
   ui:
     name: Component browser acceptance

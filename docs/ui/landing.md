@@ -1,0 +1,41 @@
+# Editorial Explorer landing — UNI-011
+
+UI-01 now replaces the bootstrap homepage. It uses the approved Campus Teal palette and the composition of `docs/design/references/01_landing_editorial.png`: deep navy navigation, display-serif hero with a photographic right side, prominent university utility, three photo-forward featured examples, an everyday-essentials strip and location-privacy explanation. Primary landing actions, picker labels/statuses and hero headings use the existing typed English i18n baseline; reviewed Sinhala/Tamil rollout is deferred, with no fake language switcher. Existing SiteHeader, Button, Field, Badge, Photo, AdvertisementGrid, PrivacyBadge, Notice, Skeleton, Modal and Icon primitives are reused. Optional header edition/status copy preserves design-system defaults; Escape now closes navigation even when focus remains on the menu button.
+
+## Routes and boundaries
+
+- `/`: guest landing with inline university/campus/public-entrance selection at #campus-start.
+- `/u/[slug]`: direct university/QR entry. Awaited Next 16 params are checked with the shared slug schema before an exact lookup against UNI-010. A found public university preselects the picker and supplies the welcome/source context. Malformed or successfully unknown slugs use the not-found page and noindex. An API outage instead renders a retry state, so a valid QR link is not falsely called invalid. Next loading UI can stream before a later notFound: the HTTP status may already be 200 while the semantic not-found/noindex page is rendered; tests record this framework behavior rather than falsely asserting every streamed response is HTTP 404.
+- `/photo-credits`: visible asset provenance, license and context.
+
+No signup, booking, owner/contact/claim/publication, map, advertisement feed, POI discovery, route/distance, saved places or new listing workflow is connected. Explore Map, advertisement, essentials and owner/sign-in actions explain availability in an accessible native modal. Footer help/contact and terms controls describe the preview's current limits without inventing a support intake or legal policy. No buttons imply an unavailable transaction. UNI-012/013/014/015 and final registration remain separate issues. The eight live Nest paths/OpenAPI baseline remain unchanged.
+
+## UNI-010 connection
+
+Next GET adapters mirror the existing public API:
+
+- `/api/universities` → `/api/v1/universities`.
+- `/api/universities/[id]/campuses` → the same UNI-010 campus resource.
+- `/api/universities/[id]/entrances` → the same UNI-010 entrance resource.
+
+These adapters solve the browser's cross-origin dependency without opening CORS or forwarding identity. API_BASE_URL is a fixed server-only origin/base path, defaulting to the existing NEXT_PUBLIC_API_URL setting, then loopback port 3001 `/api/v1`. It is never derived from an incoming Host, URL, body or arbitrary destination parameter. Only fixed resource paths and shared validated UUID/slug/pagination fields are forwarded. Duplicate/unknown/prototype-named query fields fail validation. No cookies, authorization/role/user headers or inbound request IDs are forwarded; there are no mutation handlers. Unsupported methods receive Next's framework 405. Adapter-generated validation/missing/upstream errors use the shared sanitized ErrorResponse contract and server UUID; raw upstream text is never exposed.
+
+Fetch uses no-store, redirects refused and a 3.5-second upstream timeout. Shared strict Zod schemas validate every upstream page, expected pagination and applicable slug/parent identity before serialization. Outage/invalid payloads return redacted 503, not invented data. Both browser and adapter responses are validated; requests are aborted/ignored when their selection is superseded. A 5-second browser timeout has an explicit retry state. Changing a university clears campus/gate; changing campus clears gate. The picker is keyed to the resolved route university, so browser Back or a university route change cannot retain a previous university’s child selection. Missing children, loading, failed requests and empty lists remain distinct.
+
+Directory pages contain at most 100 records and have Previous/Next controls; name filtering applies to the currently loaded university page and the no-match message says so. It is not global listing search (UNI-014). Universities and their children are read from the actual public API; no seeded fallback ships in the app. A directly selected university remains selectable when absent from the current directory page. Public gate coordinates are not displayed or used to infer a boarding location. Device GPS, local storage, accounts and cookies are unnecessary.
+
+The web dev/start commands now load the root .env with Node before resolving WEB_PORT, honoring already-exported variables. This ensures configured API_BASE_URL/ports work outside defaults. Existing .env contents are never replaced. API_BASE_URL contains service configuration, not a browser identity mechanism. Production UNI-010 filtering remains authoritative: synthetic university data requires the API's guarded local/test environment; the web app does not bypass it. A deployed API with no eligible verified data produces an honest empty directory.
+
+## Content and photography
+
+Featured cards are explicitly synthetic design examples, not real accommodation. They contain no prices, vacancies, owner verification, private addresses, contacts, distances or booking actions. Owner map eligibility and community advertisement-only rules are explained as policies, not invented owner claims. Exact locations remain owner-authorized and consented only; no map pins or location inference are added. The five [ADRs](../decisions/README.md) and registration deferral are unchanged.
+
+New photographs are locally hosted WebP from the official Unsplash image CDN, with responsive hero sources, lazy-loaded featured images and failure fallbacks. The [asset manifest](landing-assets.json) records exact download URLs, sizes, dimensions, hashes, retrieval date, license and illustrative purpose. Creator identities were not independently verified and are not invented; the published Unsplash License permits downloaded reuse without mandatory attribution. Source photo pages were inaccessible during retrieval, so the CDN IDs/bytes and verified [license](https://unsplash.com/license) are documented transparently rather than asserting a photographer or exact campus. The existing apartment photograph retains its [UNI-003 provenance](assets.md). New assets were checked for absent EXIF. No AI-generated image was used.
+
+None of these photographs represents the selected university, a verified Sri Lankan campus or an actual UniHood boarding. The visible hero credit, every card caption and photo-credits page communicate that distinction. Licensing a stock photograph does not establish university endorsement, property ownership or real pilot source verification; real campus/owner photography remains subject to future source/consent review.
+
+## Responsive/accessibility verification
+
+Hero/search/cards adapt at 390, 768 and 1440px; reflow also checks 320px. Native labeled selects support keyboard use, 44px controls support touch, skip navigation targets main, mobile navigation supports Escape/focus return and native modal focus is contained/restored. Choosing the picker from a modal explicitly moves focus to the utility. Loading/status/error announcements are separate. Small text on mint uses navy after axe identified insufficient contrast; brand tokens are unchanged.
+
+[UNI-011 evidence](../verification/UNI-011/README.md) includes viewport/full-page screenshots, a tablet capture, selected-university pages, axe results, actual test commands and manual reference comparison. The browser suite uses a test-only loopback HTTP fixture upstream based on the real synthetic seed graph; it is not imported by runtime code. Separately, TEST_LANDING_WEB=1 pnpm db:test exercises the actual production web launcher → Next adapters/QR SSR → real Nest API → disposable PostGIS, including a real DB outage. CI's isolated DB job builds web and enables that same regression. This is targeted landing/API acceptance; it does not implement or claim UNI-015's full discovery E2E workflows.

@@ -9,15 +9,3 @@ a { color: inherit; }
 .uh-site-header :focus-visible { outline-color: var(--mint-100); }
 .skip-link { position: absolute; top: -100px; left: 1rem; padding: .75rem; background: var(--surface); z-index: 10; }
 .skip-link:focus { top: 1rem; }
-.home-main { max-width: 1160px; margin: auto; padding: clamp(2rem, 6vw, 6rem) 1.25rem; }
-.home-main h1,.home-main h2 {font-family:var(--font-display);line-height:1.15}
-.home-main h1 {font-size:clamp(2.25rem,5vw,4.5rem);letter-spacing:-.035em;margin:1rem 0 1.5rem;max-width:1000px}
-.home-main h2 {font-size:clamp(1.6rem,3vw,2.25rem)}
-.home-main h3 {font-size:1.1rem;font-weight:700}
-.eyebrow {color:var(--primary);font-weight:700}
-.intro {max-width:650px;font-size:1.2rem;color:var(--text-muted)}
-.notice {background:var(--mint-100);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;margin:3rem 0}
-.notice h2 {margin-top:0}
-.principles {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:2rem}
-.principles p {color:var(--text-muted)}
-.home-footer {border-top:1px solid var(--border);padding:1.5rem;text-align:center;color:var(--text-muted)}

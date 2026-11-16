@@ -51,16 +51,16 @@ export function Photo({photo, priority = false}: {photo?: ListingPhoto; priority
     <img src={photo.src} srcSet={photo.srcSet} sizes="(max-width: 700px) 100vw, 50vw" width="1400" height="934" alt={photo.alt} loading={priority ? 'eager' : 'lazy'} fetchPriority={priority ? 'high' : 'auto'} decoding="async" onError={() => setFailedSrc(photo.src)} /> : <div className="uh-photo-fallback" role="img" aria-label="Photograph unavailable"><Icon name="home" /><span>Photograph unavailable</span></div>}
     <figcaption>Illustrative photograph · not a real listing</figcaption></figure>;
 }
-export function SiteHeader({items, current, homeHref = '/'}: {items: ReadonlyArray<{label: string; href: string}>; current?: string; homeHref?: string}) {
+export function SiteHeader({items, current, homeHref = '/', edition = 'Campus Teal / 01', status = 'Design preview'}: {items: ReadonlyArray<{label: string; href: string}>; current?: string; homeHref?: string; edition?: string; status?: string}) {
   const [open, setOpen] = useState(false);
   const id = useId();
   const toggle = useRef<HTMLButtonElement>(null);
-  return <header className="uh-site-header"><div className="uh-header-inner"><a href={homeHref} className="uh-brand" aria-label="UniHood home"><Icon name="home" /><span>UniHood</span></a>
-    <span className="uh-header-edition">Campus Teal <span aria-hidden="true">/</span> 01</span>
+  return <header className="uh-site-header" onKeyDown={(event) => {if (event.key === 'Escape' && open) {setOpen(false); toggle.current?.focus();}}}><div className="uh-header-inner"><a href={homeHref} className="uh-brand" aria-label="UniHood home"><Icon name="home" /><span>UniHood</span></a>
+    <span className="uh-header-edition">{edition}</span>
     <button className="uh-menu-toggle" type="button" ref={toggle} aria-label={open ? 'Close navigation' : 'Open navigation'} aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}><Icon name={open ? 'close' : 'menu'} /></button>
     <nav id={id} aria-label="Primary" className="uh-site-nav" data-open={open} onKeyDown={(event) => {if (event.key === 'Escape') {setOpen(false); toggle.current?.focus();}}}>
       {items.map((item) => <a key={item.href} href={item.href} aria-current={current === item.href ? 'page' : undefined} onClick={() => {setOpen(false); if (item.href.startsWith('#')) document.getElementById(item.href.slice(1))?.focus();}}>{item.label}</a>)}
-    </nav><span className="uh-header-status"><span aria-hidden="true" />Design preview</span></div></header>;
+    </nav><span className="uh-header-status"><span aria-hidden="true" />{status}</span></div></header>;
 }
 export function Modal({open, onClose, title, description, children}: {open: boolean; onClose: () => void; title: string; description?: string; children: ReactNode}) {
   const ref = useRef<HTMLDialogElement>(null);

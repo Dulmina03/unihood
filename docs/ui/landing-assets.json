@@ -1,0 +1,58 @@
+[
+  {
+    "path": "apps/web/public/editorial/campus-hero.webp",
+    "sourceUrl": "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1800&q=82&fm=webp",
+    "downloadedOn": "2026-11-16",
+    "licenseUrl": "https://unsplash.com/license",
+    "creator": "Not independently verified; no attribution invented",
+    "sha256": "0f853ed8716db1755478e831e0025145becc306aff92c201912dd7048d23335c",
+    "bytes": 628876,
+    "dimensions": [
+      1800,
+      1179
+    ],
+    "purpose": "Illustrative stock photo only; not selected university, a real UniHood boarding or owner content"
+  },
+  {
+    "path": "apps/web/public/editorial/campus-hero-small.webp",
+    "sourceUrl": "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=800&q=78&fm=webp",
+    "downloadedOn": "2026-11-16",
+    "licenseUrl": "https://unsplash.com/license",
+    "creator": "Not independently verified; no attribution invented",
+    "sha256": "75a05279cd709509b7906783dbe8a632b0da3777b8ec8cde5dd2106b3d0f6b53",
+    "bytes": 129416,
+    "dimensions": [
+      800,
+      524
+    ],
+    "purpose": "Illustrative stock photo only; not selected university, a real UniHood boarding or owner content"
+  },
+  {
+    "path": "apps/web/public/editorial/quiet-room.webp",
+    "sourceUrl": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=900&q=82&fm=webp",
+    "downloadedOn": "2026-11-16",
+    "licenseUrl": "https://unsplash.com/license",
+    "creator": "Not independently verified; no attribution invented",
+    "sha256": "052369ae8444f5cc684a69ac38fd780b747fa1884156a731b7fcd1c56c016b8b",
+    "bytes": 112280,
+    "dimensions": [
+      900,
+      670
+    ],
+    "purpose": "Illustrative stock photo only; not selected university, a real UniHood boarding or owner content"
+  },
+  {
+    "path": "apps/web/public/editorial/shared-space.webp",
+    "sourceUrl": "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=900&q=82&fm=webp",
+    "downloadedOn": "2026-11-16",
+    "licenseUrl": "https://unsplash.com/license",
+    "creator": "Not independently verified; no attribution invented",
+    "sha256": "1a7f47e63ba9c718b325a8f83118268640748e1783fcde85ab53c8083045b8b9",
+    "bytes": 53122,
+    "dimensions": [
+      900,
+      598
+    ],
+    "purpose": "Illustrative stock photo only; not selected university, a real UniHood boarding or owner content"
+  }
+]

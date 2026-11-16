@@ -26,3 +26,7 @@ Components require **already sanitized public DTOs**. Never pass private coordin
 The four images under `docs/design/references/` informed the compact navy header, serif editorial headings, photographic cards, spacious grid, results rail and restrained layered map controls. Differences are deliberate: no generated reference geography/currency copied, no invented campus distances/ratings/live inventory, no private map pins, no unsupported contact or navigation actions. Only the foundation/demo is shipped; the map slot honestly reports unavailable and the native dialog replaces any decorative overlay. See [verification evidence](../verification/UNI-003/README.md).
 
 Human screen-reader, translated-language and cross-browser approval are not implied by automated Chromium/axe checks. UNI-015 still owns full product E2E and broader assistive-technology smoke testing.
+
+## UNI-011 implemented routes
+
+`/` now implements UI-01 Editorial Explorer with inline university/campus/entrance selection; `/u/[slug]` is the guest university/QR entry; `/photo-credits` records image context and license. Loading/empty/error/retry/not-found states and targeted keyboard/browser/accessibility tests are included. See [landing behavior and scope](landing.md) and [evidence](../verification/UNI-011/README.md). Map, real advertisement/discovery and final registration routes remain deferred to their specified issues; no placeholder link claims those features work.

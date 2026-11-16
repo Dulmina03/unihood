@@ -6,3 +6,7 @@
 - Icons: simple repository-authored SVG path primitives, consistent 24px viewBox/currentColor. Decorative icons are hidden from assistive technology; controls carry text or accessible names.
 
 No AI-generated or unlicensed listing photographs, logos, map tiles or location datasets were added. Font and image assets remain locally available after installation/build; no CDN request is required to render the page.
+
+## UNI-011 landing extension
+
+The landing adds illustrative campus/interior WebP photos and a responsive hero source. See the [exact asset manifest](landing-assets.json), [landing source/usage policy](landing.md#content-and-photography) and public /photo-credits page. The existing UNI-003 image/provenance above remains unchanged. New photos are stock illustrations, never a selected campus, a live boarding or owner content; no creator identity or campus association is invented.

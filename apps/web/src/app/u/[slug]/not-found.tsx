@@ -1,0 +1,3 @@
+import Link from 'next/link';
+import { SiteHeader, Icon } from '@unihood/ui';
+export default function UniversityNotFound() {return <><a className="skip-link" href="#main">Skip to content</a><SiteHeader items={[{label: 'Choose a university', href: '/#campus-start'}]} /><main id="main" className="landing-state" tabIndex={-1}><p className="landing-kicker">LET’S FIND YOUR STARTING POINT</p><h1>University not found.</h1><p>This university link is invalid or no longer available. You can still choose from the public university directory. No account needed.</p><Link className="uh-button uh-button--primary" href="/#campus-start">Choose a university <Icon name="arrow" /></Link></main></>;}

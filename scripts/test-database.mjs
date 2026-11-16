@@ -1,3 +1,4 @@
+import { startLandingIntegration } from './lib/test-landing.mjs';
 import { testUniversities } from './lib/test-universities.mjs';
 import assert from 'node:assert/strict';
 import { spawn, spawnSync } from 'node:child_process';
@@ -28,6 +29,7 @@ let started = false;
 let api;
 let client;
 let paused = false;
+let landing;
 try {
   docker([...compose, 'run', '--detach', '--no-deps', '--name', name, '-p', '127.0.0.1::5432', 'db-test']);
   started = true;
@@ -157,6 +159,8 @@ try {
   await seedDatabase(client, url, env);
   await expectReadiness(true);
 
+  if (process.env.TEST_LANDING_WEB === '1') landing = await startLandingIntegration(endpoint);
+
   docker(['pause', name]);
   paused = true;
   const before = Date.now();
@@ -168,6 +172,7 @@ try {
   const failure = await unavailable.json();
   assert.equal(failure.error.code, 'SERVICE_UNAVAILABLE');
   assert.ok(!JSON.stringify(failure).includes('postgres'));
+  if (landing) await landing.checkOutage();
   docker(['unpause', name]);
   paused = false;
   for (let attempt = 0; attempt < 15; attempt++) {
@@ -179,6 +184,7 @@ try {
   await expectReadiness(true);
   console.log('PASS: real DB outage returns redacted 503 within deadline, liveness stays 200, readiness recovers');
 } finally {
+  if (landing) await landing.close();
   if (paused) docker(['unpause', name], true);
   if (api) {
     api.kill('SIGTERM');

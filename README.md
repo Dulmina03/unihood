@@ -1,6 +1,6 @@
 # UniHood
 
-Privacy-aware boarding advertisements, owner-authorized map listings and neighborhood discovery for Sri Lankan universities. This is the **Phase 1 university-data foundation**, with no live inventory or public write routes. Registration and owner proof policy remain deferred to Phase 7.
+Privacy-aware boarding advertisements, owner-authorized map listings and neighborhood discovery for Sri Lankan universities. This is the **Phase 1 landing and university-data foundation**, with no live inventory or public write routes. Registration and owner proof policy remain deferred to Phase 7.
 
 ## Requirements and pnpm
 
@@ -144,3 +144,11 @@ Start with [CONTRIBUTING.md](CONTRIBUTING.md), the [UNI task template](.github/I
 ## University data foundation (UNI-010)
 
 [Public university/campus/entrance APIs](docs/api/universities.md) provide bounded read-only pages and optional slug/campus filters. Run migrations and guarded seeds locally; synthetic data appears only in compatible explicit local/test environments. Deployed reads expose eligible verified data only. No real campus coordinates, map/discovery screens, boarding or registration features are added. See [verification](docs/verification/UNI-010/README.md) and [Phase 1 progress](docs/progress/PHASE-01.md).
+
+## Editorial Explorer landing (UNI-011)
+
+Open `/` to choose a university, campus and public entrance from the UNI-010 API; `/u/{slug}` supports direct guest/QR entry. Configure server-only API_BASE_URL in root .env (see .env.example); web dev/start now read root .env before choosing WEB_PORT, without overwriting existing values. Exported environment variables take priority. Keep API migrated/running; unavailable data shows retry/empty states, with no invented fallback.
+
+The photographic landing uses approved Campus Teal components and explicitly synthetic inspiration cards with no live listings/prices/owner claims. Map, real advertisements/essentials and account actions explain their current availability. [Landing/source documentation](docs/ui/landing.md), [photography manifest](docs/ui/landing-assets.json) and [screenshots/verification](docs/verification/UNI-011/README.md) record behavior and scope. No final registration or later map/discovery workflow is implemented.
+
+For the real web → API → isolated PostGIS regression after building: `TEST_LANDING_WEB=1 pnpm db:test`. CI's isolated DB job enables it, preserving tmpfs storage and ownership checks. `pnpm test:ui` also runs targeted landing/QR/accessibility tests with a test-only local HTTP upstream; this is separate from UNI-015's unimplemented full-product E2E. UNI-010 integration and remote CI are human-verified SUCCESS (run #6, dev, f8e6623; all three jobs); run URL/full SHA were not supplied. UNI-011 requires its own human/remote checkpoint.

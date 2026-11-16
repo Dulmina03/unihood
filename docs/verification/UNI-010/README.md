@@ -1,10 +1,12 @@
 # UNI-010 verification
 
+Integration update before UNI-011: the human confirms UNI-010 committed and **fast-forward merged into dev**. GitHub Actions **SUCCESS**, human-verified workflow **run #6**, branch **dev**, short commit **f8e6623**; **Workspace quality**, **Isolated PostGIS integration**, and **Component browser acceptance** all passed. No run URL/full commit SHA was supplied, and neither is invented; run number #6 is not assumed to be an Actions URL/run ID. This resolves the original handoff/remote-outcome uncertainty below. No independent remote/Git history audit was performed; original local results remain historical.
+
 Recorded 16 November 2026 (Asia/Colombo), Node 22.23.4 / pnpm 10.34.9. Prepared branch confirmed from plain .git/HEAD: `feat/uni-010-university-campus-entrances`. No Git command/history audit performed. Implementation and local acceptance complete; human Git checkpoint pending. No next issue started.
 
 ## Integration and remote evidence
 
-**UNI-006 merged into dev and successful remote CI verification are explicitly human-confirmed.** No run URL or commit SHA was supplied; both remain **unverified**, with no independent remote observation or invented identifier. Historical UNI-006 evidence is annotated accordingly. Remote UNI-010 Actions results: **NOT RUN/NOT OBSERVED** by the assistant; no dispatch, repository setting, required-check rule or deployment changed. Human review of the newest pushed issue/dev runs remains required.
+**UNI-006 merged into dev and successful remote CI verification are explicitly human-confirmed.** No run URL or commit SHA was supplied; both remain **unverified**, with no independent remote observation or invented identifier. Historical UNI-006 evidence is annotated accordingly. At the original UNI-010 handoff, remote Actions were **NOT RUN/NOT OBSERVED** by the assistant (now superseded by the human-verified SUCCESS update above); no dispatch, repository setting, required-check rule or deployment changed. Human review of the newest pushed issue/dev runs remains required.
 
 ## Actual local quality gates
 
