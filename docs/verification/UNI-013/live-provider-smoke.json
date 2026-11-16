@@ -1,0 +1,44 @@
+{
+  "kind": "live OpenFreeMap basemap with synthetic directory upstream",
+  "mockedProvider": false,
+  "data": "UNI-010 synthetic fixtures, not a real campus",
+  "ready": true,
+  "responses": [
+    {
+      "path": "/styles/liberty",
+      "status": 200
+    },
+    {
+      "path": "/sprites/ofm_f384/ofm.json",
+      "status": 200
+    },
+    {
+      "path": "/sprites/ofm_f384/ofm.png",
+      "status": 200
+    },
+    {
+      "path": "/planet",
+      "status": 200
+    },
+    {
+      "path": "/planet/20261101_080013_pt/14/8192/8192.pbf",
+      "status": 200
+    },
+    {
+      "path": "/planet/20261101_080013_pt/14/8191/8192.pbf",
+      "status": 200
+    },
+    {
+      "path": "/planet/20261101_080013_pt/14/8191/8191.pbf",
+      "status": 200
+    },
+    {
+      "path": "/planet/20261101_080013_pt/14/8192/8191.pbf",
+      "status": 200
+    }
+  ],
+  "failedRequests": [],
+  "status": "Synthetic Demo Campus · Map ready",
+  "markers": 2,
+  "workers": 2
+}

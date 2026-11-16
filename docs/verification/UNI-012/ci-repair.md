@@ -1,5 +1,12 @@
 # UNI-012 CI repair — missing contracts build prerequisite
 
+## Confirmed human integration and repaired CI
+
+Human-confirmed update: UNI-012, including its CI repair, was committed, fast-forward merged and pushed to dev. Remote GitHub Actions **SUCCESS** on short commit **99eeef1**: **Workspace quality**, **Isolated PostGIS integration** and **Component browser acceptance** all passed. No run number, run URL or full commit SHA was supplied; none is invented. This is human-verified evidence, not a new independent remote audit. Historical failed runs #7/#8/#9 remain unchanged.
+
+The pending-checkpoint/post-fix uncertainty below describes the original handoff and is superseded by this update. UNI-013 is separately authorized.
+
+
 Recorded 16 November 2026. Verified issue branch from plain `.git/HEAD`: `feat/uni-012-urban-map-shell`. No Git commands, merge, remote rerun/dispatch or UNI-013 work performed. Repair is awaiting the human Git checkpoint and a new remote run.
 
 ## Actual remote investigation

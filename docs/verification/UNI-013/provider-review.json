@@ -1,0 +1,24 @@
+{
+  "verifiedOn": "2026-11-16",
+  "provider": "OpenFreeMap",
+  "style": "https://tiles.openfreemap.org/styles/liberty",
+  "httpStatus": 200,
+  "cacheControlObserved": [
+    "max-age=86400",
+    "public"
+  ],
+  "corsObserved": "*",
+  "styleSha256": "408245464e76791801a64393c403433d09e8110eb9516040f8dc2b62584eee2a",
+  "resourceOriginsObserved": [
+    "https://tiles.openfreemap.org"
+  ],
+  "apiKeyRequired": false,
+  "sourceReferences": [
+    "https://openfreemap.org/",
+    "https://openfreemap.org/tos/",
+    "https://openfreemap.org/privacy/",
+    "https://openfreemap.org/quick_start/",
+    "https://github.com/hyperknot/openfreemap/blob/main/LICENSE.md"
+  ],
+  "notes": "Direct style/header inspection and published provider review; no bulk/offline download or app tile cache. Quotas, license summaries and limits documented in docs/ui/maps.md."
+}

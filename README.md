@@ -149,7 +149,7 @@ Start with [CONTRIBUTING.md](CONTRIBUTING.md), the [UNI task template](.github/I
 
 Open `/` to choose a university, campus and public entrance from the UNI-010 API; `/u/{slug}` supports direct guest/QR entry. Configure server-only API_BASE_URL in root .env (see .env.example); web dev/start now read root .env before choosing WEB_PORT, without overwriting existing values. Exported environment variables take priority. Keep API migrated/running; unavailable data shows retry/empty states, with no invented fallback.
 
-The photographic landing uses approved Campus Teal components and explicitly synthetic inspiration cards with no live listings/prices/owner claims. Explore Map now opens the UNI-012 shell; real advertisements/essentials and account actions explain their current availability. [Landing/source documentation](docs/ui/landing.md), [photography manifest](docs/ui/landing-assets.json) and [screenshots/verification](docs/verification/UNI-011/README.md) record behavior and scope. No final registration or later map/discovery workflow is implemented.
+The photographic landing uses approved Campus Teal components and explicitly synthetic inspiration cards with no live listings/prices/owner claims. Explore Map now opens the UNI-012 shell; real advertisements/essentials and account actions explain their current availability. [Landing/source documentation](docs/ui/landing.md), [photography manifest](docs/ui/landing-assets.json) and [screenshots/verification](docs/verification/UNI-011/README.md) record behavior and scope. Final registration and live boarding discovery remain deferred; the UNI-013 map integration is described below.
 
 For the real web → API → isolated PostGIS regression after building: `TEST_LANDING_WEB=1 pnpm db:test`. CI's isolated DB job enables it, preserving tmpfs storage and ownership checks. `pnpm test:ui` also runs targeted landing/QR/accessibility tests with a test-only local HTTP upstream; this is separate from UNI-015's unimplemented full-product E2E. UNI-010 integration and remote CI are human-verified SUCCESS (run #6, dev, f8e6623; all three jobs); run URL/full SHA were not supplied. UNI-011 is human-confirmed committed and merged into dev; remote runs #7/#8 are now verified failed at the browser job’s web build, with the same missing contracts prerequisite as UNI-012 run #9; see [CI repair evidence](docs/verification/UNI-012/ci-repair.md).
 
@@ -157,3 +157,10 @@ For the real web → API → isolated PostGIS regression after building: `TEST_L
 ## Urban Map shell (UNI-012)
 
 Open `/explore`, or use Explore selected campus from the university picker. Public campus/gate results come from UNI-010 through the existing read-only adapters. Desktop rail, tablet collapse, mobile sheet, Map/List, URL state and share/filter controls work without registration. MapLibre, live listings, distances and owner writes remain deferred. See [exploration behavior](docs/ui/explore.md) and [verification/evidence](docs/verification/UNI-012/README.md).
+
+
+## Configurable map (UNI-013)
+
+Set `MAP_PROVIDER=openfreemap` and `MAP_STYLE=liberty` (or `bright`) to enable the credential-free map, then restart web. Disabled/missing config preserves the usable list. No private keys or arbitrary style URLs are accepted. See [map setup, provider terms, licensing and privacy](docs/ui/maps.md) and [actual verification](docs/verification/UNI-013/README.md). Synthetic gates are not real campuses; basemap features are not verified boarding inventory.
+
+UNI-012 was human-confirmed committed, fast-forward merged and pushed to dev. Its repaired remote CI passed Workspace quality, Isolated PostGIS integration and Component browser acceptance at short commit **99eeef1**. Run number/URL/full SHA were not supplied; failed runs #7/#8/#9 remain historical evidence.

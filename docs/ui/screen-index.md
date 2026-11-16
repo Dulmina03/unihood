@@ -34,3 +34,8 @@ Human screen-reader, translated-language and cross-browser approval are not impl
 ## UNI-012 implemented route
 
 `/explore` implements the UI-03 responsive shell with real public university/campus/entrance selection, validated URL state, floating filters and selected gate preview, a collapsible tablet rail, mobile results sheet and Map/List toggle. No map provider or listing feed is fabricated. See [shell behavior and boundaries](explore.md) and [screenshots/verification](../verification/UNI-012/README.md).
+
+
+## UNI-013 map integration
+
+`/explore` now conditionally renders MapLibre with configured OpenFreeMap Liberty/Bright, public gate markers, visible attribution, keyboard controls and list fallback for configuration/network/WebGL/context-loss failures. Existing guest/QR/URL/selection/sheet behavior is retained. See [provider and interaction boundaries](maps.md) and [verification](../verification/UNI-013/README.md). No boarding/POI feed or later workflow is introduced.

@@ -6,7 +6,7 @@ export default defineConfig({
   workers: 1,
   reporter: 'list',
   outputDir: '/tmp/unihood-ui-test-results',
-  use: {baseURL: 'http://127.0.0.1:3180', reducedMotion: 'reduce', trace: 'retain-on-failure'},
+  use: {baseURL: 'http://127.0.0.1:3180', reducedMotion: 'reduce', trace: 'retain-on-failure', launchOptions: {args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader']}},
   projects: [
     {name: 'mobile', use: {viewport: {width: 390, height: 844}, isMobile: true, hasTouch: true}},
     {name: 'desktop', use: {viewport: {width: 1440, height: 900}}},
