@@ -52,3 +52,11 @@ Regression command: `pnpm db:test`. It uses the actual Compose service's image i
 The ordered migration/seed runner and separate test service are now implemented; the earlier UNI-001 limitations above are historical. See [database strategy](database.md) for current commands and recovery. PostgreSQL driver `pg` 8.23.1 and matching `@types/pg` 8.23.1 were verified against the registry, installed and locked. No major database upgrade or development volume replacement occurred; Compose now pins the previously verified image digest. SQL 001 files remain unchanged and their legacy ownership state is adopted transactionally.
 
 Database-aware API readiness is separate from existing liveness; no public write or authentication route is introduced. Fixtures live only in a labeled synthetic schema. Standard and Docker checks are recorded in PHASE-00.md. CI now includes Docker integration and dev/main push triggers to support the human-only fast-forward workflow; remote CI results are not claimed.
+
+## UNI-003 UI foundation — 16 November 2026
+
+The reusable React source package now exports typed UI components plus scoped semantic styles. Next explicitly transpiles `@unihood/ui`; the package separately typechecks. Locally bundled Fraunces/Manrope (Fontsource 5.3.0) replace the bootstrap-only Georgia/Arial typography while retaining system fallbacks. The approved palette is unchanged. See [design tokens](../ui/design-tokens.md), [component/route index](../ui/screen-index.md) and [asset provenance](../ui/assets.md).
+
+A standalone `/design-system` route demonstrates the foundations without implementing Phase 1 discovery or connecting a map provider. Display DTOs are not authorization/serialization boundaries. Private data must be omitted before reaching client props; map previews additionally reject ineligible listings. Production publishing remains disabled. English scaffolding does not imply completed Sinhala/Tamil support.
+
+Playwright 1.65.1 and axe-core Playwright 4.14.0 are locked dev dependencies. `pnpm test:ui` targets the production build using a local server and the two requested viewports. This is component acceptance/evidence, separate from the deliberately pending UNI-015 `test:e2e` product suite. No Git, API/schema/extension or persistent-data changes are made by the UI workflow.

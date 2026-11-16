@@ -15,3 +15,30 @@
   --border: var(--divider);
   --focus: var(--navy-900);
 }
+:root {
+  --surface-muted: var(--mint-100);
+  --muted: var(--text-muted);
+  --secondary: var(--navy-900);
+  --accent: var(--mint-100);
+  --warning: var(--amber-500);
+  --danger: var(--coral-500);
+  --focus-ring: var(--teal-600);
+  --control-border: var(--text-muted);
+  --font-display: 'Fraunces', Georgia, 'Noto Serif Sinhala', 'Noto Serif Tamil', serif;
+  --font-body: 'Manrope', Arial, 'Noto Sans Sinhala', 'Noto Sans Tamil', sans-serif;
+  --space-1: .25rem;
+  --space-2: .5rem;
+  --space-3: .75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --radius-control: .6rem;
+  --radius-card: 1rem;
+  --radius-pill: 999px;
+  --shadow-card: 0 3px 16px #0D29400A;
+  --shadow-float: 0 12px 36px #0D294018;
+  --page-width: 1280px;
+  --motion-fast: 160ms;
+}

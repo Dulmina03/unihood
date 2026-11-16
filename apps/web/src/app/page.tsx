@@ -1,11 +1,11 @@
-import Link from 'next/link';
+import { SiteHeader } from '@unihood/ui';
 
 export default function Home() {
   return (
     <>
       <a className="skip-link" href="#main">Skip to content</a>
-      <header><Link className="wordmark" href="/" aria-label="UniHood home">UniHood<span>Boarding & neighborhood discovery</span></Link><span className="preview">Development preview</span></header>
-      <main id="main" tabIndex={-1}>
+      <SiteHeader items={[{label: 'Component library', href: '/design-system'}]} />
+      <main className="home-main" id="main" tabIndex={-1}>
         <p className="eyebrow">A neighborhood for your next chapter</p>
         <h1>Find your place.<br />Get to know your neighborhood.</h1>
         <p className="intro">Discover boarding advertisements and nearby essentials, with privacy at the heart of every listing.</p>
@@ -22,7 +22,7 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer>UniHood · Built for university neighborhoods in Sri Lanka.</footer>
+      <footer className="home-footer">UniHood · Built for university neighborhoods in Sri Lanka.</footer>
     </>
   );
 }

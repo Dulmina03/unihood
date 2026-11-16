@@ -107,3 +107,22 @@ See [database strategy and recovery](docs/architecture/database.md) for checksum
 - `docs/design/references` — illustrative design references only; never use their synthetic photos, prices or geography as production content.
 
 See [stack decisions](docs/architecture/stack.md), [current status](docs/progress/CURRENT_STATUS.md), and the master specification. CI runs install/lint/typecheck/test/build plus isolated database integration checks on PRs and pushes to `dev`/`main`, or manual dispatch; it does not deploy. Solo workflow: the human performs all Git operations, one branch per UNI issue, verified changes integrate into `dev` with `git merge --ff-only`; PRs are optional, no merge commits, and `main` is reserved for stable releases. Broader CI conventions remain UNI-006.
+
+## Campus Teal component library (UNI-003)
+
+Run `pnpm --filter @unihood/web dev` and open `http://127.0.0.1:3000/design-system` (or the configured WEB_PORT). The page demonstrates reusable `@unihood/ui` primitives, synthetic photo-led cards, independent source/privacy/vacancy labels, filters, status/recovery states, modal focus and a provider-free map/list fallback. No real listing, exact location, route or publishing service is connected.
+
+- [Tokens and usage](docs/ui/design-tokens.md)
+- [Component/route index and privacy contract](docs/ui/screen-index.md)
+- [Assets and licensing](docs/ui/assets.md)
+- [Screenshots and verification](docs/verification/UNI-003/README.md)
+
+`pnpm test` includes component/presentation/contrast tests. Browser acceptance is separate:
+
+```sh
+pnpm --filter @unihood/web exec playwright install chromium
+pnpm build
+pnpm test:ui
+```
+
+Playwright starts/stops its own production server on loopback port 3180 and writes evidence under `docs/verification/UNI-003`. The port must be free. Set `PLAYWRIGHT_BROWSERS_PATH` consistently for installation and testing if using a nondefault browser cache. Chromium system dependencies may need provision on a clean machine. Browser reports/traces use `/tmp/unihood-ui-test-results`; this is component acceptance, not the pending UNI-015 full-product `pnpm test:e2e` suite. Remote browser CI is not configured by this issue.

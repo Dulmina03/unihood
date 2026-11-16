@@ -1,6 +1,6 @@
 # Phase 0 — engineering bootstrap
 
-Phase status: **in progress**, not complete. UNI-003–006 have not been started. UNI-002 implementation and verification are recorded below; human integration remains pending.
+Phase status: **in progress**, not complete. UNI-001–003 implementation and local verification are recorded below; UNI-003 awaits the human Git checkpoint. UNI-004–006 have not been started. Historical Git handoff entries are retained; integration history has not been inspected.
 
 ## UNI-001 — workspace bootstrap
 
@@ -134,3 +134,36 @@ No real places, campus coordinates, boarding inventory, contacts, production aut
 Remote GitHub CI is configured but **NOT RUN here**. Browser E2E remains explicitly unconfigured pending UNI-015; UI was unchanged. Broader CI/PR conventions remain UNI-006. Local checks pass; the human alone reviews, stages, commits and integrates this issue into dev with `git merge --ff-only`. PRs are optional, no merge commits, main reserved for stable releases. Do not start UNI-003 until the human completes this checkpoint and prepares its branch.
 
 Final handoff validation: all 22 UNI-002 source/config/documentation paths passed the whitespace/JSON scan; Compose, CI and lockfile YAML parsed successfully. Final Compose validation passed and only the healthy development service remained; disposable manual/automatic test containers were absent. Branch metadata still named `chore/uni-002-postgis-dev`. No Git command was used for inspection or mutation.
+
+## UNI-003 — Campus Teal design system
+
+Owner: M1. Dependencies: UNI-001 workspace/shared UI baseline and approved v3.0 visual/privacy direction; runs on the existing UNI-002 foundation. Branch verified by reading `.git/HEAD`: `feat/uni-003-campus-teal-design-system`. No Git command was run and no integration/remote history was inspected. The user's explicit UNI-003 instruction supersedes stale bootstrap/current-issue text; the correct issue branch already existed.
+
+Status: **implemented and verified locally; awaiting human Git checkpoint**.
+
+### Delivered
+
+- Reusable typed React UI package, standalone typecheck, preserved Campus Teal palette plus semantic/spacing/type/motion/radius tokens; scoped styles and icons. Self-hosted Fraunces/Manrope; photo-led editorial layout based on all four existing visual references.
+- Responsive site header, native search, toggle chips, accessible field/error/help, buttons, source/privacy/vacancy badges, cards/grid, notices, skeleton/empty/retry, responsive image/failure state, native modal with explicit keyboard wrapping/focus restoration, map rail/layers/owner-public preview and unavailable-provider/list alternative.
+- `/design-system` noindex demonstration, all listings/fees/vacancies synthetic and fixed to a visible sample clock. Functional local filters/save/visibility/validation/recovery; no public write service, no fabricated geography/routing, and no production auth/registration decisions. Existing home preview shares the header/fonts and links to the library; final discovery pages are not implemented.
+- Discriminated public display types and conservative runtime presentation: community official-field claims ignored, hidden locality omitted, unverified/unconsented/private/community map previews excluded, invalid price hidden and stale vacancy downgraded. **Client presentation is not a serializer/auth boundary**: callers must remove private fields before passing props. No coordinates/contact data exists in demo DTOs.
+- Unit/component/contrast tests and dedicated Playwright/axe component acceptance; 12 screenshot artifacts with exact 390×844 and 1440×900 hero captures plus full-page/map/modal/error evidence. Documentation: `docs/ui/design-tokens.md`, `screen-index.md`, `assets.md`, verification README/JSON, stack and root README.
+
+### Actual verification — 16 November 2026 (Asia/Colombo)
+
+- `pnpm install --frozen-lockfile --offline`: **PASS**.
+- `pnpm lint`: **PASS**, zero warnings.
+- `pnpm typecheck`: **PASS**, contracts/UI/API/web; UI now checks independently of Next's DOM libraries.
+- `pnpm test`: **PASS**, **23 tests**: Node tooling 3, contracts 3, API 7, web 10. Existing Jest VM-module experimental warning remains.
+- `pnpm build`: **PASS**, production contracts/API/web including static `/design-system`.
+- `PLAYWRIGHT_BROWSERS_PATH=/tmp/unihood-playwright pnpm test:ui`: **PASS**, **8 browser tests** across requested mobile/desktop sizes; axe A/AA tags through WCAG 2.2 report zero violations for page and open modal. Mobile/tablet navigation, focus trap/restore, validation, filters, saved/loading/empty/error/retry, map layers/exclusion/list fallback pass. No horizontal overflow at 320/390/768/1440px. Screenshots generated and visually inspected; reference differences documented. No remote font/image runtime resource needed.
+
+Failures found and fixed are recorded in [verification evidence](../verification/UNI-003/README.md). In particular, the approved teal on mint fails small-text AA (4.26:1); the overline uses navy instead, without changing approved tokens. Native dialog focus wrapping and centering were verified after correction. Token tests run in Node; React component tests run in jsdom. No assertions/rules were disabled to get a pass.
+
+### Limits and human checkpoint
+
+This completes UNI-003 foundations, not Phase 0 or Phase 1 screens. Full product E2E remains UNI-015's explicit placeholder; `pnpm test:e2e` was **NOT RUN**. Human screen-reader/translated language/cross-browser review and remote CI were **NOT RUN**; zero axe violations is not a full WCAG certification. Docker regression was **NOT RERUN** for UI-only changes; no database initialization, migration, seed, extension ownership or persistent data was modified. Existing database evidence above remains historical.
+
+No Git operation was performed. Human review/staging/commit/push and fast-forward-only integration into `dev` remain required; PR optional, no merge commits, `main` reserved for stable releases. Suggested commit: `feat(web): add Campus Teal design system`. **Stop here. Do not begin UNI-004** until the human completes the checkpoint and prepares its issue branch.
+
+Final evidence validation: both page audit JSON files contain zero violations and zero incomplete rules. The 12 PNGs include exact 390×844 and 1440×900 viewport dimensions; package/config JSON and UI/documentation whitespace scans pass. Final production browser run: 8/8 PASS (20.0s). Branch metadata still names `feat/uni-003-campus-teal-design-system`; no Git command was used.
