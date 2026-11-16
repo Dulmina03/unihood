@@ -1,0 +1,29 @@
+{
+  "name": "unihood",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@10.34.9",
+  "engines": {
+    "node": ">=22.12.0 <23 || >=24.0.0 <25"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @unihood/contracts build && pnpm --parallel --filter @unihood/web --filter @unihood/api dev",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "pnpm --filter @unihood/contracts build && pnpm -r typecheck",
+    "test": "pnpm --filter @unihood/contracts build && pnpm -r test",
+    "build": "pnpm -r build",
+    "test:e2e": "node scripts/e2e-pending.mjs",
+    "db:up": "docker compose --env-file .env -f infra/compose.yaml up -d --wait",
+    "db:down": "docker compose --env-file .env -f infra/compose.yaml down",
+    "db:migrate": "docker compose --env-file .env -f infra/compose.yaml exec -T db sh -c 'psql -X -v ON_ERROR_STOP=1 -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\"' < infra/db/migrations/001_extensions.up.sql",
+    "db:rollback": "docker compose --env-file .env -f infra/compose.yaml exec -T db sh -c 'psql -X -v ON_ERROR_STOP=1 -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\"' < infra/db/migrations/001_extensions.down.sql",
+    "db:test": "node scripts/test-db-extensions.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "eslint": "^9.39.0",
+    "eslint-config-next": "16.4.6",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.0"
+  }
+}
