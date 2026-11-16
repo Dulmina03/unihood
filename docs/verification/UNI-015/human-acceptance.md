@@ -56,3 +56,8 @@ Automated keyboard/axe/fallback/storage assertions cover relevant behavior separ
 **Phase 1: IN PROGRESS — closure pending the remaining manual screen-reader checklist evidence above.** The specification §10 Phase 1 functionality and UNI-015 automated journey/visual evidence are documented; human integration, current CI, core Orca smoke and both visual approvals are now confirmed. Because the repository's documented manual gate requires the additional step-level confirmations, all documented acceptance requirements cannot yet be marked satisfied. No broader feature work is requested or needed to record those results. Stop before Phase 2.
 
 This documentation update does not rerun runtime lint/typecheck/unit/browser/build/Docker checks or change their historical outcomes. The local default Turbopack build remains historically **BLOCKED by socket EPERM**; the supported Webpack build passed separately. Current human CI success is recorded without converting that local failure to a pass. Documentation consistency and scope checks for this update are recorded in the human checkpoint response.
+
+
+## Subsequent authorized scheduling/workflow change
+
+The human now explicitly defers remaining Phase 1 accessibility checks to [Phase 6](../../progress/PHASE-06.md), allowing Phase 2 development starting UNI-020. All unconfirmed observations above remain DEFERRED / NOT CONFIRMED, never PASS; this is not a new screen-reader test or retroactive certification. Original closure decision and historical Git handoffs describe their time; current AGENTS.md replaces routine human-only Git with authorized agent one-issue branches, exact-commit issue/dev CI and fast-forward-only integration. No main/release/deployment approval is implied.

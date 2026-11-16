@@ -43,3 +43,11 @@ test('Phase 1 E2E preserves browser regressions and builds API before the isolat
   assert.ok(commands.indexOf('pnpm test:e2e') > commands.indexOf('pnpm --filter @unihood/api build'));
   assert.ok(commands.indexOf('cp .env.example .env') < commands.indexOf('pnpm test:e2e'));
 });
+
+// A cold PostGIS download must not share the launcher's bounded startup timeout.
+test('browser E2E prepares the pinned test image before starting its isolated database', () => {
+  const steps = original.jobs.ui.steps;
+  const pull = steps.findIndex((step) => step.run === 'docker compose --env-file .env -f infra/compose.yaml --profile test pull db-test');
+  assert.ok(pull >= 0 && steps[pull]['timeout-minutes'] === 5);
+  assert.ok(pull < steps.findIndex((step) => step.run === 'pnpm test:e2e'));
+});

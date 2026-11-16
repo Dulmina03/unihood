@@ -75,7 +75,7 @@ export async function checkRepository(root = process.cwd()) {
     assert.ok(match, `${name}: YAML frontmatter required`);
     const metadata = parseYaml(match[1], name);
     for (const key of ['name', 'about', 'title']) assert.ok(typeof metadata[key] === 'string' && metadata[key].trim(), `${name}: ${key} required`);
-    assert.ok(content.includes('human') && content.includes('git merge --ff-only') && content.includes('dev'), `${name}: human workflow missing`);
+    assert.ok(content.includes('human') && content.includes('git merge --ff-only') && content.includes('dev'), `${name}: workflow escalation guidance missing`);
   }
   assert.equal(parseYaml(await read('.github/ISSUE_TEMPLATE/config.yml'), 'issue config').blank_issues_enabled, true);
   const pr = await read('.github/pull_request_template.md');

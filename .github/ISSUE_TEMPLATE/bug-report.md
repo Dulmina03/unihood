@@ -21,4 +21,4 @@ Provide nonprivate logs/screenshots, exact command results and local versus remo
 
 Affected paths, regression test, expected fix and known limitations:
 
-All Git actions remain human-only. Fix branches integrate into dev by git merge --ff-only; PR optional, no merge commits, main stable releases only.
+Routine agent Git actions are authorized under AGENTS.md; destructive/release/deployment actions require human approval. Fix branches integrate into dev by git merge --ff-only; PR optional, no merge commits, main stable releases only.

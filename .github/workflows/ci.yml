@@ -112,6 +112,9 @@ jobs:
         run: pnpm --filter @unihood/api build
       - name: Prepare synthetic disposable Compose settings
         run: cp .env.example .env
+      - name: Pull pinned disposable PostGIS image before the bounded E2E launcher
+        timeout-minutes: 5
+        run: docker compose --env-file .env -f infra/compose.yaml --profile test pull db-test
       - name: Run Phase 1 guest E2E against isolated PostGIS
         run: pnpm test:e2e
         env:

@@ -1,6 +1,6 @@
 # Coding conventions
 
-The specification and [five ADRs](../decisions/README.md) define behavior; conventions make implementation consistent. Work one UNI issue at a time with explicit acceptance and [human Git checkpoints](../../CONTRIBUTING.md). M1 owns app/UI, M2 spatial/POI/dedup, M3 boardings/official fields, M4 community/reports/routes observations, M5 contracts/tooling/integration/security and final auth. Coordinate shared contracts/migrations explicitly rather than editing another module silently.
+The specification and [five ADRs](../decisions/README.md) define behavior; conventions make implementation consistent. Work one UNI issue at a time with explicit acceptance and [authorized autonomous Git and exact-commit CI](../../CONTRIBUTING.md). M1 owns app/UI, M2 spatial/POI/dedup, M3 boardings/official fields, M4 community/reports/routes observations, M5 contracts/tooling/integration/security and final auth. Coordinate shared contracts/migrations explicitly rather than editing another module silently.
 
 ## Types, contracts and behavior
 

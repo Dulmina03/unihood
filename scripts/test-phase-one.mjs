@@ -21,6 +21,7 @@ async function freePort() {
   await new Promise((resolve, reject) => {server.once('error', reject); server.listen(0, '127.0.0.1', resolve);});
   const port = server.address().port; await new Promise((resolve) => server.close(resolve)); return port;
 }
+let stage = 'artifact preflight';
 let owned = false, api, browser, client, map, list, interrupted = false;
 const interrupt = () => {interrupted = true; browser?.kill('SIGTERM'); api?.kill('SIGTERM');};
 process.once('SIGTERM', interrupt); process.once('SIGINT', interrupt);
@@ -35,10 +36,15 @@ try {
   await access(new URL('../apps/api/dist/main.js', import.meta.url));
   await access(new URL('../apps/web/.next/BUILD_ID', import.meta.url));
   const compose = ['compose', '--env-file', '.env', '-f', 'infra/compose.yaml', '--profile', 'test'];
+  stage = 'isolated Docker startup';
+  console.log(`Phase 1 stage: ${stage}`);
   const started = docker([...compose, 'run', '--detach', '--no-deps', '--name', name, '-p', '127.0.0.1::5432', 'db-test'], true);
   // A partially started owned service must also be removed on startup failure.
   owned = docker(['inspect', name], true).status === 0;
-  if (started.error || started.status !== 0 || !owned) throw new Error('Phase 1 isolated database did not start');
+  if (started.error || started.status !== 0 || !owned) {
+    const reason = started.error?.code === 'ETIMEDOUT' ? 'Docker startup timed out (60s); pull the pinned db-test image before retrying' : 'Docker startup failed; inspect the owned disposable service';
+    console.error(reason); throw new Error('Phase 1 isolated database did not start');
+  }
   const details = JSON.parse(docker(['inspect', name]).stdout)[0];
   assert.ok(Object.hasOwn(details.HostConfig.Tmpfs ?? {}, '/var/lib/postgresql/data'));
   assert.ok(!details.Mounts.some((mount) => ['bind', 'volume'].includes(mount.Type)), 'Persistent storage is forbidden');
@@ -52,11 +58,13 @@ try {
     catch {if (attempt === 59) throw new Error('Phase 1 database readiness timeout'); await delay(500);}
     finally {await probe.end();}
   }
+  stage = 'database migration and seed';
   client = createClient(url); await client.connect();
   assert.equal((await client.query('SELECT current_database() AS name')).rows[0].name, 'unihood_test');
   const migrations = await loadMigrations();
   await runMigrations(client, migrations, 'migrate');
   await seedDatabase(client, url, {APP_ENV: 'test', NODE_ENV: 'test'});
+  stage = 'API readiness';
   const port = await freePort();
   api = spawn(process.execPath, ['apps/api/dist/main.js'], {cwd: root, stdio: 'ignore', env: {...process.env, API_HOST: '127.0.0.1', API_PORT: String(port), DATABASE_URL: url, APP_ENV: 'test', NODE_ENV: 'test', ENABLE_SYNTHETIC_ACTORS: 'false', SYNTHETIC_ACTOR: ''}});
   const endpoint = `http://127.0.0.1:${port}`;
@@ -65,6 +73,7 @@ try {
     try {if ((await fetch(`${endpoint}/health/ready`, {signal: AbortSignal.timeout(3000)})).status === 200) break;} catch { /* Wait for owned Nest process. */ }
     if (attempt === 59) throw new Error('Phase 1 API readiness timeout'); await delay(250);
   }
+  stage = 'production web integration preflight';
   map = await startLandingIntegration(endpoint, {provider: 'openfreemap'});
   if (interrupted) throw new Error('Interrupted');
   list = await startLandingIntegration(endpoint, {provider: 'disabled'});
@@ -72,6 +81,7 @@ try {
   console.log('PASS: Phase 1 browser services use real Next → Nest → migrated/seeded isolated tmpfs PostGIS; actors disabled');
   const env = {...process.env, APP_ENV: 'test', ENABLE_SYNTHETIC_ACTORS: 'false', SYNTHETIC_ACTOR: '', NEXT_TELEMETRY_DISABLED: '1', PHASE1_ISOLATED: '1', PHASE1_BASE_URL: map.base, PHASE1_LIST_BASE_URL: list.base};
   delete env.DATABASE_URL; // The browser runner does not need even the disposable DB credential.
+  stage = 'Playwright guest acceptance';
   browser = spawn(process.execPath, [playwrightCli, 'test', '--config=playwright.phase1.config.ts'], {cwd: `${root}apps/web`, stdio: 'inherit', env});
   const timeout = setTimeout(() => {interrupted = true; browser.kill('SIGTERM');}, 600000);
   try {
@@ -79,6 +89,7 @@ try {
     if (status !== 0 || interrupted) throw new Error('Phase 1 browser acceptance failed or was interrupted');
   } finally {clearTimeout(timeout);}
 } catch {
+  console.error(`FAIL: Phase 1 stage: ${stage}`);
   console.error('FAIL: Phase 1 acceptance. Build contracts/API/web, check Docker/Chromium availability and inspect the browser failure above; raw server/DB errors are not printed.');
   process.exitCode = 1;
 } finally {

@@ -1,47 +1,32 @@
 # AGENTS.md — UniHood coding-agent operating rules
 
-This file controls how AI coding assistants work in **this repository**. For full product requirements and acceptance tests, read `UniHood_MASTER_PROJECT_SPECIFICATION.md` (v3.0). Never silently replace its agreed requirements.
+Read `UniHood_MASTER_PROJECT_SPECIFICATION.md` v3.0, current/phase progress, the five ADRs and CI documentation before changes. Preserve agreed product requirements. The human's autonomous-workflow authorization supersedes older human-only Git/checkpoint wording in the specification, historical records and templates.
 
-## Starting point — read before changing files
+## Start and scope
 
-1. Inspect read-only `git status --short --branch`, `git branch -vv`, `git remote -v`, repository tree, package manifests, `docs/progress/CURRENT_STATUS.md` if it exists.
-2. Read the specification Sections 0, 4–11, 13 and 18. Determine the first incomplete `UNI-###` task. The current reported task is **UNI-001**, branch **`chore/uni-001-workspace-bootstrap`**, but verify the actual branch before writing.
-3. Treat the current repo as existing. **NEVER run git init**, recreate the repo, overwrite existing work or assume the remote is correct. Current reported GitHub remote: `https://github.com/Dulmina03/unihood.git`.
-4. The project uses `main` for stable releases and `dev` for integration, with `feature/chore/fix/test/docs` branches merging by human PR into `dev`, then releases merging into `main`.
+- Treat this as an existing repository; never initialize or replace it. Inspect status, branches, remotes, manifests and dependencies. Expected origin: `https://github.com/Dulmina03/unihood.git`; verify it.
+- Begin from a clean `dev`, fetch origin and synchronize with fast-forward only. Preserve unrelated work; do not stash/discard it without approval. Never work directly on `main`.
+- Create one appropriately named branch per exact roadmap issue. Start at **UNI-020**, then follow specification §10 in order; do not invent UNI numbers or implement future workflows early.
+- Read the issue's dependencies and acceptance requirements. Own only its scoped changes across the five modules. Applied migrations are immutable; add paired ordered SQL. Preserve existing persistent data and extension ownership.
 
-## Human-only Git — absolute rule
+## Authorized autonomous Git and verification
 
-You MUST NOT run `git switch`, `checkout`, `branch`, `init`, `add`, `commit`, `push`, `pull`, `fetch`, `merge`, `rebase`, `reset`, `tag`, or PR create/merge actions. Read-only Git commands are permitted. The human alone creates/switches branches, stages files, commits, pushes, opens and merges pull requests. If a new branch is required, print exact commands and **stop** until verified. Do not unnecessarily request a new branch when already on the correct issue branch.
+1. Implement the specified issue and meaningful tests, preserving privacy/security.
+2. Run applicable lint, typecheck, unit/API, build, browser and isolated Docker checks. Fix failures before integration; never suppress a failing gate. Report local limitations separately from remote results.
+3. Review diffs, stage explicit relevant paths only, inspect the staged diff and exclude secrets, local `.env` credentials, real private data and generated output.
+4. Commit with a conventional message and push the issue branch. Verify applicable GitHub Actions for that **exact full commit**, workflow and branch: run URL, status and every required job result. Triggered/pending/skipped/cancelled is not PASS.
+5. Only after required checks pass, fetch/recheck clean synchronized `dev`, integrate the verified issue commit with `git merge --ff-only`, push `dev`, and observe its exact-commit remote CI. Never create merge commits. PRs are optional.
+6. Update progress/verification with actual results, commits, branch/run URLs and integration status. Evidence follow-up commits also require applicable exact-commit checks before integration; never predeclare a future run passed. Start the next issue only after dev CI is verified.
+7. Continue automatically while the active session and execution permissions allow. Give a short per-issue report: features, checks/CI, branch/commit/integration and manual items. No routine human Git checkpoints.
 
-At the completion of each issue, after implementing and testing, print:
+If remote checks are unavailable/unverifiable, stop and report the exact blocker and next action. Do not force-push, reset/rewrite shared history, bypass CI, modify `main`, create release tags, deploy publicly or delete important data without explicit human approval. Do not auto-delete branches or change repository protections/permissions. A failed fast-forward is a conflict to inspect, not permission for a normal merge/rebase/reset.
 
-```
-GIT CHECKPOINT — HUMAN ACTION REQUIRED
-Issue: UNI-###
-Current verified branch: <name>
-Changes: <paths and summary>
-Tests: <actual commands, PASS/FAIL/NOT RUN>
-Staging suggestion: git add <explicit paths>
-Commit suggestion: git commit -m "type(scope): description"
-Push suggestion: git push -u origin <current-branch>
-PR base: dev
-Follow-up: after human merge, switch/create next issue branch manually.
-```
+## Human input and boundaries
 
-Stop at that handoff. Do not continue to the next issue automatically. A single initial Codex request can drive one complete issue; it cannot bypass required human Git actions or guarantee continuous background development.
+Ask only for genuine product/policy/privacy/ownership decisions; real-world data or external-service consent; unavailable credentials/permissions; manual visual/accessibility/device checks; destructive actions, deployment/releases; or persistent failures/conflicts that cannot safely be resolved. Do not claim background work after this session stops.
 
-## Implementation protocol
+Keep all five ADRs intact. No private boarding coordinates or inference through distances/routes/search/cache/metadata. Students contribute boarding recommendations only in advertisements, never exact map pins. Only authorized property managers control official fees/vacancies; exact boarding map publication also requires consent. Production protected writes fail closed. Use existing actor interfaces and guarded local/test-only synthetic adapters before final authentication. Registration/identity-provider and owner-proof decisions remain in Phase 7, the final feature phase. No routine admin dashboard.
 
-- Stay within the issue scope; use the five-module ownership and sequential phase plan in the specification.
-- Scaffold and install compatible development dependencies yourself *when your available environment permits*, then run lint, typecheck, tests and build. Never claim passing checks that were not executed.
-- **UNI-001:** Follow detailed §9.7 bootstrap recipe. `pnpm` is not installed on the user's Ubuntu machine as of the last terminal output. Check Node/npm/Corepack versions, install compatible pnpm using a safe user-level method, create workspace and scripts, scaffold Next.js/NestJS, add PostgreSQL/PostGIS infrastructure, then test. Do not run `pnpm lint` until script exists.
-- Make reasonable engineering choices without repeated clarification. Record them in `docs/decisions/` or `docs/architecture/stack.md`. Ask only for genuine blocker/approval, paid-service or sensitive security/privacy choices.
-- Before final registration phase, implement identity/authorization interfaces and local-test-only actor adapters. **Never enable unauthenticated protected writes** in staging/production. Keep owner location private by default and test for leakage.
-- Students may create **community boarding recommendations only in the advertisement experience**, never exact boarding map pins. Only verified authorized owners publish exact boarding map listings and owner-official fees/vacancies. Community members can propose public POIs with duplicate checks. No routine admin dashboard.
-- UI direction: **Editorial Explorer + Urban Map**, approved **Campus Teal**. Use `docs/design/references/` for provided design assets. Keep mobile-first, accessible, and simple owner flows. Sample prices/places are clearly synthetic.
-- Registration methods and owner proof policy are **intentionally deferred until the last feature phase**. Don't decide or implement them early.
-- Update `docs/progress/PHASE-XX.md` and `docs/progress/CURRENT_STATUS.md` at each issue close, with exact verification, caveats and next checkpoint.
+Keep approved Campus Teal / Editorial Explorer + Urban Map references and accessible responsive components. Never invent real listings, locations, availability, owner claims or test results. Synthetic fixtures and mocked provider resources must be explicitly labeled; never use public Nominatim for bulk extraction or assume public OSM tiles are unrestricted.
 
-## First task
-
-Resume **UNI-001 — workspace bootstrap** on the user's already-created branch if read-only Git inspection verifies it. If it does not, display branch instructions for the human and stop. Finish the entire issue and its tests, then stop at the Git handoff. Do not begin UNI-002 until the human finishes the PR/branch checkpoint.
+Update `CURRENT_STATUS.md`, `PHASE-XX.md` and verification records honestly. Remaining Phase 1 manual accessibility checks are explicitly deferred to **Phase 6**, not PASS and not silently dropped; this authorized deferral permits Phase 2. Historical CI failures and local Turbopack limitations remain recorded. See `CONTRIBUTING.md` and `docs/contributing/ci.md` for the current integration workflow.

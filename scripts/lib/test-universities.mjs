@@ -109,6 +109,8 @@ export async function testUniversities({client, url, get, endpoint, migrations})
   }
   console.log('PASS: deployed reads exclude synthetic rows/ancestors; verified-only projection and UTC provenance branch tested synthetically');
 
+  // UNI-020 is empty here; remove its schema to exercise UNI-010 rollback itself.
+  await runMigrations(client, migrations, 'rollback');
   const ledger = (await client.query('SELECT * FROM unihood_migrations.schema_migrations ORDER BY migration_id')).rows;
   await assert.rejects(runMigrations(client, migrations, 'rollback'), /populated tables/);
   assert.deepEqual((await client.query('SELECT * FROM unihood_migrations.schema_migrations ORDER BY migration_id')).rows, ledger);
@@ -154,6 +156,7 @@ export async function testUniversities({client, url, get, endpoint, migrations})
   assert.match(cli('db:migrate'), /no changes/);
   assert.equal((await get('/api/v1/health/ready')).status, 200);
   cli('db:seed'); cli('db:seed');
+  assert.match(cli('db:rollback'), /003_public_poi_foundation/);
   assert.match(cli('db:rollback', 1), /Database operation failed \(P0001\); connection details redacted/);
   assert.deepEqual((await client.query('SELECT * FROM public.universities ORDER BY id')).rows, before);
   // Leave tables empty for the original bootstrap-extension rollback regression below.

@@ -1,0 +1,15 @@
+# Phase 2 — public POIs and canonical duplicate engine
+
+Status: **UNI-020 in progress**, branch `feat/uni-020-place-geography`, created by the authorized agent from clean synchronized dev at `5d38ca8e1c13d76cb4ed18ea8f0fbfd0a55cdfe4`. Exact roadmap: UNI-020 → UNI-021 → UNI-022 → UNI-023 → UNI-024 → UNI-025 → UNI-026 → UNI-027. No later issue implemented yet.
+
+The human has replaced routine human-only Git checkpoints with autonomous one-issue branches, local checks, relevant diff/staging review, conventional commits, issue push/exact-commit CI, fast-forward-only dev integration, dev push/exact-commit CI, then continuation. No force-push/shared-history rewrite/main/release/deployment/data deletion is authorized. Remote CI unavailable/unverified blocks integration/continuation. All five ADRs remain intact. Remaining Phase 1 manual accessibility is [deferred to Phase 6](PHASE-06.md), not PASS.
+
+## UNI-020 — Public POI database foundation
+
+Owner: M2 with M5 migration/integration harness. Dependencies: UNI-002 safe PostGIS/migration tooling, UNI-004 five ADRs, UNI-005 contracts/authorization interfaces, UNI-006 CI, UNI-010 university foundation and Phase 1 integrated shell. Scope: SQL tables for buildings/places/categories/source references/aliases/public locations and spatial/text indexes; no UNI-021 API/layer or later workflow.
+
+Implemented foundation: migration 003 uses canonical UUIDs, category/FK/provenance/timestamp checks, shared-building independent identities, source uniqueness, Unicode aliases, GiST/trigram indexes and active-POI-only public geometry. Boarding rows cannot use public geometry or building links at this stage. Empty rollback uses locks/RESTRICT; populated/dependent objects refuse atomically. No existing extension ownership or persistent data changed. Synthetic data is confined to isolated integration fixtures.
+
+Existing CI baseline issue: dev run [#21](https://github.com/Dulmina03/unihood/actions/runs/43878285447) failed pre-browser E2E setup on closure commit 5d38ca8e1c13d76cb4ed18ea8f0fbfd0a55cdfe4; the same commit passed issue-branch run [#20](https://github.com/Dulmina03/unihood/actions/runs/43878135342). Quality/isolated DB and all 42 component assertions passed in #21. Redacted logs lack the precise setup error, so no root cause is invented. Explicit pinned-image preparation separates cold downloads from the bounded launcher; safe stage labels expose failures without credentials/raw DB errors. New exact-commit remote runs must pass before integration.
+
+Local verification: **PASS** repo/actionlint/Compose/frozen install, lint/typecheck, 229 tests, API/supported Webpack builds, 42 browser cases, six integrated E2E cases and 16 isolated Docker groups. Default local Turbopack build remains BLOCKED by socket EPERM. No assertion or required remote gate is bypassed. Issue commit/push/CI and fast-forward integration/dev CI are pending as of this record. See [verification](../verification/UNI-020/README.md) and [schema/rollback/privacy rationale](../architecture/public-poi-database.md). No successful commit/push/merge or CI is claimed before it occurs.
