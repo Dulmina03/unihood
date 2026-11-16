@@ -2,11 +2,15 @@
 
 Recorded 16 November 2026 (Asia/Colombo), Node 22.23.4 / pnpm 10.34.9. Prepared issue branch verified through plain `.git/HEAD`: `feat/uni-012-urban-map-shell`. No Git command, remote dispatch, deployment or next issue was performed. Implementation is ready for human review with the local environment limitations below; Phase 1 remains in progress.
 
-## Human integration and remote CI
+## Observed CI failure and repair update
 
-UNI-011 is human-confirmed **committed and merged into dev**. Its remote CI remains **outstanding/unverified**: no successful run evidence, run URL or commit SHA was supplied. Merge confirmation is not CI evidence. Its [historical local verification](../UNI-011/README.md) is retained. The confirmed successful run #6, dev, short SHA f8e6623 belongs to **UNI-010 only**; all three jobs passed by human verification. No URL or full SHA is invented.
+UNI-012 was committed as `eadc988805097424e69493938f5d593aec16744c`. Actual read-only remote logs now confirm run [#9](https://github.com/Dulmina03/unihood/actions/runs/43829607311) FAILED in the browser job's web build because contracts had not been compiled. Workspace quality and Isolated PostGIS integration passed; Playwright was skipped. UNI-011 runs #7/#8 failed for the same cause. [CI repair verification](ci-repair.md) and [sanitized run/job/error evidence](ci-runs-7-9.json) supersede the original remote uncertainty below. The original local results and screenshots are historical; no post-fix hosted success or UNI-012 merge is claimed.
 
-Remote UNI-012 Actions are **NOT OBSERVED**. After the human pushes, check Workspace quality, Isolated PostGIS integration and Component browser acceptance for the relevant commit, recording actual run URL/SHA/conclusions. Local Webpack success does not establish hosted Turbopack success.
+## Human integration and remote CI — original handoff
+
+UNI-011 is human-confirmed **committed and merged into dev**. At that handoff its remote CI was **outstanding/unverified**: no successful run evidence, run URL or commit SHA was supplied. Merge confirmation is not CI evidence. Its [historical local verification](../UNI-011/README.md) is retained. The confirmed successful run #6, dev, short SHA f8e6623 belongs to **UNI-010 only**; all three jobs passed by human verification. No URL or full SHA is invented.
+
+At the original handoff, remote UNI-012 Actions were **NOT OBSERVED**; the failure update above now supersedes that status. After the human pushes, check Workspace quality, Isolated PostGIS integration and Component browser acceptance for the relevant commit, recording actual run URL/SHA/conclusions. Local Webpack success does not establish hosted Turbopack success.
 
 ## Actual local results
 

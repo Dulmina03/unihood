@@ -100,6 +100,8 @@ jobs:
       - run: pnpm --filter @unihood/web exec playwright install --with-deps chromium
         env:
           PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/unihood-playwright
+      - name: Build shared contracts before the web consumer
+        run: pnpm --filter @unihood/contracts build
       - run: pnpm --filter @unihood/web build
       - name: Run existing synthetic component suite (not full product E2E)
         run: pnpm test:ui

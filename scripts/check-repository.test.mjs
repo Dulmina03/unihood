@@ -27,3 +27,10 @@ test('YAML parser preserves on and rejects duplicate keys', () => {
   assert.deepEqual(parseYaml('on:\n  push:\n', 'sample'), {on: {push: null}});
   assert.throws(() => parseYaml('permissions: {}\npermissions: write-all\n', 'duplicate'));
 });
+test('browser job builds generated contracts before web and runs browser acceptance', () => {
+  const commands = original.jobs.ui.steps.map((step) => step.run);
+  const contracts = commands.indexOf('pnpm --filter @unihood/contracts build');
+  const web = commands.indexOf('pnpm --filter @unihood/web build');
+  const browser = commands.indexOf('pnpm test:ui');
+  assert.ok(contracts >= 0 && web > contracts && browser > web, 'Fresh browser runners need contracts dist before web build and browser acceptance');
+});

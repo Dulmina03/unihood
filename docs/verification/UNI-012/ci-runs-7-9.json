@@ -1,0 +1,148 @@
+{
+  "observedOn": "2026-11-16",
+  "method": "Read-only GitHub connector: repository workflow run listing, per-run jobs and actual decoded browser job logs. No workflow dispatched or rerun.",
+  "records": [
+    {
+      "number": 7,
+      "id": 43824532632,
+      "sha": "fa7ff9b4c7b60af7858a2844605b6a365f3209a8",
+      "branch": "feat/uni-011-landing-university-picker",
+      "url": "https://github.com/Dulmina03/unihood/actions/runs/43824532632",
+      "conclusion": "failure",
+      "attempt": 1,
+      "jobs": [
+        {
+          "id": 133155075017,
+          "name": "Component browser acceptance",
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run pnpm --filter @unihood/web build"
+          ],
+          "skippedBrowserSuite": true
+        },
+        {
+          "id": 133155075335,
+          "name": "Workspace quality",
+          "conclusion": "success",
+          "failedSteps": [],
+          "skippedBrowserSuite": false
+        },
+        {
+          "id": 133155075352,
+          "name": "Isolated PostGIS integration",
+          "conclusion": "success",
+          "failedSteps": [],
+          "skippedBrowserSuite": false
+        }
+      ],
+      "browserBuildErrors": [
+        "2026-11-16T07:32:59.5204814Z Error: Turbopack build failed with 4 errors:",
+        "2026-11-16T07:32:59.5205469Z ./apps/web/src/app/u/[slug]/page.tsx:2:1",
+        "2026-11-16T07:32:59.5206099Z Error: Module not found: Can't resolve '@unihood/contracts'",
+        "2026-11-16T07:32:59.5213759Z ./apps/web/src/components/landing/university-picker.tsx:4:1",
+        "2026-11-16T07:32:59.5214391Z Error: Module not found: Can't resolve '@unihood/contracts'",
+        "2026-11-16T07:32:59.5226897Z ./apps/web/src/lib/universities/api.ts:1:1",
+        "2026-11-16T07:32:59.5227273Z Error: Module not found: Can't resolve '@unihood/contracts'",
+        "2026-11-16T07:32:59.5233424Z ./apps/web/src/lib/universities/proxy.ts:2:1",
+        "2026-11-16T07:32:59.5233775Z Error: Module not found: Can't resolve '@unihood/contracts'",
+        "2026-11-16T07:32:59.5613142Z Exit status 1"
+      ]
+    },
+    {
+      "number": 8,
+      "id": 43824866837,
+      "sha": "fa7ff9b4c7b60af7858a2844605b6a365f3209a8",
+      "branch": "dev",
+      "url": "https://github.com/Dulmina03/unihood/actions/runs/43824866837",
+      "conclusion": "failure",
+      "attempt": 1,
+      "jobs": [
+        {
+          "id": 133156186140,
+          "name": "Isolated PostGIS integration",
+          "conclusion": "success",
+          "failedSteps": [],
+          "skippedBrowserSuite": false
+        },
+        {
+          "id": 133156186570,
+          "name": "Workspace quality",
+          "conclusion": "success",
+          "failedSteps": [],
+          "skippedBrowserSuite": false
+        },
+        {
+          "id": 133156186609,
+          "name": "Component browser acceptance",
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run pnpm --filter @unihood/web build"
+          ],
+          "skippedBrowserSuite": true
+        }
+      ],
+      "browserBuildErrors": [
+        "2026-11-16T07:36:07.0974367Z Error: Turbopack build failed with 4 errors:",
+        "2026-11-16T07:36:07.0974993Z ./apps/web/src/app/u/[slug]/page.tsx:2:1",
+        "2026-11-16T07:36:07.0975517Z Error: Module not found: Can't resolve '@unihood/contracts'",
+        "2026-11-16T07:36:07.0982324Z ./apps/web/src/components/landing/university-picker.tsx:4:1",
+        "2026-11-16T07:36:07.0983077Z Error: Module not found: Can't resolve '@unihood/contracts'",
+        "2026-11-16T07:36:07.0995932Z ./apps/web/src/lib/universities/api.ts:1:1",
+        "2026-11-16T07:36:07.0996323Z Error: Module not found: Can't resolve '@unihood/contracts'",
+        "2026-11-16T07:36:07.1002675Z ./apps/web/src/lib/universities/proxy.ts:2:1",
+        "2026-11-16T07:36:07.1003164Z Error: Module not found: Can't resolve '@unihood/contracts'",
+        "2026-11-16T07:36:07.1380288Z Exit status 1"
+      ]
+    },
+    {
+      "number": 9,
+      "id": 43829607311,
+      "sha": "eadc988805097424e69493938f5d593aec16744c",
+      "branch": "feat/uni-012-urban-map-shell",
+      "url": "https://github.com/Dulmina03/unihood/actions/runs/43829607311",
+      "conclusion": "failure",
+      "attempt": 1,
+      "jobs": [
+        {
+          "id": 133171486841,
+          "name": "Isolated PostGIS integration",
+          "conclusion": "success",
+          "failedSteps": [],
+          "skippedBrowserSuite": false
+        },
+        {
+          "id": 133171487153,
+          "name": "Component browser acceptance",
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run pnpm --filter @unihood/web build"
+          ],
+          "skippedBrowserSuite": true
+        },
+        {
+          "id": 133171487466,
+          "name": "Workspace quality",
+          "conclusion": "success",
+          "failedSteps": [],
+          "skippedBrowserSuite": false
+        }
+      ],
+      "browserBuildErrors": [
+        "2026-11-16T08:15:19.2299632Z Error: Turbopack build failed with 6 errors:",
+        "2026-11-16T08:15:19.2300324Z ./apps/web/src/app/u/[slug]/page.tsx:2:1",
+        "2026-11-16T08:15:19.2300854Z Error: Module not found: Can't resolve '@unihood/contracts'",
+        "2026-11-16T08:15:19.2307232Z ./apps/web/src/components/explore/explore.tsx:5:1",
+        "2026-11-16T08:15:19.2307617Z Error: Module not found: Can't resolve '@unihood/contracts'",
+        "2026-11-16T08:15:19.2314645Z ./apps/web/src/components/landing/university-picker.tsx:4:1",
+        "2026-11-16T08:15:19.2315036Z Error: Module not found: Can't resolve '@unihood/contracts'",
+        "2026-11-16T08:15:19.2326619Z ./apps/web/src/lib/explore/query.ts:1:1",
+        "2026-11-16T08:15:19.2327100Z Error: Module not found: Can't resolve '@unihood/contracts'",
+        "2026-11-16T08:15:19.2338027Z ./apps/web/src/lib/universities/api.ts:1:1",
+        "2026-11-16T08:15:19.2338518Z Error: Module not found: Can't resolve '@unihood/contracts'",
+        "2026-11-16T08:15:19.2346371Z ./apps/web/src/lib/universities/proxy.ts:2:1",
+        "2026-11-16T08:15:19.2346821Z Error: Module not found: Can't resolve '@unihood/contracts'",
+        "2026-11-16T08:15:19.2615151Z Exit status 1"
+      ]
+    }
+  ]
+}

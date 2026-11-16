@@ -1,12 +1,16 @@
 # UNI-011 verification
 
-Recorded 16 November 2026 (Asia/Colombo), Node 22.23.4 / pnpm 10.34.9. Prepared branch verified by reading plain .git/HEAD: `feat/uni-011-landing-university-picker`. No Git command/history audit performed. UNI-011 is now human-confirmed committed and merged into dev. Its original Git checkpoint is resolved; remote CI verification remains outstanding. Phase 1 remains in progress; UNI-012 is separately authorized. Local results below are historical UNI-011 evidence.
+Recorded 16 November 2026 (Asia/Colombo), Node 22.23.4 / pnpm 10.34.9. Prepared branch verified by reading plain .git/HEAD: `feat/uni-011-landing-university-picker`. No Git command/history audit performed. UNI-011 is now human-confirmed committed and merged into dev. Its original Git checkpoint is resolved; remote CI is now observed FAILED in runs #7/#8 (see update below). Phase 1 remains in progress; UNI-012 is separately authorized. Local results below are historical UNI-011 evidence.
 
 ## Human-confirmed integration evidence
 
 UNI-010 was committed and **fast-forward merged into dev** by the human developer. GitHub Actions **SUCCESS**, explicitly human-verified workflow **run #6**, branch **dev**, short commit **f8e6623**. All three jobs passed: **Workspace quality**, **Isolated PostGIS integration**, **Component browser acceptance**. No run URL or full SHA was supplied; neither is invented. Run number #6 is not assumed to be a numeric Actions run ID/URL. No independent remote audit is claimed. [UNI-010 evidence](../UNI-010/README.md) and progress records carry this update.
 
-Remote **UNI-011** Actions: **NOT RUN/NOT OBSERVED** by the assistant. No dispatch, repository settings/ruleset, deployment or Git operation was performed. Configured jobs/local passes are not remote CI results; review the relevant issue/dev run and record its actual URL, commit SHA and job conclusions. Human merge confirmation alone is not remote CI evidence.
+At the original handoff, remote **UNI-011** Actions were **NOT RUN/NOT OBSERVED** by the assistant; the following update supersedes that uncertainty. No dispatch, repository settings/ruleset, deployment or Git operation was performed. Configured jobs/local passes are not remote CI results; review the relevant issue/dev run and record its actual URL, commit SHA and job conclusions. Human merge confirmation alone is not remote CI evidence.
+
+## Observed remote failure update — UNI-012 CI repair
+
+Read-only GitHub run metadata, job summaries and actual decoded logs now confirm runs [#7](https://github.com/Dulmina03/unihood/actions/runs/43824532632) (feat/uni-011-landing-university-picker) and [#8](https://github.com/Dulmina03/unihood/actions/runs/43824866837) (dev) failed on `fa7ff9b4c7b60af7858a2844605b6a365f3209a8`. Workspace quality and Isolated PostGIS integration passed in both. Component browser acceptance failed at `pnpm --filter @unihood/web build` with four unresolved `@unihood/contracts` imports; Playwright was skipped. This is the same missing generated-contracts prerequisite as UNI-012 run #9, which adds two affected imports. See [comparison, evidence and repair](../UNI-012/ci-repair.md). No post-fix remote success is claimed. Historical local results below remain unchanged.
 
 ## Actual local results
 
