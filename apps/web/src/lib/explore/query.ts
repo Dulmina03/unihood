@@ -1,6 +1,6 @@
 import { PublicIdSchema, UniversitySlugSchema } from '@unihood/contracts';
-export type ExploreState = {university: string; campus: string; entrance: string; category: 'entrances' | 'boardings' | 'essentials'; q: string; view: 'map' | 'list'};
-export const defaultExploreState: ExploreState = {university: '', campus: '', entrance: '', category: 'entrances', q: '', view: 'map'};
+export type ExploreState = {university: string; campus: string; entrance: string; category: 'entrances' | 'boardings' | 'essentials'; q: string; gate: 'all' | 'primary'; sort: 'directory' | 'name'; view: 'map' | 'list'};
+export const defaultExploreState: ExploreState = {university: '', campus: '', entrance: '', category: 'entrances', q: '', gate: 'all', sort: 'directory', view: 'map'};
 const keys = Object.keys(defaultExploreState);
 // Reject unknown/repeated fields and arbitrary spatial/identity parameters. Never reflect bad values.
 export function parseExploreQuery(params: URLSearchParams): {valid: boolean; state: ExploreState} {
@@ -11,6 +11,8 @@ export function parseExploreQuery(params: URLSearchParams): {valid: boolean; sta
     else if (key === 'campus' && PublicIdSchema.safeParse(value).success) state.campus = value;
     else if (key === 'entrance' && PublicIdSchema.safeParse(value).success) state.entrance = value;
     else if (key === 'category' && ['entrances', 'boardings', 'essentials'].includes(value)) state.category = value as ExploreState['category'];
+    else if (key === 'gate' && ['all', 'primary'].includes(value)) state.gate = value as ExploreState['gate'];
+    else if (key === 'sort' && ['directory', 'name'].includes(value)) state.sort = value as ExploreState['sort'];
     else if (key === 'view' && ['map', 'list'].includes(value)) state.view = value as ExploreState['view'];
     else if (key === 'q' && value.length <= 100 && !/[\u0000-\u001f\u007f]/.test(value) && value.trim()) state.q = value.trim();
     else return {valid: false, state: {...defaultExploreState}};

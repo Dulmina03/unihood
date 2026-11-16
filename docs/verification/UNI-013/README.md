@@ -1,12 +1,12 @@
 # UNI-013 verification — configurable MapLibre integration
 
-Recorded 16 November 2026, Node 22.23.4 / pnpm 10.34.9. Prepared branch verified by reading plain `.git/HEAD`: `feat/uni-013-maplibre-integration`. No Git commands, remote dispatch, deployment, merge or UNI-014/015/registration implementation performed. Implementation is awaiting the human Git checkpoint; Phase 1 remains in progress.
+Recorded 16 November 2026, Node 22.23.4 / pnpm 10.34.9. Prepared branch verified by reading plain `.git/HEAD`: `feat/uni-013-maplibre-integration`. During the original UNI-013 work, no Git commands, remote dispatch, deployment, merge or UNI-014/015/registration implementation was performed. The human confirms UNI-013 completed its Git checkpoint and was integrated into dev. This resolves the original pending handoff; Phase 1 remains in progress. No Git history audit was performed.
 
 ## UNI-012 human integration and remote CI
 
 The human confirms UNI-012, including its CI repair, was committed, fast-forward merged and pushed to dev. Remote GitHub Actions **SUCCESS** on short commit **99eeef1**: **Workspace quality**, **Isolated PostGIS integration**, **Component browser acceptance** all passed. Run number, run URL and full SHA were not supplied and are not invented. This is human-verified evidence, not an independent audit of a newly inferred run. Historical failures #7/#8/#9 and their actual logs/conclusions remain in [UNI-012 repair evidence](../UNI-012/ci-repair.md).
 
-Remote UNI-013 Actions: **NOT RUN/NOT OBSERVED**. Local passes and UNI-012's remote success are not a remote result for this issue. The existing CI contracts-before-web prerequisite and build-order regression remain unchanged.
+Remote UNI-013 Actions: **NOT OBSERVED**. Integration is human-confirmed, but no workflow run URL, tested commit or verified three-job results were supplied; remote SUCCESS is not inferred from the merge. Local passes and UNI-012's remote success are not a remote result for this issue. The existing CI contracts-before-web prerequisite and build-order regression remain unchanged.
 
 ## Actual local checks
 
@@ -48,6 +48,8 @@ Compared against the approved [Urban Map reference](../../design/references/02_e
 
 Final content review **PASS**: 40 intended changed/new files against 208 pre-edit source/artifact hashes, no deletions; 115 local Markdown links/anchors valid, terminal newlines/whitespace valid (upstream license retained verbatim), six screenshot dimensions and two zero-violation axe reports checked. Existing lock entries/importers are unchanged except the MapLibre dependency and its 22 new transitive entries. Public license matches the installed upstream notice byte-for-byte. Built client JavaScript contains no API_BASE_URL/DATABASE_URL/private actor or test canaries. Protected source/environment/data/reference inputs remain hash-identical. No Git diff/history command was used.
 
-## Human Git checkpoint
+## Original human Git checkpoint — now resolved
+
+The human confirms this original checkpoint is complete and UNI-013 is integrated into dev. The following is the historical handoff, not a pending branch request.
 
 Issue UNI-013; verified branch `feat/uni-013-maplibre-integration`. Review map configuration/licensing/privacy, provider/live-versus-mocked evidence and local build limitation. Suggested commit: `feat(map): integrate configurable MapLibre exploration`. Human stages/commits/pushes; optional PR base dev. Verify the three jobs on the new commit; integrate only through human `git merge --ff-only`, no merge commits. Main is for stable releases. Stop before UNI-014 or any next issue.

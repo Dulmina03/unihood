@@ -76,3 +76,24 @@ describe('Urban Map public shell', () => {
     expect(push).toHaveBeenLastCalledWith(null, '', `/explore?university=synthetic-demo&campus=${cid}`);
   });
 });
+describe('refined public gate cards', () => {
+  it('keeps result and preview save states consistent with minimal persisted identity', async () => {
+    query.value = `university=synthetic-demo&campus=${cid}&entrance=${eid}`;
+    vi.stubGlobal('fetch', mockFetch()); render(<Explore />);
+    await screen.findByRole('heading', {name: 'Synthetic Gate'});
+    const buttons = screen.getAllByRole('button', {name: 'Save Synthetic Gate'});
+    fireEvent.click(buttons[0]); for (const button of buttons) expect(button).toHaveAttribute('aria-pressed', 'true');
+    expect(JSON.parse(window.localStorage.getItem('unihood:guest-entrances:v1')!).entrances).toEqual([{universityId: uid, campusId: cid, entranceId: eid}]);
+    fireEvent.click(buttons[1]); for (const button of buttons) expect(button).toHaveAttribute('aria-pressed', 'false');
+    window.localStorage.removeItem('unihood:guest-entrances:v1');
+  });
+  it('updates only validated name/type sort parameters while retaining the hierarchy', async () => {
+    query.value = `university=synthetic-demo&campus=${cid}&entrance=${eid}`;
+    vi.stubGlobal('fetch', mockFetch()); render(<Explore />); await screen.findByRole('heading', {name: 'Synthetic Gate'});
+    const push = vi.spyOn(window.history, 'pushState');
+    fireEvent.change(screen.getByRole('combobox', {name: 'Gate type'}), {target: {value: 'primary'}});
+    expect(push).toHaveBeenLastCalledWith(null, '', `/explore?university=synthetic-demo&campus=${cid}&entrance=${eid}&gate=primary`);
+    fireEvent.change(screen.getByRole('combobox', {name: 'Sort entrances'}), {target: {value: 'name'}});
+    expect(push).toHaveBeenLastCalledWith(null, '', `/explore?university=synthetic-demo&campus=${cid}&entrance=${eid}&sort=name`);
+  });
+});

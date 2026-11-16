@@ -5,7 +5,7 @@
 - `/`: UI-01 Editorial Explorer landing, implemented in UNI-011.
 - `/design-system`: responsive, noindex synthetic component demonstration. Header anchors lead to `#foundations`, `#collection`, `#map-components`, `#controls`. A skip link focuses main content. On mobile the same navigation expands inline, closes on selection/Escape and restores toggle focus on Escape. Bottom navigation is not needed for this single demo route; actual discovery navigation belongs to Phase 1.
 
-UI-01 and the UI-03 shell are implemented below. UI-06/UI-07, real map/provider, registration and owner writes remain future work.
+UI-01, UI-03 with configurable MapLibre, and guest UI-14 are implemented below. UI-06/UI-07 boarding workflows, registration and owner writes remain future work.
 
 ## Reusable library
 
@@ -39,3 +39,5 @@ Human screen-reader, translated-language and cross-browser approval are not impl
 ## UNI-013 map integration
 
 `/explore` now conditionally renders MapLibre with configured OpenFreeMap Liberty/Bright, public gate markers, visible attribution, keyboard controls and list fallback for configuration/network/WebGL/context-loss failures. Existing guest/QR/URL/selection/sheet behavior is retained. See [provider and interaction boundaries](maps.md) and [verification](../verification/UNI-013/README.md). No boarding/POI feed or later workflow is introduced.
+
+UNI-014 refines UI-03 public-gate result cards and URL filters and adds guest UI-14 `/saved`. Browser-only canonical-ID favourites, fresh public-data resolution, storage recovery and share/focus behavior are documented in [guest favourites](favourites.md). No boarding/POI feed or account sync is added.

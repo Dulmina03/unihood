@@ -25,7 +25,7 @@ export function Landing({university, unavailableSlug}: {university?: University;
   const [dialog, setDialog] = useState<keyof typeof upcoming | null>(null);
   return <div className="editorial-landing">
     <a className="skip-link" href="#main">Skip to content</a>
-    <SiteHeader edition="SRI LANKA / UNIVERSITY LIFE" status="Browse as a guest" items={[{label: 'Choose a university', href: '#campus-start'}, {label: 'Advertisements', href: '#featured'}, {label: 'Nearby essentials', href: '#essentials'}, {label: 'For owners', href: '#privacy'}]} />
+    <SiteHeader edition="SRI LANKA / UNIVERSITY LIFE" status="Browse as a guest" items={[{label: 'Choose a university', href: '#campus-start'}, {label: 'Saved favourites', href: '/saved'}, {label: 'Advertisements', href: '#featured'}, {label: 'Nearby essentials', href: '#essentials'}, {label: 'For owners', href: '#privacy'}]} />
     <main id="main" tabIndex={-1}>
       <section className="editorial-hero" aria-labelledby="hero-title">
         <div className="hero-image"><Photo priority photo={{src: '/editorial/campus-hero.webp', srcSet: '/editorial/campus-hero-small.webp 800w, /editorial/campus-hero.webp 1800w', alt: 'Illustrative campus architecture; not the selected university or a Sri Lankan location'}} /></div>

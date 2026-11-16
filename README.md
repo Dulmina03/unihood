@@ -164,3 +164,5 @@ Open `/explore`, or use Explore selected campus from the university picker. Publ
 Set `MAP_PROVIDER=openfreemap` and `MAP_STYLE=liberty` (or `bright`) to enable the credential-free map, then restart web. Disabled/missing config preserves the usable list. No private keys or arbitrary style URLs are accepted. See [map setup, provider terms, licensing and privacy](docs/ui/maps.md) and [actual verification](docs/verification/UNI-013/README.md). Synthetic gates are not real campuses; basemap features are not verified boarding inventory.
 
 UNI-012 was human-confirmed committed, fast-forward merged and pushed to dev. Its repaired remote CI passed Workspace quality, Isolated PostGIS integration and Component browser acceptance at short commit **99eeef1**. Run number/URL/full SHA were not supplied; failed runs #7/#8/#9 remain historical evidence.
+
+UNI-014 adds [guest favourites](docs/ui/favourites.md) at `/saved`, using only browser localStorage and current public gate reads. No account, sync or new environment setting is required. Existing private data and map-provider boundaries remain unchanged. Verification: [UNI-014](docs/verification/UNI-014/README.md).

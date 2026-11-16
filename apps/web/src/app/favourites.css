@@ -1,0 +1,60 @@
+/* UNI-014: editorial public-gate cards and a guest notebook, using existing tokens. */
+.discovery-card {background:var(--surface); border:1px solid var(--divider); border-radius:15px; box-shadow:var(--shadow-card); overflow:hidden}
+.discovery-card[data-selected=true] {border:2px solid var(--teal-600); background:#f2faf6}
+.discovery-card-open {display:flex; align-items:center; gap:12px; width:100%; border:0; border-radius:12px; background:transparent; text-align:left; color:var(--ink); padding:18px 14px; cursor:pointer; font:inherit}
+.discovery-card-open > svg {width:16px; flex-shrink:0}
+.discovery-card .explore-result-text strong {font-size:20px}
+.discovery-card .explore-result-text {gap:8px}
+.discovery-card-footer {display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 14px; border-top:1px solid var(--divider); min-height:52px}
+.discovery-card-footer > span {font-size:10px; color:var(--muted)}
+.discovery-save {font-size:11px; min-height:44px; gap:6px; padding:8px}
+.discovery-save[aria-pressed=true] {color:var(--navy-900); background:var(--mint-100)}
+.discovery-refinements {display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:14px 0}
+.discovery-refinements label {font-size:10px; font-weight:800; min-width:0}
+.discovery-refinements select {display:block; width:100%; min-width:0; min-height:44px; margin-top:5px; padding:8px; border:1px solid var(--control-border); border-radius:9px; background:var(--surface); color:var(--ink); font:inherit; font-weight:400; font-size:11px}
+.discovery-active {font-size:11px; color:var(--muted)}
+.discovery-active .uh-button {font-size:11px; padding:8px; min-height:44px}
+.discovery-saved-link {margin:18px 0 0}
+.discovery-saved-link a {display:inline-flex; align-items:center; gap:8px; min-height:44px; font-size:12px; font-weight:800; color:var(--teal-600)}
+.favourites-storage {font-size:11px; color:var(--muted); line-height:1.7; overflow-wrap:anywhere}
+.favourites-storage p {margin:6px 0 14px}
+.favourites-storage .uh-button {font-size:11px; min-height:44px}
+.explore-preview > .discovery-save {width:auto; margin-bottom:8px}
+.saved-page {min-height:100dvh; background:var(--canvas)}
+.saved-main {max-width:1200px; margin:auto; padding:64px 36px 32px}
+.saved-hero {display:grid; grid-template-columns:1.4fr 1fr; align-items:center; gap:80px; padding-bottom:52px; border-bottom:1px solid var(--divider)}
+.saved-hero h1 {font-family:var(--font-display); font-size:clamp(44px,5vw,68px); line-height:1.03; font-weight:500; letter-spacing:-.04em; margin:16px 0 22px}
+.saved-hero h1 em {font-weight:400; color:var(--teal-600)}
+.saved-hero p {font-size:14px; line-height:1.9; color:var(--muted)}
+.saved-explore-link {display:inline-flex; align-items:center; gap:16px; min-height:44px; margin-top:12px; color:var(--teal-600); font-size:13px; font-weight:800}
+.saved-privacy {border:1px solid #c2dfd3; background:var(--mint-100); padding:28px 32px; border-radius:22px 22px 22px 5px}
+.saved-privacy > svg {width:28px; height:28px; color:var(--teal-600)}
+.saved-privacy h2 {font-family:var(--font-display); font-size:29px; font-weight:500; line-height:1.2; margin:16px 0}
+.saved-privacy p {font-size:12px; color:var(--ink); line-height:1.8}
+.saved-privacy > span {display:inline-block; font-size:10px; font-weight:800; border-top:1px solid #b6d6c9; padding-top:16px; width:100%}
+.saved-heading {display:flex; align-items:center; flex-wrap:wrap; gap:12px; margin:36px 0 12px}
+.saved-heading > div {margin-right:auto}
+.saved-heading h2 {font-family:var(--font-display); font-size:30px; font-weight:500; margin:0}
+.saved-heading > span {font-size:12px; color:var(--muted)}
+.saved-heading .uh-button {font-size:12px}
+.saved-heading .explore-kicker {font-size:9px; margin-bottom:6px}
+.saved-grid {display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; margin-top:24px}
+.saved-grid > .uh-notice {grid-column:1/-1}
+.saved-card {background:var(--surface); border:1px solid var(--divider); border-radius:18px; padding:24px; box-shadow:var(--shadow-card); min-width:0; display:flex; flex-direction:column; align-items:flex-start; overflow-wrap:anywhere}
+.saved-card-top {display:flex; width:100%; justify-content:space-between; align-items:center; gap:8px; margin-bottom:24px}
+.saved-card-top .uh-badge {font-size:9px}
+.saved-card-mark {display:flex; align-items:center; justify-content:center; border-radius:50% 50% 50% 5px; background:var(--mint-100); color:var(--teal-600); width:44px; height:44px; flex-shrink:0}
+.saved-card .explore-kicker {font-size:8px}
+.saved-card h3 {font-family:var(--font-display); font-size:27px; line-height:1.15; font-weight:500; margin:0 0 14px}
+.saved-card > p {font-size:12px; color:var(--muted); line-height:1.8; margin:0 0 16px}
+.saved-card .saved-source {font-size:10px; padding-top:16px; border-top:1px solid var(--divider); width:100%}
+.saved-card-actions {display:flex; flex-wrap:wrap; gap:8px; margin-top:auto; width:100%}
+.saved-card-actions .uh-button {font-size:11px; padding:10px; min-height:44px; gap:6px}
+.saved-remove {min-height:44px; font-size:11px; margin-top:12px; padding:8px}
+.saved-unavailable {gap:16px}
+.saved-main > .uh-empty {margin-block:28px; border:1px solid var(--divider); border-radius:18px; background:var(--surface); padding:36px}
+.saved-main > .uh-empty h3 {font-family:var(--font-display); font-size:30px; font-weight:500}
+.saved-footer,.saved-help {font-size:11px; line-height:1.8; color:var(--muted); margin-top:32px}
+@media (min-width:701px) {.urban-explore[data-view=list] .discovery-refinements {max-width:480px}}
+@media (max-width:1000px) {.saved-grid {grid-template-columns:repeat(2,minmax(0,1fr))}.saved-hero {gap:32px}.saved-main {padding:40px 24px}.saved-privacy {padding:24px}}
+@media (max-width:700px) {.saved-main {padding:32px 20px}.saved-hero {grid-template-columns:1fr; gap:26px; padding-bottom:28px}.saved-hero h1 {font-size:49px}.saved-hero p {font-size:12px}.saved-privacy {padding:20px 24px}.saved-privacy h2 {font-size:25px}.saved-grid {grid-template-columns:1fr; gap:16px}.saved-card {padding:22px}.saved-heading {margin-top:28px}.saved-heading h2 {font-size:27px}.saved-heading .uh-button {padding:8px}.saved-main > .uh-empty {padding:24px}.discovery-refinements label {font-size:11px}}
