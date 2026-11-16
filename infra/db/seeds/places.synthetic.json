@@ -1,0 +1,14 @@
+{
+  "categories": [
+    {"code":"pharmacy","label":"Pharmacy"},
+    {"code":"restaurant","label":"Restaurant"},
+    {"code":"clinic","label":"Clinic"},
+    {"code":"hardware","label":"Hardware"}
+  ],
+  "places": [
+    {"id":"40000000-0000-4000-8000-000000000001","name":"Synthetic Demo Pharmacy","category":"pharmacy","lng":0.0005,"lat":0.0003},
+    {"id":"40000000-0000-4000-8000-000000000002","name":"Synthetic Demo Restaurant","category":"restaurant","lng":0.0008,"lat":0.0006},
+    {"id":"40000000-0000-4000-8000-000000000003","name":"Synthetic Demo Clinic","category":"clinic","lng":-0.0004,"lat":0.0002},
+    {"id":"40000000-0000-4000-8000-000000000004","name":"Synthetic Demo Hardware","category":"hardware","lng":0.0003,"lat":-0.0005}
+  ]
+}

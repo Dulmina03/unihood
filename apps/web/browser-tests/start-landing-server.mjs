@@ -3,6 +3,8 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
 const graph = JSON.parse(await readFile(new URL('../../../infra/db/seeds/universities.synthetic.json', import.meta.url), 'utf8'));
+const poiGraph=JSON.parse(await readFile(new URL('../../../infra/db/seeds/places.synthetic.json',import.meta.url),'utf8'));
+const poiRows=poiGraph.places.map(row=>({id:row.id,kind:'POI',name:row.name,category:poiGraph.categories.find(c=>c.code===row.category),location:{lat:row.lat,lng:row.lng},provenance:{dataKind:'SYNTHETIC',sourceLabel:'UNI-021 synthetic fixture; not a real business or location',verifiedAt:null},lastConfirmedAt:null}));
 const provenance = (row) => ({dataKind: row.data_kind, sourceLabel: row.source_label, verifiedAt: row.verified_at});
 const universities = graph.universities.map((row) => ({id: row.id, slug: row.slug, name: row.name, city: row.city, country: row.country, provenance: provenance(row)}));
 const campuses = graph.campuses.map((row) => ({id: row.id, universityId: row.university_id, name: row.name, publicArea: row.public_area, provenance: provenance(row)}));
@@ -12,7 +14,11 @@ const server = createServer((request, response) => {
   response.setHeader('Content-Type', 'application/json'); response.setHeader('Cache-Control', 'no-store');
   if (url.searchParams.get('slug') === 'synthetic-unavailable') {response.statusCode = 503; response.end('{}'); return;}
   let rows;
-  if (url.pathname === '/api/v1/universities') rows = universities.filter((row) => !url.searchParams.has('slug') || row.slug === url.searchParams.get('slug'));
+  if(url.pathname==='/api/v1/places') {
+    const [w,s,e,n]=(url.searchParams.get('bbox')??'').split(',').map(Number);
+    rows=poiRows.filter(row=>row.location.lng>=w&&row.location.lng<=e&&row.location.lat>=s&&row.location.lat<=n&&(!url.searchParams.has('category')||row.category.code===url.searchParams.get('category'))&&(!url.searchParams.has('q')||row.name.toLowerCase().includes(url.searchParams.get('q').toLowerCase()))).sort((a,b)=>a.name.localeCompare(b.name)||a.id.localeCompare(b.id));
+  } else if(url.pathname==='/api/v1/place-categories') {response.end(JSON.stringify({items:poiGraph.categories,page:{page:1,pageSize:100,hasNextPage:false}}));return;}
+  else if (url.pathname === '/api/v1/universities') rows = universities.filter((row) => !url.searchParams.has('slug') || row.slug === url.searchParams.get('slug'));
   else {
     const match = url.pathname.match(/^\/api\/v1\/universities\/([^/]+)\/(campuses|entrances)$/);
     if (!match || !universities.some((row) => row.id === match[1])) {response.statusCode = 404; response.end('{}'); return;}

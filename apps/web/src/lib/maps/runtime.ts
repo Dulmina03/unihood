@@ -1,14 +1,14 @@
 import * as gl from 'maplibre-gl';
 import { allowedMapResource, styleUrl, type MapProvider } from './provider';
-import type { PublicGate } from './points';
+import type { PublicMapPoint } from './points';
 export type MapState = 'loading' | 'ready' | 'network' | 'webgl' | 'context';
-export type MapHandle = {update: (points: PublicGate[], selected: string, expanded: boolean) => void; fit: () => void; destroy: () => void};
+export type MapHandle = {update: (points: PublicMapPoint[], selected: string, expanded: boolean) => void; fit: () => void; destroy: () => void};
 export function mountMap(container: HTMLElement, provider: Extract<MapProvider, {kind: 'openfreemap'}>, onState: (state: MapState, demonstration?: boolean) => void, onSelect: (id: string) => void): MapHandle {
   gl.setWorkerUrl(new URL('maplibre-gl/dist/maplibre-gl-worker.mjs', import.meta.url).toString());
   gl.setWorkerCount(2);
   let disposed = false;
   let map: gl.Map;
-  let points: PublicGate[] = [], selected = '', expanded = true, signature = '';
+  let points: PublicMapPoint[] = [], selected = '', expanded = true, signature = '';
   let markers: {marker: gl.Marker; button: HTMLButtonElement; click: () => void; id: string}[] = [];
   let observer: ResizeObserver | undefined;
   let timer: ReturnType<typeof setTimeout> | undefined;
@@ -74,10 +74,10 @@ export function mountMap(container: HTMLElement, provider: Extract<MapProvider, 
     // Reconcile stable DOM marker buttons so Back/Forward/filter updates do not leak listeners.
     for (const item of markers) {item.button.removeEventListener('click', item.click); item.marker.remove();}
     markers = points.map((point) => {
-      const button = document.createElement('button'); button.type = 'button'; button.className = 'campus-map-marker';
+      const button = document.createElement('button'); button.type = 'button'; button.className = 'campus-map-marker'; if ('kind' in point) button.dataset.category = point.category.code;
       button.setAttribute('aria-label', `Select ${point.name} on map${point.provenance.dataKind === 'SYNTHETIC' ? ' · Synthetic example' : ''}`);
       button.setAttribute('aria-pressed', String(point.id === selected));
-      const symbol = document.createElement('span'); symbol.setAttribute('aria-hidden', 'true'); symbol.textContent = '↗'; button.append(symbol);
+      const symbol = document.createElement('span'); symbol.setAttribute('aria-hidden', 'true'); symbol.textContent = 'kind' in point ? (({pharmacy:'+',clinic:'✚',restaurant:'♨',hardware:'⚒'} as Record<string,string>)[point.category.code] ?? '•') : '↗'; button.append(symbol);
       const click = () => onSelect(point.id); button.addEventListener('click', click);
       const marker = new gl.Marker({element: button, anchor: 'bottom'}).setLngLat([point.location.lng, point.location.lat]).addTo(map);
       return {marker, button, click, id: point.id};

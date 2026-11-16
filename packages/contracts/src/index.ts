@@ -5,3 +5,4 @@ export * from './rest';
 export * from './boarding-public';
 export * from './openapi-schemas';
 export * from './university';
+export * from './place';

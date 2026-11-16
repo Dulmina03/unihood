@@ -109,7 +109,10 @@ export async function testUniversities({client, url, get, endpoint, migrations})
   }
   console.log('PASS: deployed reads exclude synthetic rows/ancestors; verified-only projection and UTC provenance branch tested synthetically');
 
-  // UNI-020 is empty here; remove its schema to exercise UNI-010 rollback itself.
+  // Remove only synthetic POI fixtures in this proven disposable database, then
+  // exercise UNI-010 rollback itself. Never a development reset.
+  assert.equal((await client.query("SELECT count(*)::int AS n FROM public.places WHERE data_kind<>'SYNTHETIC'")).rows[0].n, 0);
+  await client.query('DELETE FROM public.place_aliases; DELETE FROM public.place_source_refs; DELETE FROM public.public_place_locations; DELETE FROM public.places; DELETE FROM public.buildings; DELETE FROM public.poi_categories');
   await runMigrations(client, migrations, 'rollback');
   const ledger = (await client.query('SELECT * FROM unihood_migrations.schema_migrations ORDER BY migration_id')).rows;
   await assert.rejects(runMigrations(client, migrations, 'rollback'), /populated tables/);
@@ -156,6 +159,7 @@ export async function testUniversities({client, url, get, endpoint, migrations})
   assert.match(cli('db:migrate'), /no changes/);
   assert.equal((await get('/api/v1/health/ready')).status, 200);
   cli('db:seed'); cli('db:seed');
+  await client.query('DELETE FROM public.public_place_locations; DELETE FROM public.places; DELETE FROM public.poi_categories');
   assert.match(cli('db:rollback'), /003_public_poi_foundation/);
   assert.match(cli('db:rollback', 1), /Database operation failed \(P0001\); connection details redacted/);
   assert.deepEqual((await client.query('SELECT * FROM public.universities ORDER BY id')).rows, before);

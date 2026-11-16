@@ -31,7 +31,7 @@ export class OpenApiService {
           const parameters: object[] = [...path.matchAll(/\{([^}]+)\}/g)].map(([, name]) => ({name, in: 'path', required: true, schema: {$ref: '#/components/schemas/PublicId'}}));
           if (contract.querySchema) {
             const query = schemas[contract.querySchema];
-            for (const name of Object.keys(query.properties ?? {})) parameters.push({name, in: 'query', required: false, schema: {$ref: `#/components/schemas/${contract.querySchema}/properties/${name}`}});
+            for (const name of Object.keys(query.properties ?? {})) parameters.push({name, in: 'query', required: query.required?.includes(name) ?? false, schema: {$ref: `#/components/schemas/${contract.querySchema}/properties/${name}`}});
           }
           (paths[path] ??= {})[verb] = {operationId: `${controller.name}_${method}_${path.replace(/\W/g, '_')}`, summary: contract.summary, security: [], ...(parameters.length ? {parameters} : {}), responses};
         }

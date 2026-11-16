@@ -2,6 +2,8 @@
 
 Recorded 16 November 2026 (Asia/Colombo). Authorized agent branch `feat/uni-020-place-geography` from clean synchronized dev `5d38ca8e1c13d76cb4ed18ea8f0fbfd0a55cdfe4`; origin verified and fetched. The user's new autonomous workflow explicitly supersedes earlier human-only Git/checkpoint rules; AGENTS/contributor/CI/templates now reflect it. All five product ADRs and specification product requirements are unchanged.
 
+**Current status: complete and integrated**, independently observed issue run #22/dev run #23 PASS; see the final resolution section. Earlier publishing-blocker text below is retained historical evidence.
+
 Scope: [migration 003 and rationale](../../architecture/public-poi-database.md). No new POI HTTP/UI or boarding/registration workflow, persistent development migration/seed, private geometry, contact/owner claims or production write enablement. Existing seed tooling remains unchanged; new synthetic POI fixtures live only inside the tmpfs integration harness.
 
 ## Local checks
@@ -39,3 +41,14 @@ UNI-020 issue-branch run/all required jobs, fast-forward integration and dev run
 ## Manual checks / historical limits
 
 No new UI is introduced; new visual/AT screenshots are not applicable to this schema issue. Existing synthetic/provider/browser boundaries remain. Phase 1 UI-01/UI-03 desktop/mobile and core human Orca smoke are confirmed; remaining manual confirmations are now explicitly [deferred to Phase 6](../../progress/PHASE-06.md), never marked PASS. UNI-013 remote CI remains separately NOT OBSERVED; #7/#8/#9 failures and earlier partial agent Orca attempt remain historical. No broad geographic/provider SLA/real field/privacy certification is inferred.
+
+
+## Observed resolution and completed integration
+
+The preceding publishing-blocker text describes the original attempt. On resume, `git push -u origin feat/uni-020-place-geography` succeeded through HTTPS without exposing credentials or changing permissions in code. Exact tested/published commit: **eb11e9e832312ce509edf1fdf4f7211186389546**, including the implementation d743062 and documentation-only blocker record.
+
+- [Issue run #22](https://github.com/Dulmina03/unihood/actions/runs/43885614426): **SUCCESS**, all three required jobs completed successfully (Workspace quality, Isolated PostGIS integration, Component browser acceptance).
+- Refetched/rechecked clean synchronized dev, then `git merge --ff-only feat/uni-020-place-geography` and `git push origin dev`: **PASS**. No merge commit/shared-history rewrite/main modification.
+- [Dev run #23](https://github.com/Dulmina03/unihood/actions/runs/43886622679): **SUCCESS**, same full commit, all three required jobs completed successfully; independently read exact-commit/ref metadata and every job conclusion.
+
+[Issue metadata](issue-run-22.json) and [dev metadata](dev-run-23.json) preserve observed public results. The changed CI's explicit pinned-image preparation and integrated E2E both passed remotely; the exact cause of historical #21 remains unproven, and its failure is preserved. No local Turbopack PASS or retroactive UNI-013 remote success is inferred. UNI-020 is complete/integrated; remaining Phase 1 manual accessibility is still deferred to Phase 6. This evidence update is carried on the subsequent UNI-021 branch after verified dev CI, not represented as already included in the tested predecessor commit.

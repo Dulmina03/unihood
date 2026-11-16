@@ -26,7 +26,7 @@ The existing `startLandingIntegration` public-read/SSR checks also run against t
 - **Integrated acceptance:** `pnpm test:e2e` runs production Next → existing read-only adapters → real Nest → migrated/seeded disposable PostGIS. Happy-path directory responses are not intercepted. IDs and names remain existing synthetic UNI-010 fixtures, not real campus locations.
 - **Map boundary:** actual MapLibre, worker and software WebGL run with the existing explicitly labeled synthetic style resource intercepted in the browser. No public tile quota, key or live-provider uptime is required. The unavailable-state case deliberately aborts map resources; the disabled-provider server remains usable through its list. UNI-013's historical live-provider smoke is separate and not revalidated by this gate.
 - **Fault injection:** browser response delay/503 and a name-filter empty result exercise loading, redaction, retry and empty behavior. Recovery returns to real Nest/PostGIS. Real database outage/readiness/privacy/migration/rollback protections remain separately exercised by `TEST_LANDING_WEB=1 pnpm db:test`.
-- **Preserved regression suite:** `pnpm test:ui` retains all 42 existing component/landing/exploration/map/favourites cases with its synthetic HTTP upstream; it is not relabeled as integrated database acceptance. Both suites must pass.
+- **Preserved regression suite:** `pnpm test:ui` retains all 42 existing component/landing/exploration/map/favourites cases plus four UNI-021 public-layer cases with its synthetic HTTP upstream; it is not relabeled as integrated database acceptance. Both suites must pass.
 
 The complete guest case uses keyboard Tab/Enter/native selectors from a university QR URL through preview, save, `/saved`, reload, reopen, Back/Forward and a copied share link. Named controls, focus restoration, localStorage IDs and tagged axe checks are asserted. Additional cases exercise URL name/type/sort filters, selection/marker/list agreement, phone sheet, Map/List, 320/390/768/1440px, retry/fallback, public read-only boundary and separately captured UI-01/UI-03 reference evidence. No later domain workflow is implied.
 
@@ -55,3 +55,8 @@ Agent screenshot inspection is recorded separately from **human visual approval*
 ## Authorized deferral to Phase 6
 
 The human explicitly permits remaining manual accessibility confirmations to carry into [Phase 6](../progress/PHASE-06.md) while Phase 2 proceeds from UNI-020. The checklist remains required and unconfirmed items remain DEFERRED, not PASS. Earlier stop-before-Phase-2 and routine human-only Git language is historical; current AGENTS.md governs authorized agent Git/exact-commit CI/fast-forward integration. No new manual or automated result is claimed by this scheduling update.
+
+
+## UNI-021 extension of the owned acceptance gate
+
+The runner now also discovers `public-pois.spec.ts`: one mobile/desktop public Essentials journey against the same real owned Next/Nest/tmpfs PostGIS, increasing six original Phase 1 cases to eight. It checks required bounded query/category/marker/list/URL reload and provider-disabled list use; map style resources alone are intercepted. Existing six guest cases and all 42 browser regressions remain intact; the separate component suite adds four POI cases. Counts are expected coverage until the issue's actual verification record confirms execution. New guarded synthetic POI seeds run only in the already verified disposable database during acceptance. [UNI-021 results](../verification/UNI-021/README.md).

@@ -100,12 +100,14 @@ describe('live OpenAPI baseline', () => {
     const document = response.body;
     expect(document.openapi).toBe('3.1.0');
     expect(document).toEqual(JSON.parse(readFileSync(resolve(process.cwd(), '../../docs/api/openapi.json'), 'utf8')));
-    expect(Object.keys(document.paths).sort()).toEqual(['/health', '/health/ready', '/api/v1/health', '/api/v1/health/ready', '/api/v1/openapi.json', '/api/v1/universities', '/api/v1/universities/{id}/campuses', '/api/v1/universities/{id}/entrances'].sort());
+    expect(Object.keys(document.paths).sort()).toEqual(['/health', '/health/ready', '/api/v1/health', '/api/v1/health/ready', '/api/v1/openapi.json', '/api/v1/places', '/api/v1/place-categories', '/api/v1/universities', '/api/v1/universities/{id}/campuses', '/api/v1/universities/{id}/entrances'].sort());
     for (const [path, methods] of Object.entries(document.paths)) {
       expect(Object.keys(methods as object)).toEqual(['get']);
       const url = path.replace('{id}', '10000000-0000-4000-8000-000000000001');
-      await request(app.getHttpServer()).get(url).expect(path.endsWith('/ready') || path.includes('/universities') ? 503 : 200);
+      const poi = path === '/api/v1/places' || path === '/api/v1/place-categories';
+      await request(app.getHttpServer()).get(poi ? `${url}?bbox=-0.01,-0.01,0.01,0.01` : url).expect(poi || path.endsWith('/ready') || path.includes('/universities') ? 503 : 200);
     }
+    expect(document.paths['/api/v1/places'].get.parameters.find((p:{name:string})=>p.name==='bbox').required).toBe(true);
     const refs = JSON.stringify(document).matchAll(/"\$ref":"#\/components\/schemas\/([^"]+)"/g);
     for (const [, name] of refs) expect(document.components.schemas[name.split('/')[0]]).toBeDefined();
     expect(JSON.stringify(document)).not.toMatch(/contract-boundary|synthetic:owner|DATABASE_URL|property_memberships/);

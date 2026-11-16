@@ -41,3 +41,6 @@ Human screen-reader, translated-language and cross-browser approval are not impl
 `/explore` now conditionally renders MapLibre with configured OpenFreeMap Liberty/Bright, public gate markers, visible attribution, keyboard controls and list fallback for configuration/network/WebGL/context-loss failures. Existing guest/QR/URL/selection/sheet behavior is retained. See [provider and interaction boundaries](maps.md) and [verification](../verification/UNI-013/README.md). No boarding/POI feed or later workflow is introduced.
 
 UNI-014 refines UI-03 public-gate result cards and URL filters and adds guest UI-14 `/saved`. Browser-only canonical-ID favourites, fresh public-data resolution, storage recovery and share/focus behavior are documented in [guest favourites](favourites.md). No boarding/POI feed or account sync is added.
+
+
+UNI-021 extends `/explore` Essentials with bounded public POI/category reads, distinct category glyphs, functional name/category/sort/page controls, basic public selection preview and validated share/reload/history state. Existing responsive rail/sheet/Map/List and public-gate favourites stay in place. [API/UI boundaries](../api/places.md), [verification](../verification/UNI-021/README.md). No boarding pins, private origin/distance, POI detail/nearby calculation, public write or registration flow is introduced.

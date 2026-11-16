@@ -1,6 +1,6 @@
 # UniHood
 
-Privacy-aware boarding advertisements, owner-authorized map listings and neighborhood discovery for Sri Lankan universities. This is the **Phase 1 landing, exploration shell and university-data foundation**, with no live inventory or public write routes. Registration and owner proof policy remain deferred to Phase 7.
+Privacy-aware boarding advertisements, owner-authorized map listings and neighborhood discovery for Sri Lankan universities. This is the **Phase 1 university exploration foundation plus Phase 2 public POI layers**, with explicitly synthetic local/test inventory and no public write routes. Registration and owner proof policy remain deferred to Phase 7.
 
 ## Requirements and pnpm
 
@@ -168,3 +168,8 @@ UNI-012 was human-confirmed committed, fast-forward merged and pushed to dev. It
 UNI-014 adds [guest favourites](docs/ui/favourites.md) at `/saved`, using only browser localStorage and current public gate reads. No account, sync or new environment setting is required. Existing private data and map-provider boundaries remain unchanged. Verification: [UNI-014](docs/verification/UNI-014/README.md).
 
 UNI-015 adds `pnpm test:e2e`: a complete guest QR → selection → exploration → preview → favourite → Saved → reopen/share journey against owned production Next/Nest and disposable tmpfs PostGIS. Build contracts, API and web first. See [acceptance commands and manual gates](docs/testing/phase-1-acceptance.md) and [actual verification](docs/verification/UNI-015/README.md). Existing `pnpm test:ui` regressions remain separate. Real screen-reader completion and human UI-01/UI-03 visual approval are not implied by automated passes. UNI-014 merge/push and run #14 SUCCESS at short commit 9eefe89 are human-confirmed; run URL/full SHA unspecified. UNI-013 remote CI remains unverified.
+
+
+## Public Essentials layer (UNI-021)
+
+After guarded migrations/seeds, choose a university/campus/public entrance in `/explore`, then Essentials for bounded category/name/sort/page results and synchronized public map markers. Four fictional POIs near (0,0) demonstrate services without claiming real Sri Lankan listings or distances. Public reads exclude all boardings and deployed synthetic fixtures. See [API/UI/seeds](docs/api/places.md) and [verification](docs/verification/UNI-021/README.md). Existing guest favourites remain gate-only. No POI detail/nearby/contribution/registration workflow is included here.

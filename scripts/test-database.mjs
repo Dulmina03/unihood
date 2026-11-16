@@ -1,3 +1,4 @@
+import { testPublicPois } from './lib/test-public-pois.mjs';
 import { startLandingIntegration } from './lib/test-landing.mjs';
 import { testPlaces } from './lib/test-places.mjs';
 import { testUniversities } from './lib/test-universities.mjs';
@@ -109,6 +110,7 @@ try {
   assert.deepEqual(await runMigrations(client, ordered, 'rollback'), ['004_order_probe']);
   console.log('PASS: ordered migration/reverse order; failing batch rolls back DDL/history; checksum drift rejected');
 
+  await testPlaces({client, url, migrations});
   const env = {APP_ENV: 'test', NODE_ENV: 'test'};
   await seedDatabase(client, url, env);
   await seedDatabase(client, url, env);
@@ -127,7 +129,7 @@ try {
   await client.query('UPDATE unihood_fixtures.samples SET label=$1', [original[0].label]);
   console.log('PASS: repeatable synthetic seeds; production/remote refusal; local edits preserved on conflict');
 
-  await testPlaces({client, url, migrations});
+  await testPublicPois({client,url,get,endpoint});
   await testUniversities({client, url, get, endpoint, migrations});
   await runMigrations(client, migrations, 'rollback');
   await client.query(`CREATE TABLE public.unihood_extension_guard (label text, location geometry(Point,4326));

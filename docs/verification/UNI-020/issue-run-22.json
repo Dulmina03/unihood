@@ -1,0 +1,33 @@
+{
+  "id": 43885614426,
+  "run_number": 22,
+  "run_attempt": 1,
+  "head_sha": "eb11e9e832312ce509edf1fdf4f7211186389546",
+  "head_branch": "feat/uni-020-place-geography",
+  "status": "completed",
+  "conclusion": "success",
+  "html_url": "https://github.com/Dulmina03/unihood/actions/runs/43885614426",
+  "jobs": [
+    {
+      "id": 133362813435,
+      "name": "Isolated PostGIS integration",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/43885614426/job/133362813435"
+    },
+    {
+      "id": 133362813948,
+      "name": "Component browser acceptance",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/43885614426/job/133362813948"
+    },
+    {
+      "id": 133362813957,
+      "name": "Workspace quality",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/43885614426/job/133362813957"
+    }
+  ]
+}

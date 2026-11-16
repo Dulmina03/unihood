@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Button, Icon } from '@unihood/ui';
 import { en } from '../../lib/i18n/en';
 import { mapAttribution, type MapProvider } from '../../lib/maps/provider';
-import type { PublicGate } from '../../lib/maps/points';
+import type { PublicMapPoint } from '../../lib/maps/points';
 import type { MapHandle, MapState } from '../../lib/maps/runtime';
 export type MapStatus = MapState | 'missing' | 'invalid';
 const messages: Record<Exclude<MapStatus, 'ready'>, string> = {
@@ -14,7 +14,7 @@ const messages: Record<Exclude<MapStatus, 'ready'>, string> = {
   webgl: 'Interactive maps are unavailable in this browser. Try again or use the accessible list.',
   context: 'The map graphics connection was lost. Restart the map or continue in the list.',
 };
-export function CampusMap({provider, points, selected, expanded, onSelect, onShowList, onStatus}: {provider: MapProvider; points: PublicGate[]; selected: string; expanded: boolean; onSelect: (id: string) => void; onShowList: () => void; onStatus: (status: MapStatus) => void}) {
+export function CampusMap({provider, points, selected, expanded, onSelect, onShowList, onStatus}: {provider: MapProvider; points: PublicMapPoint[]; selected: string; expanded: boolean; onSelect: (id: string) => void; onShowList: () => void; onStatus: (status: MapStatus) => void}) {
   const [demonstration, setDemonstration] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const [status, setStatus] = useState<MapStatus>(provider.kind === 'openfreemap' ? 'loading' : provider.kind);
@@ -44,7 +44,7 @@ export function CampusMap({provider, points, selected, expanded, onSelect, onSho
     {status !== 'ready' && <div className="explore-map-message"><span className="explore-compass"><Icon name="compass" /></span><p className="explore-kicker">A LITTLE CLOSER TO CAMPUS</p><h2>{en.explore.mapTitleLead}<br /><em>{en.explore.mapTitleEnd}</em></h2><p role="status">{messages[status]}</p><div className="campus-map-actions">{['network', 'webgl', 'context'].includes(status) && <Button variant="secondary" onClick={() => setAttempt((value) => value + 1)}>Retry map</Button>}<Button onClick={onShowList}>{en.explore.exploreList} <Icon name="arrow" /></Button></div><span className="explore-provider-note">No boarding pins or walking routes are displayed.</span></div>}
     {provider.kind === 'openfreemap' && <>
       <div className="campus-map-attribution" aria-label="Map attribution">{mapAttribution.map((item) => <a key={item.href} href={item.href} target="_blank" rel="noopener noreferrer">{item.label}<span className="uh-sr-only"> (opens a new tab)</span></a>)}</div>
-      {status === 'ready' && <div className="campus-map-legend"><span><i aria-hidden="true" /> Public campus entrance</span>{demonstration && <strong className="campus-map-demo">Mock map resources · synthetic geometry</strong>}<span>{points.some((point) => point.provenance.dataKind === 'SYNTHETIC') ? 'Synthetic gates · not real locations' : 'Public gate data · no boarding feed'}</span><Button variant="secondary" disabled={!points.length} onClick={() => engine.current?.fit()}>Recenter gates <Icon name="compass" /></Button></div>}
+      {status === 'ready' && <div className="campus-map-legend"><span><i aria-hidden="true" /> {points.some(point => 'kind' in point) ? 'Public points of interest' : 'Public campus entrance'}</span>{demonstration && <strong className="campus-map-demo">Mock map resources · synthetic geometry</strong>}<span>{points.some((point) => point.provenance.dataKind === 'SYNTHETIC') ? points.some(point => 'kind' in point) ? 'Synthetic POIs · not real locations' : 'Synthetic gates · not real locations' : 'Public places · no boarding feed'}</span><Button variant="secondary" disabled={!points.length} onClick={() => engine.current?.fit()}>{points.some(point=>'kind' in point)?'Recenter public places':'Recenter gates'} <Icon name="compass" /></Button></div>}
     </>}
   </>;
 }

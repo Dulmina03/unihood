@@ -1,0 +1,30 @@
+import { test,expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+import { mkdir,writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { syntheticStyle } from './fixtures/map-style';
+const base='http://127.0.0.1:3181';
+const selected='/explore?university=synthetic-demo-university&campus=20000000-0000-4000-8000-000000000001&entrance=30000000-0000-4000-8000-000000000001&category=essentials';
+const evidence=resolve(process.env.UI_EVIDENCE_DIR??'../../docs/verification/UNI-021');
+test('public categories, bounded search, map/list selection, reload/history and responsive evidence',async({page},info)=>{
+ await page.route('https://tiles.openfreemap.org/**',route=>route.request().url().endsWith('/styles/liberty')?route.fulfill({json:syntheticStyle,headers:{'Access-Control-Allow-Origin':'*'}}):route.abort());
+ await page.goto(base+selected);await expect(page.locator('.discovery-card')).toHaveCount(4);await expect(page.locator('.explore-context small')).toContainText('Map ready',{timeout:20000});
+ await page.getByRole('combobox',{name:'Service category',exact:true}).selectOption('pharmacy');await expect(page.locator('.discovery-card')).toHaveCount(1);await expect(page.locator('.campus-map-marker')).toHaveCount(1);
+ await page.reload();await expect(page.getByRole('combobox',{name:'Service category',exact:true})).toHaveValue('pharmacy');
+ await page.getByRole('button',{name:'Select Synthetic Demo Pharmacy',exact:true}).focus();await page.keyboard.press('Enter');await expect(page.locator('.explore-preview')).toBeFocused();await expect(page).toHaveURL(/place=40000000-0000-4000-8000-000000000001/);
+ if(info.project.name==='mobile')await page.getByRole('button',{name:'Collapse results'}).click();
+ await page.getByRole('button',{name:'Select Synthetic Demo Pharmacy on map · Synthetic example',exact:true}).click();await expect(page.locator('.explore-preview')).toBeFocused();
+ await page.evaluate(()=>document.fonts.ready);await mkdir(evidence,{recursive:true});await page.screenshot({path:`${evidence}/public-pois-${info.project.name}.png`});
+ const axe=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();await writeFile(`${evidence}/public-pois-${info.project.name}-axe.json`,JSON.stringify({violations:axe.violations},null,2));expect(axe.violations).toEqual([]);
+ for(const width of [320,768]){await page.setViewportSize({width,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);}await page.setViewportSize(info.project.use.viewport!);
+ await page.getByRole('button',{name:'List',exact:true}).click();await expect(page.locator('.maplibregl-canvas')).toHaveCount(0);await page.goBack();await expect(page.locator('.explore-context small')).toContainText('Map ready',{timeout:20000});await page.goForward();await expect(page.locator('.maplibregl-canvas')).toHaveCount(0);
+ await page.getByRole('button',{name:'Close public place preview'}).click();await expect(page.getByRole('heading',{name:'Public places',exact:true})).toBeFocused();
+ await page.getByLabel('Find a public service').fill('No such synthetic service');await page.getByRole('button',{name:'Search public places',exact:true}).click();await expect(page.getByText('No public places match')).toBeVisible();
+ await page.getByLabel('Find a public service').fill('Pharmacy');await page.getByRole('button',{name:'Search public places',exact:true}).click();await expect(page.locator('.discovery-card')).toHaveCount(1);await expect(page).toHaveURL(/q=Pharmacy/);
+});
+test('public POI pagination, retry, guarded adapters and stable share URL',async({page,request})=>{
+ await page.goto(selected+'&view=list&poiPage=2');await expect(page.getByText('No public places match')).toBeVisible();await page.getByRole('button',{name:'Previous places'}).click();await expect(page.locator('.discovery-card')).toHaveCount(4);
+ let fail=true;await page.route('**/api/places?*',route=>fail?route.fulfill({status:503,json:{message:'PRIVATE_CANARY'}}):route.continue());await page.reload();await expect(page.getByText('We couldn’t load public places')).toBeVisible();await expect(page.locator('body')).not.toContainText('PRIVATE_CANARY');fail=false;await page.getByRole('button',{name:'Retry public places'}).click();await expect(page.locator('.discovery-card')).toHaveCount(4);
+ await page.getByRole('combobox',{name:'Sort public places'}).selectOption('newest');await page.getByRole('button',{name:'Select Synthetic Demo Pharmacy',exact:true}).click();await page.getByRole('button',{name:'Share',exact:true}).click();const shared=await page.getByLabel('Shareable exploration link').inputValue();expect(shared).toContain('category=essentials');expect(shared).toContain('place=40000000-0000-4000-8000-000000000001');expect(shared).not.toMatch(/lat=|lng=|owner|token|distance/);await page.keyboard.press('Escape');
+ expect((await request.get('/api/places?bbox=0,0,2,1')).status()).toBe(400);expect((await request.post('/api/places',{headers:{'X-Role':'owner'}})).status()).toBe(405);
+});

@@ -1,3 +1,4 @@
+import { seedPublicPois } from './place-seeds.mjs';
 import { seedUniversities } from './university-seeds.mjs';
 import { createHash } from 'node:crypto';
 import { readdir, readFile } from 'node:fs/promises';
@@ -156,6 +157,6 @@ export async function seedDatabase(client, connectionString, environment) {
         throw new DatabaseToolError('Synthetic seed conflict; existing data preserved');
       }
     }
-    return fixtures.length + await seedUniversities(client);
+    return fixtures.length + await seedUniversities(client) + await seedPublicPois(client);
   });
 }

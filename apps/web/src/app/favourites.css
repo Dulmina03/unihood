@@ -58,3 +58,11 @@
 @media (min-width:701px) {.urban-explore[data-view=list] .discovery-refinements {max-width:480px}}
 @media (max-width:1000px) {.saved-grid {grid-template-columns:repeat(2,minmax(0,1fr))}.saved-hero {gap:32px}.saved-main {padding:40px 24px}.saved-privacy {padding:24px}}
 @media (max-width:700px) {.saved-main {padding:32px 20px}.saved-hero {grid-template-columns:1fr; gap:26px; padding-bottom:28px}.saved-hero h1 {font-size:49px}.saved-hero p {font-size:12px}.saved-privacy {padding:20px 24px}.saved-privacy h2 {font-size:25px}.saved-grid {grid-template-columns:1fr; gap:16px}.saved-card {padding:22px}.saved-heading {margin-top:28px}.saved-heading h2 {font-size:27px}.saved-heading .uh-button {padding:8px}.saved-main > .uh-empty {padding:24px}.discovery-refinements label {font-size:11px}}
+
+/* UNI-021: public service cards retain the editorial card rhythm and tokens. */
+.poi-result-card {padding:18px 14px; display:grid; gap:10px}
+.poi-result-card > .uh-badge {justify-self:start}
+.poi-result-card h3 {font-family:var(--font-display); font-size:22px; line-height:1.25; font-weight:500; margin:0; overflow-wrap:anywhere}
+.poi-result-card > p {font-size:11px; line-height:1.6; color:var(--muted); margin:0; overflow-wrap:anywhere}
+.poi-result-card > .uh-button {justify-content:space-between; text-align:left}
+.poi-pagination {margin:14px 0}
