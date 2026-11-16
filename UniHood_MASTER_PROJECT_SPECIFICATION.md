@@ -1,15 +1,17 @@
 # UniHood — Complete Project & Development Specification
 
 > **Source of truth for product design, implementation, testing, delivery, and team collaboration**  
-> **Version:** 2.1 — 16 November 2026 (Editorial Explorer + Urban Map UI revision)  
+> **Version:** 3.0 — 16 November 2026 (Codex execution and bootstrap revision)  
 > **Product name:** **UniHood** (replaces CampusNest / Campus Boarding & Neighborhood Map)  
 > **Brand palette:** **Campus Teal — APPROVED**  
 > **Intended audience:** Five-member development team **or one solo developer**, including an AI coding assistant following this document  
 > **Pilot:** University of Moratuwa area, Sri Lanka (practical default; extensible to all campuses)  
-> **Status:** Implementation-ready baseline with **registration/owner verification intentionally UNFINALIZED and scheduled LAST**. Legal/provider feasibility must still be checked before public launch.  
+> **Status:** Codex-oriented implementation baseline with **registration/owner verification intentionally UNFINALIZED and scheduled LAST**. Legal/provider feasibility must still be checked before public launch.  
 > **Critical Git rule:** **The human project owner alone creates branches, stages, commits, pushes, opens and merges PRs. Assistants must NEVER perform Git mutations.**
 
 ---
+
+**Codex entrypoint:** Read `AGENTS.md` first, then this document; §9.5–9.7 contains current Git state and full bootstrap procedures.
 
 ## 0. READ THIS FIRST — execution contract
 
@@ -996,7 +998,7 @@ Do not try to complete a whole module to production perfection before integratin
 
 ### 9.1 Rules for all development sessions
 
-**ONE ISSUE = ONE BRANCH = ONE PR.** `main` is always protected from unreviewed direct feature commits (even for a solo developer). Prefer feature branches against current `main` with descriptive names.
+**ONE ISSUE = ONE BRANCH = ONE PR.** `main` is always protected from unreviewed direct feature commits (even for a solo developer). Feature branches start from current `dev` and PR into `dev`; reviewed release PRs merge `dev` into `main`. Never assume a branch is pushed because it exists locally.
 
 **Only the human user performs:** creating branches, staging, committing, pushing, opening PRs, merging and deleting branches. A coding assistant can **suggest** exact commands but **must never execute them**. If asked to automate development, it still stops at Git handoff boundaries.
 
@@ -1008,8 +1010,8 @@ Issue: UNI-### — <task title>
 Suggested branch: feat/uni-###-<short-name> [or chore/fix/docs/test]
 Run yourself:
   git status
-  git switch main
-  git pull --ff-only origin main
+  git switch dev
+  git pull --ff-only origin dev  # only after dev exists on origin
   git switch -c feat/uni-###-<short-name>
 Assistant will touch: <exact paths>
 Acceptance/test command: <exact commands>
@@ -1032,7 +1034,7 @@ Run yourself:
   git add <only files for this issue>
   git commit -m "feat(scope): <specific change>"
   git push -u origin feat/uni-###-<short-name>
-Open PR into main; review and merge it yourself after checks pass.
+Open PR into dev; review and merge it yourself after checks pass. Release to main only after integration acceptance.
 Next issue: UNI-### (begin only after handoff).
 ```
 
@@ -1065,6 +1067,94 @@ git push -u origin main
 ### 9.4 Git checkpoints are phase gates, not implementation tasks
 
 Implementation can be done by one developer/assistant, but **the human retains Git control**. A documented check is not a Git operation. The development plan therefore includes explicit handoffs both before and after every task. If the user hasn't created the requested branch, do not assume you're on it and modify unrelated shared branches.
+
+---
+
+## 9.5 Actual repository state and branching policy (16 November 2026)
+
+This repository was started by the human under `~/Projects/unihood`, with GitHub remote `https://github.com/Dulmina03/unihood.git`. The human reports creating local `dev` and `chore/uni-001-workspace-bootstrap` branches. **This is historical context, not proof of current branch, commits, remote authorization or push status.** Codex must inspect read-only `git status --short --branch`, `git branch -vv`, `git remote -v`, and `git log -1 --oneline` before implementation.
+
+- **Normal development:** `main` (stable) ← human release PR from `dev` (integration) ← human feature PR from `feat/`, `fix/`, `chore/`, `docs/`, `test/` branches.
+- **UNI-001 branch already reportedly created:** `chore/uni-001-workspace-bootstrap`. If read-only inspection confirms it, do **not** ask the human to create it again. Work on it as is.
+- If `dev` only exists locally, the human may push it with `git push -u origin dev` after checking history and remote state. Codex only suggests this; it never runs it.
+- **No Git mutations by Codex** including creating, switching, fetching, pulling, staging, committing, pushing, rebasing, merging or creating PRs. Codex may request the human to do them.
+- **Per-issue handoff:** after running checks, clearly specify exact paths for human staging, proposed commit, exact push command and PR base `dev`; stop and let the human perform and verify the handoff.
+- When working solo, the same feature → `dev` → `main` policy applies; no need for five branches simultaneously.
+
+## 9.6 Codex unattended-until-checkpoint protocol
+
+1. The user can say: **"Read AGENTS.md and UniHood_MASTER_PROJECT_SPECIFICATION.md; continue the next incomplete UNI issue."** This is a single kickoff instruction, not a series of per-task prompts.
+2. Codex reads these documents, current repository tree, issue checklist, and `docs/progress/` state; it validates the active branch using read-only Git commands.
+3. Within the **current issue only**, Codex proceeds without repetitive clarification: scaffold, edit, install compatible project dependencies, run lint/typecheck/tests/build, debug, document, and rerun checks. It must not claim tools succeeded without executing them.
+4. At the end of the issue, Codex prints a **human Git checkpoint** and **stops**. It must not begin the next issue on an unmerged, unreviewed branch. The human may need to resume the session after PR merge and branch creation. There is no guarantee of indefinite background/autonomous work.
+5. For unknown ordinary implementation details, use a documented default with tests; do not ask routine questions. For irreversible, security-sensitive, legal, paid-provider or deferred registration decisions, stop for the human or provide a local mock with documented limitation.
+6. Never weaken privacy to make demos work, never turn development actor mocks on in staging/production, and never expose anonymous mutation routes.
+7. Update `docs/progress/PHASE-XX.md` and `docs/progress/CURRENT_STATUS.md` after every issue with checklist, commands, results, manual handoff and known blockers.
+8. Save all project assets under documented paths; where reference images are available use `docs/design/references/`, and never assume file paths outside the repository are accessible in Codex.
+
+## 9.7 Full Ubuntu bootstrap recipe — UNI-001
+
+**Precondition:** The human has put this file at the repo root, is on the correct manually created issue branch, and the directory is not already scaffolded. Codex must inspect before writing to avoid overwrites.
+
+### Tools and versions
+
+```bash
+node --version
+npm --version
+corepack --version || true
+pnpm --version || true
+git --version
+docker --version
+docker compose version
+```
+
+Use a currently supported Node LTS compatible with the chosen Next.js/NestJS/pnpm versions. **Do not assume the user has Node 26 or pnpm 12.** Prefer user-level installation with an existing version manager or Corepack where supported, and use official docs to check compatibility. If `pnpm` is missing, install a compatible version via Corepack or `npm install -g pnpm@<supported-major>` after verifying requirements; avoid `sudo npm install -g` and never blindly use `sudo apt install npm` to replace a working Node runtime. Record the exact versions in `docs/architecture/stack.md` and `packageManager` in root `package.json`.
+
+### Directory layout
+
+```text
+unihood/
+  AGENTS.md
+  UniHood_MASTER_PROJECT_SPECIFICATION.md
+  README.md
+  package.json
+  pnpm-workspace.yaml
+  pnpm-lock.yaml
+  .gitignore
+  .env.example
+  apps/web/                  # Next.js App Router + TS + Tailwind
+  apps/api/                  # NestJS REST + TS
+  packages/contracts/        # shared TypeScript/Zod contracts
+  packages/ui/               # reusable Campus Teal components
+  infra/                     # compose / seed / migrations
+  docs/architecture/
+  docs/design/references/
+  docs/decisions/
+  docs/progress/
+  .github/workflows/
+```
+
+### Bootstrap actions performed by Codex (no Git mutations)
+
+1. Inventory files and do not overwrite existing work. Establish root `package.json` as **private**, `pnpm-workspace.yaml` with `apps/*` and `packages/*`, root scripts, and `.gitignore` covering `node_modules/`, `.next/`, `dist/`, `.env*` while allowing `.env.example`, test outputs and generated files.
+2. Initialize `apps/web` with the **current stable Next.js App Router + TypeScript + Tailwind** scaffold, without reinitializing Git. Initialize `apps/api` using a compatible **NestJS** scaffold, also without reinitializing Git. Configure consistent package names such as `@unihood/web`, `@unihood/api`, `@unihood/contracts`, `@unihood/ui`; keep all applications in one pnpm workspace.
+3. Add root task scripts: `dev`, `lint`, `typecheck`, `test`, `build`, `test:e2e` (can be a documented honest placeholder until configured, **not a false green pass**), `db:up`, `db:down`, `db:migrate`, `db:seed` (only if implemented). Do not print test successes where scripts are missing.
+4. Add `GET /health` JSON endpoint to NestJS and a simple accessible UniHood landing placeholder on Next.js. Use `.env.example` for ports, public map config and database connection; never add secrets to source control.
+5. Create `infra/compose.yaml` or root `compose.yaml` using PostgreSQL with a compatible PostGIS image, named volume, health check and local-only port. Add a migration enabling `postgis` and `pg_trgm`, with documented clean reset and rollback behavior. Do not require a live cloud API or paid map key for bootstrap.
+6. Create a small shared `contracts` package (DTO/Zod patterns), initial test coverage, lint configuration and CI workflow running install/lint/typecheck/test/build on PRs targeting `dev` and `main`. Add no deploy secrets or automatic production deployment.
+7. Install dependencies after the workspace exists. Generate and commit a lockfile **through the human Git handoff only**; Codex may write `pnpm-lock.yaml` but never `git add` it.
+8. Verify in this order: `pnpm install`, `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`, `docker compose -f infra/compose.yaml up -d`, database migration, `curl` on the running health endpoint, frontend smoke check, and `docker compose ... down` (do not delete volumes). Adjust exact commands to the actual created scripts and document them.
+9. On infrastructure failure (e.g. Docker Desktop daemon not active), capture the error, provide exact manual recovery commands, and **do not mark the check as passing**. Record what was/was not run.
+10. Update README setup instructions, `docs/architecture/stack.md`, `docs/progress/PHASE-00.md`, `docs/progress/CURRENT_STATUS.md`. Then display the after-implementation human Git checkpoint for UNI-001.
+
+### UNI-001 acceptance gate
+
+- `pnpm` is usable; reproducible `pnpm install --frozen-lockfile` succeeds after lockfile exists.
+- Root lint/typecheck/test/build scripts execute successfully (no dummy scripts with unconditional success).
+- Next.js frontend and NestJS `/health` run locally.
+- Docker PostgreSQL/PostGIS starts; initial extensions migration works.
+- No public write route, no production auth shortcut, no committed secret; Campus Teal tokens and design references have a documented integration path.
+- The human is shown explicit file staging, commit message `chore(project): bootstrap UniHood monorepo`, push and PR into **dev**. No Git write is executed by Codex.
 
 ---
 
@@ -1652,7 +1742,7 @@ A pilot is complete **only when all of the following are demonstrated, not merel
 
 ## 18. Quick-start checklist for the next developer or AI assistant
 
-1. Read this entire specification; do not silently reintroduce CampusNest naming, student boarding map pins, required admin moderation, or early registration.
+1. Read `AGENTS.md` and this entire specification; do not silently reintroduce CampusNest naming, student boarding map pins, required admin moderation, or early registration.
 2. Identify whether you are in a new empty repo or an existing UniHood repo. Do not mutate Git; request human to execute `git status`, `git remote -v`, and start `UNI-001` branch as applicable.
 3. Display **GIT CHECKPOINT — BEFORE IMPLEMENTATION** for the next incomplete issue using §9 template.
 4. After human branch confirmation, work only on that issue, using the owned paths and acceptance criteria in §8/§10.
@@ -1667,4 +1757,4 @@ A pilot is complete **only when all of the following are demonstrated, not merel
 
 ---
 
-*End of UniHood master specification — version 2.0, dated 15 November 2026. Technical defaults can be implemented without asking for a new prompt; registration policy and legally sensitive provider choices remain explicitly reserved for the scheduled final phase. Human Git actions are always required at the checkpoints.*
+*End of UniHood master specification — version 3.0, dated 16 November 2026. Technical defaults can be implemented without asking for a new prompt; registration policy and legally sensitive provider choices remain explicitly reserved for the scheduled final phase. Human Git actions are always required at the checkpoints.*
