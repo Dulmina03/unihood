@@ -1,6 +1,6 @@
 # UniHood
 
-Privacy-aware boarding advertisements, owner-authorized map listings and neighborhood discovery for Sri Lankan universities. This is the **Phase 0 development foundation**, with no live inventory or public write routes. Registration and owner proof policy remain deferred to Phase 7.
+Privacy-aware boarding advertisements, owner-authorized map listings and neighborhood discovery for Sri Lankan universities. This is the **Phase 1 university-data foundation**, with no live inventory or public write routes. Registration and owner proof policy remain deferred to Phase 7.
 
 ## Requirements and pnpm
 
@@ -63,17 +63,17 @@ The image is pinned by digest to the verified PostgreSQL 17 / PostGIS 3.5 build.
 ```bash
 pnpm db:up
 pnpm db:migrate
-APP_ENV=local pnpm db:seed
-# One latest migration at a time; repeat is harmless when history is empty:
+# Empty-table rollback check only; populated tables intentionally refuse rollback:
 pnpm db:rollback
 pnpm db:migrate
+APP_ENV=local pnpm db:seed
 ```
 
 `db:migrate` applies ordered SQL with a SHA-256 ledger and transaction lock. It adopts UNI-001's existing extension ownership without resetting it. `db:rollback` reverses only the latest applied migration, atomically with its ledger row. Changed files, unknown versions or history gaps fail. PostGIS and image-provisioned topology/Tiger remain infrastructure; only a migration-owned pg_trgm can be removed, with RESTRICT. Dependencies block rollback without losing data/state. SQL migrations are trusted repository code, run on one PostgreSQL connection inside a runner-managed transaction.
 
-Seeds require `APP_ENV=local` or `test`, non-production `NODE_ENV`, and a loopback URL. They create one clearly labeled synthetic infrastructure point at `(0,0)` in **`unihood_fixtures.samples`**, not a university, boarding or real public place. Repeated seeds do not duplicate or overwrite records; conflicts with local edits fail. Fixtures are deliberately retained across extension rollback. No product/domain tables are introduced by UNI-002.
+Seeds require `APP_ENV=local` or `test`, non-production `NODE_ENV`, and a loopback URL. They retain the clearly labeled infrastructure point at `(0,0)` in **`unihood_fixtures.samples`** and now also insert two fictional universities, two campuses and three gates around `(0,0)` through UNI-010. All university fixtures carry explicit synthetic names/provenance; no real campus geography is claimed. Repeated seeds do not duplicate or overwrite records; conflicts with local edits fail. Fixtures are deliberately retained across extension rollback. UNI-002 introduced no product tables; UNI-010 now adds public university/campus/entrance tables. Their rollback locks tables and refuses populated tables rather than deleting rows. The example rollback command above therefore intentionally fails on an already populated development database; preserve data and use a reviewed forward migration.
 
-API process liveness remains `/health` (alias `/api/v1/health`). Database readiness is `/health/ready` (alias `/api/v1/health/ready`): **200** only with database connectivity, both required extensions, bootstrap ownership state and the ordered baseline migration; otherwise **503**, with no credentials or private error details. Readiness has connection/query deadlines and `Cache-Control: no-store`. API startup never migrates or seeds automatically.
+API process liveness remains `/health` (alias `/api/v1/health`). Database readiness is `/health/ready` (alias `/api/v1/health/ready`): **200** only with database connectivity, both required extensions, bootstrap ownership state, migration records 001/002 and all three university tables; otherwise **503**, with no credentials or private error details. Readiness has connection/query deadlines and `Cache-Control: no-store`. API startup never migrates or seeds automatically.
 
 ```bash
 pnpm build
@@ -88,9 +88,9 @@ For a manually accessible test database:
 pnpm db:test:up
 export TEST_DATABASE_URL=postgresql://unihood_test:unihood_test_only@127.0.0.1:5433/unihood_test
 pnpm db:migrate --test
-APP_ENV=test pnpm db:seed --test
 pnpm db:rollback --test
 pnpm db:migrate --test
+APP_ENV=test pnpm db:seed --test
 pnpm db:test:down
 ```
 
@@ -101,11 +101,11 @@ See [database strategy and recovery](docs/architecture/database.md) for checksum
 ## Workspace and next steps
 
 - `apps/web` — M1: Next.js App Router, Tailwind and accessible preview.
-- `apps/api` — M2–M5: NestJS REST; liveness/readiness, no identity provider or mutation routes.
+- `apps/api` — M2–M5: NestJS REST; liveness/readiness and university/campus/gate reads, no final identity provider or mutation routes.
 - `packages/contracts` — M5 shared TypeScript/Zod contracts and identity/permission interfaces.
 - `packages/ui` — M1 reusable Campus Teal tokens and React components; synthetic demonstration at `/design-system`.
 - `packages/config` — shared TypeScript baseline.
-- `infra` — local PostGIS Compose and bootstrap extensions SQL.
+- `infra` — local PostGIS Compose, safe ordered migrations and deterministic synthetic seeds.
 - `docs/design/references` — illustrative design references only; never use their synthetic photos, prices or geography as production content.
 
 See [REST contracts/OpenAPI and synthetic actors](docs/api/contracts-and-actors.md), [product ADRs](docs/decisions/README.md), [stack decisions](docs/architecture/stack.md), [current status](docs/progress/CURRENT_STATUS.md), and the master specification. CI runs frozen install, repository/workflow validation, lint/typecheck/test/build, isolated database integration and existing component browser acceptance. It triggers on supported issue-branch and dev/main pushes, optional PRs into dev/main, or human manual dispatch; it does not deploy. Solo workflow: the human performs all Git operations, one branch per UNI issue, verified changes integrate into `dev` with `git merge --ff-only`; PRs are optional, no merge commits, and `main` is reserved for stable releases. See [contributor workflow](CONTRIBUTING.md), [CI coverage and local/remote limits](docs/contributing/ci.md), [coding conventions](docs/contributing/coding-conventions.md) and [synthetic fixture guidelines](docs/contributing/synthetic-fixtures.md).
@@ -140,3 +140,7 @@ Synthetic actors default off. Explicit local/test configuration can select a ser
 Start with [CONTRIBUTING.md](CONTRIBUTING.md), the [UNI task template](.github/ISSUE_TEMPLATE/uni-task.md), [bug report template](.github/ISSUE_TEMPLATE/bug-report.md) and optional [PR template](.github/pull_request_template.md). Human-only Git, one issue branch, optional PRs and git merge --ff-only integration into dev apply; main is stable releases only. No workflow commits, pushes, merges or deploys.
 
 `pnpm check:repo` validates policy/template metadata and isolated Compose test storage. `pnpm check:workflows` verifies/downloads pinned actionlint (Linux x86_64, HTTPS required) and validates workflow contexts/actions. Four repository-policy regression tests join the normal test command. CI uses immutable action revisions, read-only token permissions, disabled synthetic actors, bounded jobs and temporary browser evidence. See [coverage/configuration](docs/contributing/ci.md) and [actual local verification](docs/verification/UNI-006/README.md). Configuring CI is not evidence of a remote passing run.
+
+## University data foundation (UNI-010)
+
+[Public university/campus/entrance APIs](docs/api/universities.md) provide bounded read-only pages and optional slug/campus filters. Run migrations and guarded seeds locally; synthetic data appears only in compatible explicit local/test environments. Deployed reads expose eligible verified data only. No real campus coordinates, map/discovery screens, boarding or registration features are added. See [verification](docs/verification/UNI-010/README.md) and [Phase 1 progress](docs/progress/PHASE-01.md).

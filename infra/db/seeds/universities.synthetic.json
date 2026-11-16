@@ -1,0 +1,15 @@
+{
+  "universities": [
+    {"id":"10000000-0000-4000-8000-000000000001","slug":"synthetic-demo-university","name":"Synthetic Demo University","city":"Synthetic Demo City","country":"ZZ","data_kind":"SYNTHETIC","source_label":"UNI-010 synthetic fixture; not a real university or gate","verified_at":null,"status":"ACTIVE"},
+    {"id":"10000000-0000-4000-8000-000000000002","slug":"synthetic-second-university","name":"Synthetic Second University","city":"Synthetic Demo City","country":"ZZ","data_kind":"SYNTHETIC","source_label":"UNI-010 synthetic fixture; not a real university or gate","verified_at":null,"status":"ACTIVE"}
+  ],
+  "campuses": [
+    {"id":"20000000-0000-4000-8000-000000000001","university_id":"10000000-0000-4000-8000-000000000001","name":"Synthetic Demo Campus","public_area":"Synthetic ocean fixture near (0,0)","data_kind":"SYNTHETIC","source_label":"UNI-010 synthetic fixture; not a real university or gate","verified_at":null,"status":"ACTIVE"},
+    {"id":"20000000-0000-4000-8000-000000000002","university_id":"10000000-0000-4000-8000-000000000002","name":"Synthetic Second Campus","public_area":null,"data_kind":"SYNTHETIC","source_label":"UNI-010 synthetic fixture; not a real university or gate","verified_at":null,"status":"ACTIVE"}
+  ],
+  "entrances": [
+    {"id":"30000000-0000-4000-8000-000000000001","campus_id":"20000000-0000-4000-8000-000000000001","name":"Synthetic Primary Gate","lng":0,"lat":0,"is_primary":true,"data_kind":"SYNTHETIC","source_label":"UNI-010 synthetic fixture; not a real university or gate","verified_at":null,"status":"ACTIVE"},
+    {"id":"30000000-0000-4000-8000-000000000002","campus_id":"20000000-0000-4000-8000-000000000001","name":"Synthetic Secondary Gate","lng":0.001,"lat":0.001,"is_primary":false,"data_kind":"SYNTHETIC","source_label":"UNI-010 synthetic fixture; not a real university or gate","verified_at":null,"status":"ACTIVE"},
+    {"id":"30000000-0000-4000-8000-000000000003","campus_id":"20000000-0000-4000-8000-000000000002","name":"Synthetic Other University Gate","lng":0.002,"lat":0,"is_primary":true,"data_kind":"SYNTHETIC","source_label":"UNI-010 synthetic fixture; not a real university or gate","verified_at":null,"status":"ACTIVE"}
+  ]
+}

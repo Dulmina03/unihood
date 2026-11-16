@@ -27,7 +27,10 @@ export class DatabaseReadinessService implements OnModuleDestroy {
         EXISTS (SELECT 1 FROM pg_extension WHERE extname='postgis') AND
         EXISTS (SELECT 1 FROM pg_extension WHERE extname='pg_trgm') AND
         EXISTS (SELECT 1 FROM unihood_migrations.bootstrap_extensions WHERE migration_id='001_extensions') AND
-        EXISTS (SELECT 1 FROM unihood_migrations.schema_migrations WHERE migration_id='001_extensions') AS ready`);
+        EXISTS (SELECT 1 FROM unihood_migrations.schema_migrations WHERE migration_id='001_extensions') AND
+        EXISTS (SELECT 1 FROM unihood_migrations.schema_migrations WHERE migration_id='002_university_navigation') AND
+        to_regclass('public.universities') IS NOT NULL AND to_regclass('public.campuses') IS NOT NULL AND
+        to_regclass('public.campus_entrances') IS NOT NULL AS ready`);
       return row.ready === true;
     } catch {
       return false;

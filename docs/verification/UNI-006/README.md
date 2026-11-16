@@ -1,5 +1,7 @@
 # UNI-006 verification
 
+Integration update before UNI-010: **UNI-006 merged into dev and successful remote CI verification are explicitly human-confirmed.** Run URL and commit SHA were not provided and remain unverified. The original local verification/handoff below is historical; no independent remote or Git history audit is inferred.
+
 Recorded 16 November 2026 (Asia/Colombo). Branch metadata is `chore/uni-006-ci`, read from .git/HEAD without a Git command. UNI-005's commit/merge into dev is explicitly human-confirmed; no history audit/hash/date is inferred. UNI-006 is implemented and locally verified, awaiting the human Git checkpoint. Remote GitHub Actions execution is **NOT RUN/NOT OBSERVED** by the assistant.
 
 ## Actual local results

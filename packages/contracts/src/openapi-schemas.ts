@@ -1,3 +1,5 @@
+import { PublicIdSchema } from './rest';
+import { UniversitySchema, CampusSchema, CampusEntranceSchema, UniversityPageSchema, CampusPageSchema, CampusEntrancePageSchema, UniversityListQuerySchema, CampusListQuerySchema, EntranceListQuerySchema } from './university';
 import { z } from 'zod';
 import { HealthResponseSchema, ReadinessResponseSchema, ReadyResponseSchema, NotReadyResponseSchema } from './health';
 import * as enums from './enums';
@@ -5,6 +7,9 @@ import { ErrorResponseSchema, PaginationQuerySchema, PageMetaSchema } from './re
 import { PublicBoardingResponseSchema, PublicBoardingPageSchema, OwnerPublicMapSchema } from './boarding-public';
 // No actor identities/memberships or private schemas belong in public OpenAPI components.
 export const PublicSchemaRegistry = {
+  PublicId: PublicIdSchema, University: UniversitySchema, Campus: CampusSchema, CampusEntrance: CampusEntranceSchema,
+  UniversityPage: UniversityPageSchema, CampusPage: CampusPageSchema, CampusEntrancePage: CampusEntrancePageSchema,
+  UniversityListQuery: UniversityListQuerySchema, CampusListQuery: CampusListQuerySchema, EntranceListQuery: EntranceListQuerySchema,
   ...enums, HealthResponse: HealthResponseSchema, ReadinessResponse: ReadinessResponseSchema, ReadyResponse: ReadyResponseSchema, NotReadyResponse: NotReadyResponseSchema,
   ErrorResponse: ErrorResponseSchema, PaginationQuery: PaginationQuerySchema, PageMeta: PageMetaSchema,
   PublicBoardingResponse: PublicBoardingResponseSchema, PublicBoardingPage: PublicBoardingPageSchema,

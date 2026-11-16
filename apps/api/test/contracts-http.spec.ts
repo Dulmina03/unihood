@@ -100,14 +100,24 @@ describe('live OpenAPI baseline', () => {
     const document = response.body;
     expect(document.openapi).toBe('3.1.0');
     expect(document).toEqual(JSON.parse(readFileSync(resolve(process.cwd(), '../../docs/api/openapi.json'), 'utf8')));
-    expect(Object.keys(document.paths).sort()).toEqual(['/health', '/health/ready', '/api/v1/health', '/api/v1/health/ready', '/api/v1/openapi.json'].sort());
+    expect(Object.keys(document.paths).sort()).toEqual(['/health', '/health/ready', '/api/v1/health', '/api/v1/health/ready', '/api/v1/openapi.json', '/api/v1/universities', '/api/v1/universities/{id}/campuses', '/api/v1/universities/{id}/entrances'].sort());
     for (const [path, methods] of Object.entries(document.paths)) {
       expect(Object.keys(methods as object)).toEqual(['get']);
-      await request(app.getHttpServer()).get(path).expect(path.endsWith('/ready') ? 503 : 200);
+      const url = path.replace('{id}', '10000000-0000-4000-8000-000000000001');
+      await request(app.getHttpServer()).get(url).expect(path.endsWith('/ready') || path.includes('/universities') ? 503 : 200);
     }
     const refs = JSON.stringify(document).matchAll(/"\$ref":"#\/components\/schemas\/([^"]+)"/g);
-    for (const [, name] of refs) expect(document.components.schemas[name]).toBeDefined();
+    for (const [, name] of refs) expect(document.components.schemas[name.split('/')[0]]).toBeDefined();
     expect(JSON.stringify(document)).not.toMatch(/contract-boundary|synthetic:owner|DATABASE_URL|property_memberships/);
+    expect(document.paths['/api/v1/universities/{id}/entrances'].get.parameters).toEqual([
+      {name: 'id', in: 'path', required: true, schema: {$ref: '#/components/schemas/PublicId'}},
+      ...['page', 'pageSize', 'campusId'].map((name) => ({name, in: 'query', required: false, schema: {$ref: `#/components/schemas/EntranceListQuery/properties/${name}`}})),
+    ]);
+    for (const [, reference] of JSON.stringify(document).matchAll(/"\$ref":"#([^"]+)"/g)) {
+      let value: unknown = document;
+      for (const key of reference.slice(1).split('/')) value = (value as Record<string, unknown>)[key.replace(/~1/g, '/').replace(/~0/g, '~')];
+      expect(value).toBeDefined();
+    }
     expect(document.components.schemas.PublicBoardingResponse).toBeDefined();
     expect(HealthResponseSchema.safeParse((await request(app.getHttpServer()).get('/api/v1/health')).body).success).toBe(true);
     for (const path of ['/api/v1/boardings', '/api/v1/property-claims', '/api/v1/contributions/boarding']) await request(app.getHttpServer()).post(path).expect(404);

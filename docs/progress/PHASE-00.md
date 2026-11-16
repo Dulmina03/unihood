@@ -1,6 +1,6 @@
 # Phase 0 — engineering bootstrap
 
-Phase status: **in progress**, not complete. UNI-003 is merged into `dev`, explicitly confirmed by the human developer during UNI-004 preparation; no Git history was audited. UNI-004 was committed and merged into `dev`, explicitly human-confirmed before UNI-005. UNI-005 was committed and merged into dev, explicitly human-confirmed before UNI-006. UNI-006 tooling/docs are recorded below and await their own human checkpoint. Remote CI has not been observed, so Phase 0 is not declared complete. Earlier handoff entries are historical; the latest issue status supersedes them.
+Phase 0 engineering implementation and UNI-006 integration/remote CI success are **human-confirmed** before UNI-010. Earlier UNI-003/004/005 integration confirmations remain recorded below. The human explicitly confirms UNI-006 merged into dev and successful remote CI verification; run URL and commit SHA were not supplied and remain **unverified**. No independent remote/Git history audit or unspecified visual/accessibility/launch approval is inferred. The earlier handoff/results below are historical; this confirmation resolves UNI-006's former merge/remote-evidence checkpoint. Phase 1 starts with the separately prepared UNI-010 branch; see [Phase 1](PHASE-01.md).
 
 ## UNI-001 — workspace bootstrap
 
@@ -240,7 +240,7 @@ Final UNI-005 handoff review: seven changed Markdown files and 43 local links/an
 
 Owner: M5 tooling/integration; existing module tests retained. Dependencies: UNI-001 workspace/commands, UNI-002 isolated DB, UNI-003 component/browser suite, UNI-004 ADRs and UNI-005 shared contracts/actor/OpenAPI tests. UNI-005 commit/merge into dev was explicitly confirmed by the human. Current branch metadata: chore/uni-006-ci. No Git command or history audit was performed.
 
-Status: **implemented and locally verified; awaiting the human Git checkpoint**. Remote CI is NOT RUN/NOT OBSERVED here. Phase 0 is not declared complete before remote and human gates.
+Status: **human-confirmed merged into dev, with successful remote CI verification** before UNI-010. Run URL and commit SHA were not provided and remain unverified. Local results below are historical; remote success is human-reported, not independently observed by the assistant.
 
 ### Delivered
 
@@ -265,4 +265,4 @@ Remote GitHub Actions execution, hosted browser dependency installation, remote 
 
 ### Human checkpoint and limits
 
-See [UNI-006 evidence](../verification/UNI-006/README.md). The human reviews/stages/commits/pushes and integrates into dev with git merge --ff-only; PR optional, no merge commit, main stable releases only. Suggested commit: `chore(ci): add quality gates and PR template`. Stop before UNI-007 or any next issue; UNI-007 is not listed in the specification, and no next task is begun. UNI-010 is merely the next listed task, not permission to proceed.
+See [UNI-006 evidence](../verification/UNI-006/README.md). At the original UNI-006 checkpoint the human reviewed/staged/committed/pushed and integrated into dev with git merge --ff-only; PR optional, no merge commit, main stable releases only. Suggested commit: `chore(ci): add quality gates and PR template`. The original stop-before-next-issue gate is resolved by the human-confirmed integration and separately authorized UNI-010. UNI-007 is not listed in the specification. UNI-010 now has its own checkpoint; no later issue is authorized.
