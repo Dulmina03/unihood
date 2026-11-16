@@ -1,0 +1,37 @@
+{
+  "openapi": "3.1.0",
+  "paths": 5,
+  "components": 18,
+  "officialSchemaValidation": "PASS",
+  "componentMetaSchemaValidation": "PASS",
+  "productionSmoke": [
+    {
+      "path": "/health",
+      "status": 200,
+      "schema": "HealthResponse"
+    },
+    {
+      "path": "/api/v1/health",
+      "status": 200,
+      "schema": "HealthResponse"
+    },
+    {
+      "path": "/health/ready",
+      "status": 503,
+      "schema": "NotReadyResponse"
+    },
+    {
+      "path": "/api/v1/health/ready",
+      "status": 503,
+      "schema": "NotReadyResponse"
+    },
+    {
+      "path": "/PRIVATE_CANARY",
+      "status": 404,
+      "schema": "ErrorResponse"
+    }
+  ],
+  "liveEqualsExport": true,
+  "domainWriteEndpoints": "absent (404)",
+  "syntheticFlagsInProduction": "enabled flags grant no identity; guard HTTP matrix separately verified in Jest"
+}

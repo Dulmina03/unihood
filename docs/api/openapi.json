@@ -1,0 +1,2083 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "UniHood Phase 0 API",
+    "version": "0.0.0",
+    "description": "Only implemented routes are listed. Shared boarding schemas are contract foundations, not live workflows. Identity/owner verification remains deferred."
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "HealthController_getHealth__health",
+        "summary": "Process liveness (independent of database)",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Process is live",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "operationId": "HealthController_getHealth__api_v1_health",
+        "summary": "Process liveness (independent of database)",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Process is live",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "operationId": "ReadinessController_getReadiness__health_ready",
+        "summary": "Database readiness; legacy flat monitor protocol",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Database is ready",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadyResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database is unavailable or unmigrated",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotReadyResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/health/ready": {
+      "get": {
+        "operationId": "ReadinessController_getReadiness__api_v1_health_ready",
+        "summary": "Database readiness; legacy flat monitor protocol",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Database is ready",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadyResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database is unavailable or unmigrated",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotReadyResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/openapi.json": {
+      "get": {
+        "operationId": "OpenApiController_getDocument__api_v1_openapi_json",
+        "summary": "Generated OpenAPI 3.1 baseline",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OpenAPI document",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Generated OpenAPI document"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PlaceKindSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "string",
+        "enum": [
+          "BOARDING",
+          "POI"
+        ]
+      },
+      "BoardingVisibilitySchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "string",
+        "enum": [
+          "PUBLIC_MAP",
+          "AREA_ONLY",
+          "HIDDEN"
+        ]
+      },
+      "PublisherKindSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "string",
+        "enum": [
+          "OWNER_OFFICIAL",
+          "COMMUNITY_RECOMMENDATION"
+        ]
+      },
+      "PublicationStatusSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "string",
+        "enum": [
+          "DRAFT",
+          "PENDING",
+          "PUBLISHED",
+          "DISPUTED",
+          "ARCHIVED"
+        ]
+      },
+      "VacancyStatusSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "string",
+        "enum": [
+          "AVAILABLE",
+          "FULL",
+          "UNKNOWN"
+        ]
+      },
+      "SourceConfidenceSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "string",
+        "enum": [
+          "COMMUNITY_SUBMITTED",
+          "SOURCE_CHECKED",
+          "OWNER_VERIFIED",
+          "DISPUTED"
+        ]
+      },
+      "SubmissionRiskSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "string",
+        "enum": [
+          "LOW",
+          "NEEDS_EVIDENCE",
+          "HIGH_RISK",
+          "REJECTED"
+        ]
+      },
+      "RouteTimeContextSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "string",
+        "enum": [
+          "DAY",
+          "NIGHT"
+        ]
+      },
+      "HealthResponse": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "ok"
+          },
+          "service": {
+            "type": "string",
+            "const": "unihood-api"
+          }
+        },
+        "required": [
+          "status",
+          "service"
+        ],
+        "additionalProperties": false
+      },
+      "ReadinessResponse": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "const": "ready"
+              },
+              "service": {
+                "type": "string",
+                "const": "unihood-api"
+              },
+              "checks": {
+                "type": "object",
+                "properties": {
+                  "database": {
+                    "type": "string",
+                    "const": "ready"
+                  }
+                },
+                "required": [
+                  "database"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "status",
+              "service",
+              "checks"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "const": "not_ready"
+              },
+              "service": {
+                "type": "string",
+                "const": "unihood-api"
+              },
+              "checks": {
+                "type": "object",
+                "properties": {
+                  "database": {
+                    "type": "string",
+                    "const": "unavailable"
+                  }
+                },
+                "required": [
+                  "database"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "status",
+              "service",
+              "checks"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "ReadyResponse": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "ready"
+          },
+          "service": {
+            "type": "string",
+            "const": "unihood-api"
+          },
+          "checks": {
+            "type": "object",
+            "properties": {
+              "database": {
+                "type": "string",
+                "const": "ready"
+              }
+            },
+            "required": [
+              "database"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "status",
+          "service",
+          "checks"
+        ],
+        "additionalProperties": false
+      },
+      "NotReadyResponse": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "not_ready"
+          },
+          "service": {
+            "type": "string",
+            "const": "unihood-api"
+          },
+          "checks": {
+            "type": "object",
+            "properties": {
+              "database": {
+                "type": "string",
+                "const": "unavailable"
+              }
+            },
+            "required": [
+              "database"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "status",
+          "service",
+          "checks"
+        ],
+        "additionalProperties": false
+      },
+      "ErrorResponse": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "BAD_REQUEST",
+                  "VALIDATION_FAILED",
+                  "UNAUTHORIZED",
+                  "FORBIDDEN",
+                  "NOT_FOUND",
+                  "CONFLICT",
+                  "UNPROCESSABLE_ENTITY",
+                  "RATE_LIMITED",
+                  "FEATURE_NOT_AVAILABLE",
+                  "SERVICE_UNAVAILABLE",
+                  "INTERNAL_ERROR"
+                ]
+              },
+              "message": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "details": {
+                "maxItems": 20,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "field": {
+                      "type": "string",
+                      "enum": [
+                        "request",
+                        "id",
+                        "title",
+                        "q",
+                        "page",
+                        "pageSize",
+                        "sort",
+                        "visibility",
+                        "publisherKind"
+                      ]
+                    },
+                    "reason": {
+                      "type": "string",
+                      "enum": [
+                        "INVALID_VALUE",
+                        "UNKNOWN_FIELD"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "field",
+                    "reason"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "requestId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              }
+            },
+            "required": [
+              "code",
+              "message",
+              "details",
+              "requestId"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "additionalProperties": false
+      },
+      "PaginationQuery": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,6}$"
+          },
+          "pageSize": {
+            "type": "string",
+            "pattern": "^(?:[1-9]|[1-9][0-9]|100)$"
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "newest",
+              "title"
+            ]
+          },
+          "q": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        },
+        "additionalProperties": false
+      },
+      "PageMeta": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9999999
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "page",
+          "pageSize",
+          "hasNextPage"
+        ],
+        "additionalProperties": false
+      },
+      "PublicBoardingResponse": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "publisherKind": {
+                "type": "string",
+                "const": "OWNER_OFFICIAL"
+              },
+              "ownerVerified": {
+                "type": "boolean",
+                "const": true
+              },
+              "price": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "currency": {
+                        "type": "string",
+                        "const": "LKR"
+                      },
+                      "rentMonthly": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1000000000
+                      },
+                      "deposit": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1000000000
+                      },
+                      "verifiedSource": {
+                        "type": "string",
+                        "const": "OWNER"
+                      }
+                    },
+                    "required": [
+                      "currency",
+                      "rentMonthly",
+                      "verifiedSource"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "vacancy": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "const": "UNKNOWN"
+                      },
+                      "confirmedAt": {
+                        "type": "null"
+                      },
+                      "expiresAt": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "status",
+                      "confirmedAt",
+                      "expiresAt"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "AVAILABLE",
+                          "FULL"
+                        ]
+                      },
+                      "confirmedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                      },
+                      "expiresAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                      }
+                    },
+                    "required": [
+                      "status",
+                      "confirmedAt",
+                      "expiresAt"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "visibility": {
+                "type": "string",
+                "const": "PUBLIC_MAP"
+              },
+              "publicMapConsent": {
+                "type": "boolean",
+                "const": true
+              },
+              "entrance": {
+                "type": "object",
+                "properties": {
+                  "lat": {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90
+                  },
+                  "lng": {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180
+                  }
+                },
+                "required": [
+                  "lat",
+                  "lng"
+                ],
+                "additionalProperties": false
+              },
+              "locationLabel": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 160
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "publisherKind",
+              "ownerVerified",
+              "price",
+              "vacancy",
+              "visibility",
+              "publicMapConsent",
+              "entrance",
+              "locationLabel"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "publisherKind": {
+                "type": "string",
+                "const": "OWNER_OFFICIAL"
+              },
+              "ownerVerified": {
+                "type": "boolean",
+                "const": true
+              },
+              "price": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "currency": {
+                        "type": "string",
+                        "const": "LKR"
+                      },
+                      "rentMonthly": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1000000000
+                      },
+                      "deposit": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1000000000
+                      },
+                      "verifiedSource": {
+                        "type": "string",
+                        "const": "OWNER"
+                      }
+                    },
+                    "required": [
+                      "currency",
+                      "rentMonthly",
+                      "verifiedSource"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "vacancy": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "const": "UNKNOWN"
+                      },
+                      "confirmedAt": {
+                        "type": "null"
+                      },
+                      "expiresAt": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "status",
+                      "confirmedAt",
+                      "expiresAt"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "AVAILABLE",
+                          "FULL"
+                        ]
+                      },
+                      "confirmedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                      },
+                      "expiresAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                      }
+                    },
+                    "required": [
+                      "status",
+                      "confirmedAt",
+                      "expiresAt"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "visibility": {
+                "type": "string",
+                "const": "AREA_ONLY"
+              },
+              "entrance": {
+                "type": "null"
+              },
+              "locationLabel": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "distanceMeters": {
+                "type": "null"
+              },
+              "route": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "publisherKind",
+              "ownerVerified",
+              "price",
+              "vacancy",
+              "visibility",
+              "entrance",
+              "locationLabel",
+              "distanceMeters",
+              "route"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "publisherKind": {
+                "type": "string",
+                "const": "OWNER_OFFICIAL"
+              },
+              "ownerVerified": {
+                "type": "boolean",
+                "const": true
+              },
+              "price": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "currency": {
+                        "type": "string",
+                        "const": "LKR"
+                      },
+                      "rentMonthly": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1000000000
+                      },
+                      "deposit": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1000000000
+                      },
+                      "verifiedSource": {
+                        "type": "string",
+                        "const": "OWNER"
+                      }
+                    },
+                    "required": [
+                      "currency",
+                      "rentMonthly",
+                      "verifiedSource"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "vacancy": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "const": "UNKNOWN"
+                      },
+                      "confirmedAt": {
+                        "type": "null"
+                      },
+                      "expiresAt": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "status",
+                      "confirmedAt",
+                      "expiresAt"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "AVAILABLE",
+                          "FULL"
+                        ]
+                      },
+                      "confirmedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                      },
+                      "expiresAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                      }
+                    },
+                    "required": [
+                      "status",
+                      "confirmedAt",
+                      "expiresAt"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "visibility": {
+                "type": "string",
+                "const": "HIDDEN"
+              },
+              "entrance": {
+                "type": "null"
+              },
+              "locationLabel": {
+                "type": "null"
+              },
+              "distanceMeters": {
+                "type": "null"
+              },
+              "route": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "publisherKind",
+              "ownerVerified",
+              "price",
+              "vacancy",
+              "visibility",
+              "entrance",
+              "locationLabel",
+              "distanceMeters",
+              "route"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "publisherKind": {
+                "type": "string",
+                "const": "COMMUNITY_RECOMMENDATION"
+              },
+              "price": {
+                "type": "null"
+              },
+              "vacancy": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "const": "UNKNOWN"
+                  },
+                  "confirmedAt": {
+                    "type": "null"
+                  },
+                  "expiresAt": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "status",
+                  "confirmedAt",
+                  "expiresAt"
+                ],
+                "additionalProperties": false
+              },
+              "disclaimer": {
+                "type": "string",
+                "const": "Community-submitted, not owner-verified"
+              },
+              "entrance": {
+                "type": "null"
+              },
+              "distanceMeters": {
+                "type": "null"
+              },
+              "route": {
+                "type": "null"
+              },
+              "visibility": {
+                "type": "string",
+                "const": "AREA_ONLY"
+              },
+              "locationLabel": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "publisherKind",
+              "price",
+              "vacancy",
+              "disclaimer",
+              "entrance",
+              "distanceMeters",
+              "route",
+              "visibility",
+              "locationLabel"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "publisherKind": {
+                "type": "string",
+                "const": "COMMUNITY_RECOMMENDATION"
+              },
+              "price": {
+                "type": "null"
+              },
+              "vacancy": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "const": "UNKNOWN"
+                  },
+                  "confirmedAt": {
+                    "type": "null"
+                  },
+                  "expiresAt": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "status",
+                  "confirmedAt",
+                  "expiresAt"
+                ],
+                "additionalProperties": false
+              },
+              "disclaimer": {
+                "type": "string",
+                "const": "Community-submitted, not owner-verified"
+              },
+              "entrance": {
+                "type": "null"
+              },
+              "distanceMeters": {
+                "type": "null"
+              },
+              "route": {
+                "type": "null"
+              },
+              "visibility": {
+                "type": "string",
+                "const": "HIDDEN"
+              },
+              "locationLabel": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "publisherKind",
+              "price",
+              "vacancy",
+              "disclaimer",
+              "entrance",
+              "distanceMeters",
+              "route",
+              "visibility",
+              "locationLabel"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "PublicBoardingPage": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "items": {
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    },
+                    "publisherKind": {
+                      "type": "string",
+                      "const": "OWNER_OFFICIAL"
+                    },
+                    "ownerVerified": {
+                      "type": "boolean",
+                      "const": true
+                    },
+                    "price": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "currency": {
+                              "type": "string",
+                              "const": "LKR"
+                            },
+                            "rentMonthly": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000000
+                            },
+                            "deposit": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000000
+                            },
+                            "verifiedSource": {
+                              "type": "string",
+                              "const": "OWNER"
+                            }
+                          },
+                          "required": [
+                            "currency",
+                            "rentMonthly",
+                            "verifiedSource"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "vacancy": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "const": "UNKNOWN"
+                            },
+                            "confirmedAt": {
+                              "type": "null"
+                            },
+                            "expiresAt": {
+                              "type": "null"
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "confirmedAt",
+                            "expiresAt"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "AVAILABLE",
+                                "FULL"
+                              ]
+                            },
+                            "confirmedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                            },
+                            "expiresAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "confirmedAt",
+                            "expiresAt"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "visibility": {
+                      "type": "string",
+                      "const": "PUBLIC_MAP"
+                    },
+                    "publicMapConsent": {
+                      "type": "boolean",
+                      "const": true
+                    },
+                    "entrance": {
+                      "type": "object",
+                      "properties": {
+                        "lat": {
+                          "type": "number",
+                          "minimum": -90,
+                          "maximum": 90
+                        },
+                        "lng": {
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180
+                        }
+                      },
+                      "required": [
+                        "lat",
+                        "lng"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "locationLabel": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 160
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "title",
+                    "publisherKind",
+                    "ownerVerified",
+                    "price",
+                    "vacancy",
+                    "visibility",
+                    "publicMapConsent",
+                    "entrance",
+                    "locationLabel"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    },
+                    "publisherKind": {
+                      "type": "string",
+                      "const": "OWNER_OFFICIAL"
+                    },
+                    "ownerVerified": {
+                      "type": "boolean",
+                      "const": true
+                    },
+                    "price": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "currency": {
+                              "type": "string",
+                              "const": "LKR"
+                            },
+                            "rentMonthly": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000000
+                            },
+                            "deposit": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000000
+                            },
+                            "verifiedSource": {
+                              "type": "string",
+                              "const": "OWNER"
+                            }
+                          },
+                          "required": [
+                            "currency",
+                            "rentMonthly",
+                            "verifiedSource"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "vacancy": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "const": "UNKNOWN"
+                            },
+                            "confirmedAt": {
+                              "type": "null"
+                            },
+                            "expiresAt": {
+                              "type": "null"
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "confirmedAt",
+                            "expiresAt"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "AVAILABLE",
+                                "FULL"
+                              ]
+                            },
+                            "confirmedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                            },
+                            "expiresAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "confirmedAt",
+                            "expiresAt"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "visibility": {
+                      "type": "string",
+                      "const": "AREA_ONLY"
+                    },
+                    "entrance": {
+                      "type": "null"
+                    },
+                    "locationLabel": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    },
+                    "distanceMeters": {
+                      "type": "null"
+                    },
+                    "route": {
+                      "type": "null"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "title",
+                    "publisherKind",
+                    "ownerVerified",
+                    "price",
+                    "vacancy",
+                    "visibility",
+                    "entrance",
+                    "locationLabel",
+                    "distanceMeters",
+                    "route"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    },
+                    "publisherKind": {
+                      "type": "string",
+                      "const": "OWNER_OFFICIAL"
+                    },
+                    "ownerVerified": {
+                      "type": "boolean",
+                      "const": true
+                    },
+                    "price": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "currency": {
+                              "type": "string",
+                              "const": "LKR"
+                            },
+                            "rentMonthly": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000000
+                            },
+                            "deposit": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000000000
+                            },
+                            "verifiedSource": {
+                              "type": "string",
+                              "const": "OWNER"
+                            }
+                          },
+                          "required": [
+                            "currency",
+                            "rentMonthly",
+                            "verifiedSource"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "vacancy": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "const": "UNKNOWN"
+                            },
+                            "confirmedAt": {
+                              "type": "null"
+                            },
+                            "expiresAt": {
+                              "type": "null"
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "confirmedAt",
+                            "expiresAt"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "AVAILABLE",
+                                "FULL"
+                              ]
+                            },
+                            "confirmedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                            },
+                            "expiresAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "confirmedAt",
+                            "expiresAt"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "visibility": {
+                      "type": "string",
+                      "const": "HIDDEN"
+                    },
+                    "entrance": {
+                      "type": "null"
+                    },
+                    "locationLabel": {
+                      "type": "null"
+                    },
+                    "distanceMeters": {
+                      "type": "null"
+                    },
+                    "route": {
+                      "type": "null"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "title",
+                    "publisherKind",
+                    "ownerVerified",
+                    "price",
+                    "vacancy",
+                    "visibility",
+                    "entrance",
+                    "locationLabel",
+                    "distanceMeters",
+                    "route"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    },
+                    "publisherKind": {
+                      "type": "string",
+                      "const": "COMMUNITY_RECOMMENDATION"
+                    },
+                    "price": {
+                      "type": "null"
+                    },
+                    "vacancy": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "const": "UNKNOWN"
+                        },
+                        "confirmedAt": {
+                          "type": "null"
+                        },
+                        "expiresAt": {
+                          "type": "null"
+                        }
+                      },
+                      "required": [
+                        "status",
+                        "confirmedAt",
+                        "expiresAt"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "disclaimer": {
+                      "type": "string",
+                      "const": "Community-submitted, not owner-verified"
+                    },
+                    "entrance": {
+                      "type": "null"
+                    },
+                    "distanceMeters": {
+                      "type": "null"
+                    },
+                    "route": {
+                      "type": "null"
+                    },
+                    "visibility": {
+                      "type": "string",
+                      "const": "AREA_ONLY"
+                    },
+                    "locationLabel": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "title",
+                    "publisherKind",
+                    "price",
+                    "vacancy",
+                    "disclaimer",
+                    "entrance",
+                    "distanceMeters",
+                    "route",
+                    "visibility",
+                    "locationLabel"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    },
+                    "publisherKind": {
+                      "type": "string",
+                      "const": "COMMUNITY_RECOMMENDATION"
+                    },
+                    "price": {
+                      "type": "null"
+                    },
+                    "vacancy": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "const": "UNKNOWN"
+                        },
+                        "confirmedAt": {
+                          "type": "null"
+                        },
+                        "expiresAt": {
+                          "type": "null"
+                        }
+                      },
+                      "required": [
+                        "status",
+                        "confirmedAt",
+                        "expiresAt"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "disclaimer": {
+                      "type": "string",
+                      "const": "Community-submitted, not owner-verified"
+                    },
+                    "entrance": {
+                      "type": "null"
+                    },
+                    "distanceMeters": {
+                      "type": "null"
+                    },
+                    "route": {
+                      "type": "null"
+                    },
+                    "visibility": {
+                      "type": "string",
+                      "const": "HIDDEN"
+                    },
+                    "locationLabel": {
+                      "type": "null"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "title",
+                    "publisherKind",
+                    "price",
+                    "vacancy",
+                    "disclaimer",
+                    "entrance",
+                    "distanceMeters",
+                    "route",
+                    "visibility",
+                    "locationLabel"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "page": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9999999
+              },
+              "pageSize": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              },
+              "hasNextPage": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "page",
+              "pageSize",
+              "hasNextPage"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "items",
+          "page"
+        ],
+        "additionalProperties": false
+      },
+      "OwnerPublicMap": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "publisherKind": {
+            "type": "string",
+            "const": "OWNER_OFFICIAL"
+          },
+          "ownerVerified": {
+            "type": "boolean",
+            "const": true
+          },
+          "price": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "currency": {
+                    "type": "string",
+                    "const": "LKR"
+                  },
+                  "rentMonthly": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1000000000
+                  },
+                  "deposit": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1000000000
+                  },
+                  "verifiedSource": {
+                    "type": "string",
+                    "const": "OWNER"
+                  }
+                },
+                "required": [
+                  "currency",
+                  "rentMonthly",
+                  "verifiedSource"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "vacancy": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "const": "UNKNOWN"
+                  },
+                  "confirmedAt": {
+                    "type": "null"
+                  },
+                  "expiresAt": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "status",
+                  "confirmedAt",
+                  "expiresAt"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "AVAILABLE",
+                      "FULL"
+                    ]
+                  },
+                  "confirmedAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                  },
+                  "expiresAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                  }
+                },
+                "required": [
+                  "status",
+                  "confirmedAt",
+                  "expiresAt"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "visibility": {
+            "type": "string",
+            "const": "PUBLIC_MAP"
+          },
+          "publicMapConsent": {
+            "type": "boolean",
+            "const": true
+          },
+          "entrance": {
+            "type": "object",
+            "properties": {
+              "lat": {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              },
+              "lng": {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              }
+            },
+            "required": [
+              "lat",
+              "lng"
+            ],
+            "additionalProperties": false
+          },
+          "locationLabel": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "publisherKind",
+          "ownerVerified",
+          "price",
+          "vacancy",
+          "visibility",
+          "publicMapConsent",
+          "entrance",
+          "locationLabel"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "x-unihood-boundaries": [
+    "Anonymous reads only. Protected writes are denied outside explicit loopback local/test simulation.",
+    "Readiness retains its existing flat 200/503 monitor contract; other errors use ErrorResponse.",
+    "Freshness and cross-field refinements require runtime validation in addition to JSON Schema."
+  ]
+}

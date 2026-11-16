@@ -1,6 +1,6 @@
 # UniHood product decision records
 
-These ADRs record the five already agreed v3.0 product decisions required by UNI-004. Their decision status is **accepted in the specification; recorded here**, not newly selected policy or proof of runtime enforcement. UNI-004 integration remains subject to the human Git checkpoint. Recorded: 16 November 2026 (Asia/Colombo).
+These ADRs record the five already agreed v3.0 product decisions required by UNI-004. Their decision status is **accepted in the specification; recorded here**, not newly selected policy or proof of runtime enforcement. UNI-004 was committed and merged into `dev`, explicitly confirmed by the human developer before UNI-005; no Git history audit is claimed. Recorded: 16 November 2026 (Asia/Colombo).
 
 The [master specification](../../UniHood_MASTER_PROJECT_SPECIFICATION.md#02-agreed-product-decisions-do-not-silently-reverse) remains authoritative. ADRs explain rationale, consequences and validation obligations; they do not silently amend agreed requirements. Deferred questions are not permission to ship a permissive fallback. Future changes must identify the affected ADR/specification requirement and record the reason and approval; preserve the earlier decision's history.
 
@@ -21,4 +21,4 @@ The [master specification](../../UniHood_MASTER_PROJECT_SPECIFICATION.md#02-agre
 
 ## Verification and progress
 
-Each ADR separates current decision, future implementation consequences and deferred questions, and links its source sections and future acceptance scenarios. UNI-004 checks the documentation, not completion of those future scenarios. See [verification evidence](../verification/UNI-004/README.md), [Phase 0 progress](../progress/PHASE-00.md#uni-004--product-decision-records) and [current status](../progress/CURRENT_STATUS.md). UNI-005 remains unstarted until its separate human branch/checkpoint.
+Each ADR separates current decision, future implementation consequences and deferred questions, and links its source sections and future acceptance scenarios. UNI-004 checks the documentation, not completion of those future scenarios. See [verification evidence](../verification/UNI-004/README.md), [Phase 0 progress](../progress/PHASE-00.md#uni-004--product-decision-records) and [current status](../progress/CURRENT_STATUS.md). After its separate human branch/checkpoint, UNI-005 implements the [API contract and guarded actor baseline](../api/contracts-and-actors.md). Subsequent issues still require their own human checkpoint.

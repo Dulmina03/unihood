@@ -1,6 +1,6 @@
 # Phase 0 — engineering bootstrap
 
-Phase status: **in progress**, not complete. UNI-003 is merged into `dev`, explicitly confirmed by the human developer during UNI-004 preparation; no Git history was audited. UNI-004 product ADRs and verification are recorded below and await the human Git checkpoint. UNI-005–006 have not been started. Earlier handoff entries are historical; the latest issue status supersedes them.
+Phase status: **in progress**, not complete. UNI-003 is merged into `dev`, explicitly confirmed by the human developer during UNI-004 preparation; no Git history was audited. UNI-004 was committed and merged into `dev`, explicitly human-confirmed before UNI-005. UNI-005 implementation/verification is recorded below; its human Git checkpoint remains pending. UNI-006 has not been started. Earlier handoff entries are historical; the latest issue status supersedes them.
 
 ## UNI-001 — workspace bootstrap
 
@@ -172,7 +172,7 @@ Final evidence validation: both page audit JSON files contain zero violations an
 
 Owner: Phase 0 documentation spanning M1–M5 responsibilities. Sequential prerequisites: UNI-001 workspace, UNI-002 database foundation and UNI-003 UI foundation. The human developer explicitly confirmed UNI-003 merged into `dev`; the assistant has not independently inspected Git history. Branch confirmed from `.git/HEAD`: `docs/uni-004-product-decisions`.
 
-Status: **implemented and verified; awaiting human Git checkpoint**. UNI-005 is not started.
+Status: **human-confirmed committed and merged into `dev`** before UNI-005. No Git history, merge hash or merge date was independently verified. The verification below remains historical UNI-004 evidence.
 
 ### Delivered scope
 
@@ -197,4 +197,41 @@ See [UNI-004 verification](../verification/UNI-004/README.md) for exact link cou
 
 ### Scope and checkpoint
 
-No runtime/authentication, API/contracts, schema/migration, dependency, environment, UI or persistent data change is authorized by this issue. No Git operation is performed. After verification, human review/staging/commit/push and `git merge --ff-only` integration into `dev` are required; PR optional, no merge commits, `main` stable releases only. Suggested commit: `docs(project): lock privacy and role boundaries`. **Stop before UNI-005** and wait for its separate human branch/checkpoint.
+No runtime/authentication, API/contracts, schema/migration, dependency, environment, UI or persistent data change is authorized by this issue. No Git operation is performed. At the original UNI-004 handoff, human review/staging/commit/push and fast-forward integration were required. The human has now confirmed commit/merge into `dev`, and the separate UNI-005 branch is prepared. This resolves that earlier stop-before-UNI-005 gate; no Git command was performed by the assistant. UNI-005 has its own checkpoint below.
+
+## UNI-005 — REST contracts and guarded actor abstraction
+
+Owner: M5 contract/authorization foundation with M1–M4 consumers. Dependencies: existing UNI-001–003 workspace/API/database/UI foundations and UNI-004 product ADRs. The human explicitly confirmed UNI-004 committed and merged into dev. Branch metadata is `feat/uni-005-api-contracts`; no Git command/history audit was performed.
+
+Status: **implemented and verified locally; awaiting human Git checkpoint**.
+
+### Delivered
+
+- Eight shared Zod/TypeScript enum families; strict UUID/query/pagination/error contracts and five owner/community visibility-safe boarding projections. Unknown/nested private fields fail validation, community cannot impersonate owner fields or exact map publication, and serialization helper downgrades stale/future confirmations. These are future API contract foundations, not a live boarding service or free-text privacy detector.
+- Existing identity interfaces retained. Provider-neutral Nest tokens bind to a guarded SyntheticActors adapter: explicit opt-in, compatible local/test environments, loopback binding/socket/Host/Origin checks, no forwarded proxy identity. Server-only synthetic fixture choice; no actor-selector endpoint/header or final identity provider. Private issuance records prevent forged/cloned/mutated memberships from creating grants. Property A capability never grants property B; action permissions are separate.
+- Global protected-action boundary denies mutations without explicit metadata/grants and keeps ordinary public reads open. Synthetic flags and arbitrary identity headers do not authorize deployed writes. Test-module-only fixture controllers verify real HTTP denial without shipping domain writes.
+- Sanitized generic API exception envelopes, server-generated request IDs and reusable argument validation pipe. Legacy readiness flat 200/503 contract is preserved as an explicit monitoring compatibility boundary; no database strategy change.
+- Generated OpenAPI 3.1 from live Nest route/response metadata and native Zod JSON Schema; exporter/saved baseline include five actual GET paths and 18 components. No proposed domain workflow is falsely advertised. Live/export parity and missing-contract metadata checks protect documentation accuracy.
+- API/configuration documentation, `.env.example` defaults off, stack/README navigation and progress updates. Existing `.env` is preserved. UNI-004 merge is recorded as human-confirmed rather than inferred from source presence.
+
+### Acceptance verification
+
+Actual checks on 16 November 2026 (Asia/Colombo):
+
+- `pnpm install --frozen-lockfile --offline`: **PASS**, unchanged dependencies/lockfile.
+- `pnpm lint`: **PASS**, zero warnings.
+- `pnpm typecheck`: **PASS**, contracts/UI/API/web.
+- `pnpm test`: **PASS**, **77 tests**: Node tooling 3, contracts 17, API unit/HTTP 47, web 10. Existing Jest VM-module experimental warning remains.
+- `pnpm build`: **PASS**, production contracts/API/web, existing static frontend routes.
+- `node apps/api/dist/export-openapi.js > docs/api/openapi.json`: **PASS**, five live GET paths/18 components. Standard HTTP tests establish exact saved/live parity, route existence, schema ref resolution and failure on missing operation contract metadata.
+- `python3 /tmp/unihood-005-smoke.py`: **PASS**, official OpenAPI 3.1 schema/component checks and actual built production-mode API responses with synthetic flags deliberately set. Health/OpenAPI reads work; readiness retains redacted flat 503 with an unconfigured database; generic errors validate; domain writes stay absent despite forged headers. The smoke child server is stopped. Separate test-only guarded handlers verify actual unauthorized/forbidden denial, not merely nonexistent routes.
+- `pnpm db:test`: **PASS**, all seven disposable Docker result groups, including real DB outage/redacted readiness 503/liveness 200/recovery and existing migration/extension ownership safety. No development volume, data or extension ownership was modified.
+- Browser/component/product E2E, screenshots, separate legacy extension regression and remote CI: **NOT RUN for UNI-005**. UI and migration SQL are unchanged; no full-domain workflow/auth readiness is claimed.
+
+See [UNI-005 verification](../verification/UNI-005/README.md) for coverage/limits and [API boundaries](../api/contracts-and-actors.md) for explicit configuration. Validation refinements beyond JSON Schema and the separate readiness monitoring protocol are documented. No final authentication policy, real identity data, hidden-location inference service or domain mutation route was introduced. No Git command was performed.
+
+### Limits and checkpoint
+
+No final authentication, owner proof/delegation/recovery, domain CRUD/claim/contribution workflow, private contact/media pipeline, provider selection or persistent database change is implemented. Future free-text/media moderation, real consent/authorization evidence, cache revocation and full discovery E2E remain their owning issues. Public boardings are contract schemas only; tests do not prove those future surfaces exist or enforce all privacy obligations. All Git actions belong to the human; suggested commit `feat(api): add typed contracts and actor abstraction`. Stop before UNI-006 and integrate into dev only through the human fast-forward checkpoint.
+
+Final UNI-005 handoff review: seven changed Markdown files and 43 local links/anchors, TypeScript/documentation whitespace, evidence JSON, regenerated OpenAPI parity and safe example defaults PASS. Test-only fixture controllers are absent from compiled production JavaScript. A historical input-hash comparison confirms 49 protected infrastructure/UI/dependency/environment/specification files unchanged; no Git diff/history audit is claimed. Branch metadata remains `feat/uni-005-api-contracts`. Stop at the human checkpoint; UNI-006 is not started.

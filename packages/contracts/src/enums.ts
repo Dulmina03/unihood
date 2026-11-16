@@ -1,0 +1,17 @@
+import { z } from 'zod';
+export const PlaceKindSchema = z.enum(['BOARDING', 'POI']);
+export const BoardingVisibilitySchema = z.enum(['PUBLIC_MAP', 'AREA_ONLY', 'HIDDEN']);
+export const PublisherKindSchema = z.enum(['OWNER_OFFICIAL', 'COMMUNITY_RECOMMENDATION']);
+export const PublicationStatusSchema = z.enum(['DRAFT', 'PENDING', 'PUBLISHED', 'DISPUTED', 'ARCHIVED']);
+export const VacancyStatusSchema = z.enum(['AVAILABLE', 'FULL', 'UNKNOWN']);
+export const SourceConfidenceSchema = z.enum(['COMMUNITY_SUBMITTED', 'SOURCE_CHECKED', 'OWNER_VERIFIED', 'DISPUTED']);
+export const SubmissionRiskSchema = z.enum(['LOW', 'NEEDS_EVIDENCE', 'HIGH_RISK', 'REJECTED']);
+export const RouteTimeContextSchema = z.enum(['DAY', 'NIGHT']);
+export type PlaceKind = z.infer<typeof PlaceKindSchema>;
+export type BoardingVisibility = z.infer<typeof BoardingVisibilitySchema>;
+export type PublisherKind = z.infer<typeof PublisherKindSchema>;
+export type PublicationStatus = z.infer<typeof PublicationStatusSchema>;
+export type VacancyStatus = z.infer<typeof VacancyStatusSchema>;
+export type SourceConfidence = z.infer<typeof SourceConfidenceSchema>;
+export type SubmissionRisk = z.infer<typeof SubmissionRiskSchema>;
+export type RouteTimeContext = z.infer<typeof RouteTimeContextSchema>;
