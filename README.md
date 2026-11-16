@@ -99,14 +99,14 @@ See [database strategy and recovery](docs/architecture/database.md) for checksum
 ## Workspace and next steps
 
 - `apps/web` — M1: Next.js App Router, Tailwind and accessible preview.
-- `apps/api` — M2–M5: NestJS REST; liveness only, no identity provider or mutation routes.
+- `apps/api` — M2–M5: NestJS REST; liveness/readiness, no identity provider or mutation routes.
 - `packages/contracts` — M5 shared TypeScript/Zod contracts and identity/permission interfaces.
-- `packages/ui` — M1 Campus Teal CSS tokens; full components in UNI-003.
+- `packages/ui` — M1 reusable Campus Teal tokens and React components; synthetic demonstration at `/design-system`.
 - `packages/config` — shared TypeScript baseline.
 - `infra` — local PostGIS Compose and bootstrap extensions SQL.
 - `docs/design/references` — illustrative design references only; never use their synthetic photos, prices or geography as production content.
 
-See [stack decisions](docs/architecture/stack.md), [current status](docs/progress/CURRENT_STATUS.md), and the master specification. CI runs install/lint/typecheck/test/build plus isolated database integration checks on PRs and pushes to `dev`/`main`, or manual dispatch; it does not deploy. Solo workflow: the human performs all Git operations, one branch per UNI issue, verified changes integrate into `dev` with `git merge --ff-only`; PRs are optional, no merge commits, and `main` is reserved for stable releases. Broader CI conventions remain UNI-006.
+See [product ADRs](docs/decisions/README.md), [stack decisions](docs/architecture/stack.md), [current status](docs/progress/CURRENT_STATUS.md), and the master specification. CI runs install/lint/typecheck/test/build plus isolated database integration checks on PRs and pushes to `dev`/`main`, or manual dispatch; it does not deploy. Solo workflow: the human performs all Git operations, one branch per UNI issue, verified changes integrate into `dev` with `git merge --ff-only`; PRs are optional, no merge commits, and `main` is reserved for stable releases. Broader CI conventions remain UNI-006.
 
 ## Campus Teal component library (UNI-003)
 

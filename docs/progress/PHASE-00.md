@@ -1,6 +1,6 @@
 # Phase 0 — engineering bootstrap
 
-Phase status: **in progress**, not complete. UNI-001–003 implementation and local verification are recorded below; UNI-003 awaits the human Git checkpoint. UNI-004–006 have not been started. Historical Git handoff entries are retained; integration history has not been inspected.
+Phase status: **in progress**, not complete. UNI-003 is merged into `dev`, explicitly confirmed by the human developer during UNI-004 preparation; no Git history was audited. UNI-004 product ADRs and verification are recorded below and await the human Git checkpoint. UNI-005–006 have not been started. Earlier handoff entries are historical; the latest issue status supersedes them.
 
 ## UNI-001 — workspace bootstrap
 
@@ -139,7 +139,7 @@ Final handoff validation: all 22 UNI-002 source/config/documentation paths passe
 
 Owner: M1. Dependencies: UNI-001 workspace/shared UI baseline and approved v3.0 visual/privacy direction; runs on the existing UNI-002 foundation. Branch verified by reading `.git/HEAD`: `feat/uni-003-campus-teal-design-system`. No Git command was run and no integration/remote history was inspected. The user's explicit UNI-003 instruction supersedes stale bootstrap/current-issue text; the correct issue branch already existed.
 
-Status: **implemented and verified locally; awaiting human Git checkpoint**.
+Status: **human-confirmed merged into `dev`**. Merge confirmation was supplied by the human developer before UNI-004; no merge commit/hash/date or remote-history audit is inferred. The verification below is historical UNI-003 evidence.
 
 ### Delivered
 
@@ -164,6 +164,37 @@ Failures found and fixed are recorded in [verification evidence](../verification
 
 This completes UNI-003 foundations, not Phase 0 or Phase 1 screens. Full product E2E remains UNI-015's explicit placeholder; `pnpm test:e2e` was **NOT RUN**. Human screen-reader/translated language/cross-browser review and remote CI were **NOT RUN**; zero axe violations is not a full WCAG certification. Docker regression was **NOT RERUN** for UI-only changes; no database initialization, migration, seed, extension ownership or persistent data was modified. Existing database evidence above remains historical.
 
-No Git operation was performed. Human review/staging/commit/push and fast-forward-only integration into `dev` remain required; PR optional, no merge commits, `main` reserved for stable releases. Suggested commit: `feat(web): add Campus Teal design system`. **Stop here. Do not begin UNI-004** until the human completes the checkpoint and prepares its issue branch.
+At the original UNI-003 handoff, human review/staging/commit/push and fast-forward-only integration into `dev` were pending. The human has now explicitly confirmed that merge, and the UNI-004 issue branch has been prepared. That resolves the former stop-before-UNI-004 checkpoint. No Git command or independent history inspection was performed by the assistant; earlier test results are retained without rerunning them here.
 
 Final evidence validation: both page audit JSON files contain zero violations and zero incomplete rules. The 12 PNGs include exact 390×844 and 1440×900 viewport dimensions; package/config JSON and UI/documentation whitespace scans pass. Final production browser run: 8/8 PASS (20.0s). Branch metadata still names `feat/uni-003-campus-teal-design-system`; no Git command was used.
+
+## UNI-004 — product decision records
+
+Owner: Phase 0 documentation spanning M1–M5 responsibilities. Sequential prerequisites: UNI-001 workspace, UNI-002 database foundation and UNI-003 UI foundation. The human developer explicitly confirmed UNI-003 merged into `dev`; the assistant has not independently inspected Git history. Branch confirmed from `.git/HEAD`: `docs/uni-004-product-decisions`.
+
+Status: **implemented and verified; awaiting human Git checkpoint**. UNI-005 is not started.
+
+### Delivered scope
+
+- [Decision index](../decisions/README.md) and five ADRs: location visibility/consent; student advertisement-only contributions; property-specific owner authority; automation-first governance with exceptional escalation; final-phase registration deferral.
+- Each ADR records an existing v3.0 decision, context/rationale, alternatives, consequences, privacy/security boundaries, explicitly deferred questions, links to specification sections and future test obligations. They do not claim runtime enforcement or final authentication policy.
+- Index clarifies HIDDEN's separately authorized generic-city exception and the authoritative Phase 7 registration schedule despite older Phase 8 wording. No master specification or AGENTS.md requirement was rewritten. The user's solo human-only fast-forward Git workflow remains in effect.
+- Root README and stack documentation link the ADR index. README workspace descriptions now reflect existing API readiness and UNI-003 shared UI components. Progress records distinguish human-confirmed UNI-003 integration from historical verification and UNI-004's pending human checkpoint.
+
+### Verification
+
+Actual checks on 16 November 2026 (Asia/Colombo):
+
+- `python3 /tmp/unihood-004-verify.py`: **PASS** for all 11 changed/new Markdown documents, local file/heading links (including specification references), five ADR structures/metadata, policy coverage probes, newline/whitespace and current issue/merge/stop consistency. A manual policy review checked the actual requirements, rather than treating keyword presence as semantic proof.
+- Pre/post SHA-256 source comparison: **PASS**, exactly 11 documentation paths changed/new; no existing file deletion or runtime/config/dependency/specification/AGENTS change. The 97-file baseline excludes dependency/Git/build output and existing ignored TypeScript caches. Tests/build refresh generated artifacts only.
+- `pnpm lint`: **PASS**, zero warnings.
+- `pnpm typecheck`: **PASS**, contracts/UI/API/web.
+- `pnpm test`: **PASS**, **23 existing tests** (Node tooling 3, contracts 3, API 7, web 10). Existing Jest VM-module experimental warning remains. No prose-mirroring tests or runtime implementation were added.
+- `pnpm build`: **PASS**, contracts/API/web production build, existing static `/`, `/design-system` and not-found routes.
+- Browser/component/product E2E, screenshots, Docker integration/migration/rollback and remote CI: **NOT RUN for this documentation-only issue**. Existing earlier issue results remain historical; future auth/privacy E2E obligations in ADRs are not implemented or executed by writing them.
+
+See [UNI-004 verification](../verification/UNI-004/README.md) for exact link counts, scope and manual consistency review, corrected checker cache handling, and the explicit actor-header clarification. The temporary checker/manifest are session artifacts under `/tmp`; no runtime/test tool was added. No Git command was used. Human confirmation resolves the former UNI-003 merge checkpoint; it does not assert a merge hash or independent history audit.
+
+### Scope and checkpoint
+
+No runtime/authentication, API/contracts, schema/migration, dependency, environment, UI or persistent data change is authorized by this issue. No Git operation is performed. After verification, human review/staging/commit/push and `git merge --ff-only` integration into `dev` are required; PR optional, no merge commits, `main` stable releases only. Suggested commit: `docs(project): lock privacy and role boundaries`. **Stop before UNI-005** and wait for its separate human branch/checkpoint.

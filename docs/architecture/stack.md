@@ -1,5 +1,7 @@
 # UNI-001 stack baseline
 
+Product privacy/authority/governance decisions are indexed in [the UNI-004 ADRs](../decisions/README.md). Stack entries below retain their historical issue context; they do not select final registration policy.
+
 Recorded 16 November 2026 (Asia/Colombo). Scope: M1 application shell and M5 workspace, with the minimum M2 infrastructure required by §9.7.
 
 ## Runtime choices
