@@ -23,3 +23,12 @@ export interface PermissionService {
   canSetOfficialPrice(actor: ActorContext, boardingId: string): Promise<boolean>;
   canConfirmVacancy(actor: ActorContext, boardingId: string): Promise<boolean>;
 }
+
+// Readiness is separate from process liveness and contains no connection details.
+export const ReadinessResponseSchema = z.discriminatedUnion('status', [
+  z.strictObject({ status: z.literal('ready'), service: z.literal('unihood-api'),
+    checks: z.strictObject({ database: z.literal('ready') }) }),
+  z.strictObject({ status: z.literal('not_ready'), service: z.literal('unihood-api'),
+    checks: z.strictObject({ database: z.literal('unavailable') }) }),
+]);
+export type ReadinessResponse = z.infer<typeof ReadinessResponseSchema>;

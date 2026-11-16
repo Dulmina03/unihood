@@ -46,3 +46,9 @@ Decision: retain PostGIS as infrastructure; only remove a `pg_trgm` introduced b
 Rollback uses `RESTRICT` and atomically keeps the applied record when dependent objects block removal. No cascade, data reset, volume deletion or image reinitialization is used. The bookkeeping table/schema remains after rollback. This is a narrow bootstrap repair, not the full UNI-002 migration engine. Future domain migrations must be rolled back before their prerequisite extension; their runner must integrate this ownership state rather than infer ownership again.
 
 Regression command: `pnpm db:test`. It uses the actual Compose service's image in a network-isolated tmpfs container, tests owned/adopted extensions and real geometry/trigram-dependent objects, then removes its disposable container only. The persistent DB is exercised separately through the documented scripts and left applied/running.
+
+## UNI-002 database foundation — 16 November 2026
+
+The ordered migration/seed runner and separate test service are now implemented; the earlier UNI-001 limitations above are historical. See [database strategy](database.md) for current commands and recovery. PostgreSQL driver `pg` 8.23.1 and matching `@types/pg` 8.23.1 were verified against the registry, installed and locked. No major database upgrade or development volume replacement occurred; Compose now pins the previously verified image digest. SQL 001 files remain unchanged and their legacy ownership state is adopted transactionally.
+
+Database-aware API readiness is separate from existing liveness; no public write or authentication route is introduced. Fixtures live only in a labeled synthetic schema. Standard and Docker checks are recorded in PHASE-00.md. CI now includes Docker integration and dev/main push triggers to support the human-only fast-forward workflow; remote CI results are not claimed.

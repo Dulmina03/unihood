@@ -1,6 +1,6 @@
 # Phase 0 — engineering bootstrap
 
-Phase status: **in progress**, not complete. UNI-002–006 have not been started.
+Phase status: **in progress**, not complete. UNI-003–006 have not been started. UNI-002 implementation and verification are recorded below; human integration remains pending.
 
 ## UNI-001 — workspace bootstrap
 
@@ -92,3 +92,45 @@ No real addresses, coordinates, contacts, photos, prices or vacancies are stored
 ### Human checkpoint
 
 No issue is marked merged or Phase 0 complete. Database migration/rollback acceptance now passes; browser visual approval and configured E2E remain outside the verified bootstrap checks, as recorded above. The human alone stages, commits, pushes and opens a PR into `dev`; see final chat checkpoint for exact paths. Stop here; UNI-002 requires a later manually created branch after merge.
+
+## UNI-002 — reproducible database development and test foundation
+
+Owner: M5 infrastructure/integration, M2 database primitives. Dependency: UNI-001 verified bootstrap/rollback repair. Status: **implemented and verified locally; awaiting human Git checkpoint**.
+
+Branch: `chore/uni-002-postgis-dev`, confirmed by reading `.git/HEAD` as a plain file. No Git command was run; integration/remote history was not audited. The user explicitly requested UNI-002 on this manually prepared issue branch. The earlier UNI-001 handoff entries are historical; no merge is inferred from code presence.
+
+### Delivered scope
+
+- Digest-pinned existing PostGIS image, preserved development named volume and loopback port; independent test profile with its own credentials/bridge and tmpfs DB storage. Both health checks use TCP loopback so image initialization must finish before healthy status.
+- Ordered paired SQL runner with original-file SHA-256 checksums, unchanged-prefix validation, same-client transactions, shared advisory lock and atomic latest-only rollback. It adopts existing UNI-001 ownership metadata and retains its original SQL files unchanged. No domain schemas from later phases are added.
+- Repeatable synthetic seed tooling with an explicit local/test environment guard, production/remote refusal, separate fixture schema, fixed UUID and visibly Synthetic (0,0) infrastructure point. Conflicting local edits and checksum drift fail without overwrite; fixtures persist across extension rollback.
+- Strict health/readiness DTOs and read-only readiness endpoints. Existing liveness remains independent of DB failure. Readiness has bounded connection/query timeouts, no-store, generic 503 failures, and clean pool shutdown; no raw connection/SQL details are returned.
+- Three migration file/CLI safety tests, expanded API/contracts tests, a Docker integration suite using a unique tmpfs container/random loopback port and real API, and the retained UNI-001 extension regression suite.
+- CI database job and optional PR/dev/main push/manual triggers; no auto-deploy or Git mutation. README, environment example and architecture documentation updated.
+
+### Actual verification — 16 November 2026 (Asia/Colombo)
+
+All Docker/socket/HTTP-dependent checks used elevated tool execution where the sandbox denies local sockets. No security setting or socket permission was weakened.
+
+- `pnpm install --frozen-lockfile --offline`: **PASS** after installing pg/types and updating the lockfile. Existing Parcel install-script warning remains; no blanket script approval was enabled.
+- `pnpm lint`: **PASS**, zero warnings.
+- `pnpm typecheck`: **PASS** across contracts/API/web.
+- `pnpm test`: **PASS**, 3 Node tooling tests + 3 contract tests + 7 API HTTP tests + 1 UI test = **14 tests**. API tests include readiness 200/503 and liveness independence; nonexistent mutation routes remain rejected even with forged owner headers. Jest VM-loader experimental warning is retained.
+- `pnpm build`: **PASS**, contracts/API/web production builds. No browser E2E or visual approval is claimed for this infrastructure issue.
+- `docker compose --env-file .env -f infra/compose.yaml --profile test config --quiet`: **PASS**; development service and separate manual test service started healthy through `pnpm db:up` and `pnpm db:test:up`.
+- Development CLI: `pnpm db:migrate` twice → `APP_ENV=local pnpm db:seed` twice → `pnpm db:rollback` twice → `pnpm db:migrate`: **PASS**. Initial migration adopted legacy ownership into the ordered ledger; subsequent rollback/re-migration retained pre-existing pg_trgm. One synthetic fixture was verified, with no duplicate/overwrite.
+- Manual test CLI with explicit TEST_DATABASE_URL on port 5433: `pnpm db:migrate --test` → `APP_ENV=test pnpm db:seed --test` → `pnpm db:rollback --test` → `pnpm db:migrate --test`: **PASS**. Commands target a different PostgreSQL cluster and test database.
+- `pnpm db:test`: **PASS**, seven result groups: actual tmpfs/no persistent mounts and unmigrated readiness; concurrent/repeated migration ownership; ordered up/reverse down plus all-or-nothing failure/checksum drift; seed idempotence/environment/conflict/history guards; dependency-blocked rollback preserving both ledgers/spatial data; exact legacy ownership adoption; real database pause producing redacted 503 within deadline while liveness stays 200, followed by readiness recovery. Child API and unique disposable container were cleaned up in finally.
+- `pnpm db:test:extensions`: **PASS**, all four UNI-001 fresh-image/owned/pre-existing extension/data/dependency-failure result groups against an independent disposable container.
+- `pnpm db:test:down` → `pnpm db:test:up`: **PASS**; direct SQL confirmed the recreated manual test DB had no previous fixture table or ordered ledger. Disposal did not affect development.
+- `pnpm db:down` → `pnpm db:up`: **PASS**. A read-only snapshot comparison after restart confirmed all **6 original extension names/versions**, row counts in all **37 original tables**, and `owns_pg_trgm=false` were unchanged from `/tmp/unihood-002-before.json`. The new ordered checksum matched source files; the one synthetic fixture survived. No persistent volume/data was deleted.
+
+Initial failures were corrected and rerun: this Docker engine reports tmpfs under HostConfig rather than Mounts, so tests additionally inspect `/proc/mounts`; Docker-internal networks did not publish the host port, so test networking uses its own bridge with loopback-only ports. The first file-parser test used an invalid trailing comment outside the legacy wrapper; its checksum fixture was corrected. Sandboxed child-process output was unavailable, so successful CLI safety tests used elevated execution. No assertions were removed to manufacture passing results.
+
+### Scope, limitations and handoff
+
+No real places, campus coordinates, boarding inventory, contacts, production auth decisions or public write endpoints were added. The synthetic fixture schema is not exposed by an API and is retained rather than reset during rollback. The ordered runner currently has only the required production migration 001; test-only versions 002/003 exercise the general ordering/rollback implementation. Future applied migration files are immutable. Inspect checksum/history drift instead of editing metadata to bypass it.
+
+Remote GitHub CI is configured but **NOT RUN here**. Browser E2E remains explicitly unconfigured pending UNI-015; UI was unchanged. Broader CI/PR conventions remain UNI-006. Local checks pass; the human alone reviews, stages, commits and integrates this issue into dev with `git merge --ff-only`. PRs are optional, no merge commits, main reserved for stable releases. Do not start UNI-003 until the human completes this checkpoint and prepares its branch.
+
+Final handoff validation: all 22 UNI-002 source/config/documentation paths passed the whitespace/JSON scan; Compose, CI and lockfile YAML parsed successfully. Final Compose validation passed and only the healthy development service remained; disposable manual/automatic test containers were absent. Branch metadata still named `chore/uni-002-postgis-dev`. No Git command was used for inspection or mutation.

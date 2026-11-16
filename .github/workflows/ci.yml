@@ -2,6 +2,9 @@ name: Workspace checks
 on:
   pull_request:
     branches: [dev, main]
+  push:
+    branches: [dev, main]
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
@@ -19,3 +22,18 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+
+  database:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - run: cp .env.example .env
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @unihood/contracts build
+      - run: pnpm --filter @unihood/api build
+      - run: pnpm db:test
