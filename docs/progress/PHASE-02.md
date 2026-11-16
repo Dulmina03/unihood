@@ -1,6 +1,6 @@
 # Phase 2 — public POIs and canonical duplicate engine
 
-Status: **UNI-020 complete/integrated; UNI-021 in progress** on `feat/uni-021-public-poi-layers`, created from clean synchronized dev after verified UNI-020 issue/dev CI. Exact roadmap: UNI-020 → UNI-021 → UNI-022 → UNI-023 → UNI-024 → UNI-025 → UNI-026 → UNI-027. No later issue implemented yet.
+Status: **UNI-020/021 complete/integrated; UNI-022 in progress** on human-created `feat/uni-022-poi-detail-nearby-services`, from clean dev after verified UNI-021 issue/dev CI. Exact roadmap: UNI-020 → UNI-021 → UNI-022 → UNI-023 → UNI-024 → UNI-025 → UNI-026 → UNI-027. No issue after UNI-022 implemented yet.
 
 The human has replaced routine human-only Git checkpoints with autonomous one-issue branches, local checks, relevant diff/staging review, conventional commits, issue push/exact-commit CI, fast-forward-only dev integration, dev push/exact-commit CI, then continuation. No force-push/shared-history rewrite/main/release/deployment/data deletion is authorized. Remote CI unavailable/unverified blocks integration/continuation. All five ADRs remain intact. Remaining Phase 1 manual accessibility is [deferred to Phase 6](PHASE-06.md), not PASS.
 
@@ -28,3 +28,15 @@ UNI-021 implementation: strict shared Zod pages/query and accurate required-bbox
 
 
 UNI-021 final local verification PASS: frozen install/repo/pinned workflow/Compose checks, lint/typecheck, 259 tests, API/supported Webpack builds, all 46 browser cases, eight real integrated E2E cases and 17 isolated Docker groups. Default local Turbopack remains BLOCKED by existing socket EPERM. Initial setup/test-inventory/mock issues, rebuild/server overlap and a concurrent-load jsdom failure are recorded with successful corrected/standalone reruns; no assertion/timeouts relaxed. Two final screenshots/zero-violation axe reports reviewed at 390×844 and 1440×900, plus 320/768 behavior checks. Commit/push/exact-commit issue CI/integration/dev CI pending as of this record. Remaining human/physical/real-field checks are not claimed; manual AT carry-over remains in Phase 6.
+
+
+### UNI-021 human integration confirmed
+
+Exact commit `aa8858409d9eedfae654eff3fb5c4278ec534efe`, human fast-forward merge and push into dev, clean refs verified read-only. [Issue run #25](https://github.com/Dulmina03/unihood/actions/runs/43921464129) and [dev run #26](https://github.com/Dulmina03/unihood/actions/runs/43937256705) independently observed SUCCESS for that exact full SHA; all three required jobs passed in each. Earlier pending/approval-limit records above are historical and resolved. Local/default-build and Phase 6 manual carry-over limitations remain.
+
+## UNI-022 — POI detail and nearby-service result card
+
+Owner M2/M1; shared contracts M5. Dependencies: UNI-020/021 public canonical POIs and bounded queries, UNI-010 public gates, existing responsive shell/MapLibre and all five ADRs. Adds the read-only detail endpoint, UUID canonical detail page, reusable source/confirmation labels, contextual return and canonical sharing. Nearby service cards use the existing selected-public-gate bbox: no walking radius, nearest ranking or invented distances. Opening hours/contact/routes remain unavailable without validated sources. No migration, provider, write/contribution, duplicate-scoring, boarding or registration workflow. Local acceptance PASS; [verification](../verification/UNI-022/README.md) records actual results and exclusions. Human-only Git checkpoint applies to this issue per latest supplied instructions.
+
+
+UNI-022 local acceptance: frozen offline install/Compose/repository/pinned workflow checks, lint/typecheck, **269 unit/API/UI/Node tests**, API + supported Webpack production builds, **50 component browser cases**, **ten real integrated E2E cases**, **17 isolated Docker result groups**, reviewed 390×844/1440×900 screenshots and two zero-violation axe reports PASS. 320/768px reflow assertions pass. New contrast and streamed 404 defects fixed without relaxing assertions; corrected jsdom test and sandbox/concurrent-load attempts are documented. Default local Turbopack remains BLOCKED by CSS worker socket EPERM. New API has no write route; unlisted/archived/pending/merged/BOARDING/deployed synthetic IDs are excluded. No migrations/persistent data/provider/auth change. Human visual/AT/real-field certification is not claimed. UNI-022 commit/push/issue CI/human fast-forward integration/dev CI remain pending; stop before UNI-023.

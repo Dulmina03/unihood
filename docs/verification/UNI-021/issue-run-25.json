@@ -1,0 +1,33 @@
+{
+  "id": 43921464129,
+  "run_number": 25,
+  "run_attempt": 1,
+  "head_sha": "aa8858409d9eedfae654eff3fb5c4278ec534efe",
+  "head_branch": "feat/uni-021-public-poi-layers",
+  "status": "completed",
+  "conclusion": "success",
+  "html_url": "https://github.com/Dulmina03/unihood/actions/runs/43921464129",
+  "jobs": [
+    {
+      "id": 133489728099,
+      "name": "Workspace quality",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/43921464129/job/133489728099"
+    },
+    {
+      "id": 133489728567,
+      "name": "Isolated PostGIS integration",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/43921464129/job/133489728567"
+    },
+    {
+      "id": 133489728605,
+      "name": "Component browser acceptance",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/43921464129/job/133489728605"
+    }
+  ]
+}

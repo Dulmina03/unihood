@@ -44,3 +44,8 @@ UNI-014 refines UI-03 public-gate result cards and URL filters and adds guest UI
 
 
 UNI-021 extends `/explore` Essentials with bounded public POI/category reads, distinct category glyphs, functional name/category/sort/page controls, basic public selection preview and validated share/reload/history state. Existing responsive rail/sheet/Map/List and public-gate favourites stay in place. [API/UI boundaries](../api/places.md), [verification](../verification/UNI-021/README.md). No boarding pins, private origin/distance, POI detail/nearby calculation, public write or registration flow is introduced.
+
+
+## UNI-022 public POI detail (UI-09 / service cards)
+
+`/places/[id]` adds the public POI detail: serif heading, source/confirmation/record-update facts, responsive mint public-point panel and canonical Share dialog. Result cards and previews in UI-03 link to it with validated return state; direct UUID links work for guests. Hours/contact/walking routes are honestly unavailable. Unknown/unpublished/private IDs share a generic not-found view, network errors have retry/list return, and loading has a status announcement. Correction guidance is expandable but sends no report; contribution work remains deferred. See [API/navigation boundaries](../api/places.md) and [actual verification](../verification/UNI-022/README.md).

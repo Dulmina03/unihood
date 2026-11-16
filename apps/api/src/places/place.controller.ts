@@ -1,12 +1,16 @@
-import { Controller, Get, Header, Query } from '@nestjs/common';
-import { PoiCategoryQuerySchema, PoiListQuerySchema, type PoiListQuery } from '@unihood/contracts';
+import { Controller, Get, Header, Param, Query } from '@nestjs/common';
+import { PoiPathSchema, PoiCategoryQuerySchema, PoiListQuerySchema, type PoiListQuery } from '@unihood/contracts';
 import { ContractValidationPipe } from '../http/contract-validation.pipe';
 import { ApiContract } from '../openapi/operation';
 import { PlaceService } from './place.service';
-const errors = {'400': {schema: 'ErrorResponse', description: 'Invalid or missing bounded query'}, '500': {schema: 'ErrorResponse', description: 'Internal error'}, '503': {schema: 'ErrorResponse', description: 'Directory unavailable'}} as const;
+const errors = {'400': {schema: 'ErrorResponse', description: 'Invalid parameters'}, '500': {schema: 'ErrorResponse', description: 'Internal error'}, '503': {schema: 'ErrorResponse', description: 'Directory unavailable'}} as const;
 @Controller('api/v1')
 export class PlaceController {
   constructor(private readonly service: PlaceService) {}
+  @Get('places/:id')
+  @Header('Cache-Control', 'no-store')
+  @ApiContract({summary: 'Eligible public POI detail; source verification is not ownership or service availability', responses: {'200': {schema: 'PublicPoiDetail', description: 'Explicit public projection with separate record update and location confirmation dates'}, '404': {schema: 'ErrorResponse', description: 'Not publicly available; includes unknown/unpublished/archived/merged IDs'}, ...errors}})
+  detail(@Param(new ContractValidationPipe(PoiPathSchema)) path: {id: string}) {return this.service.detail(path.id);}
   @Get('places')
   @Header('Cache-Control', 'no-store')
   @ApiContract({summary: 'Read-only eligible public POIs in a bounded bbox; no boarding geometry or distances', querySchema: 'PoiListQuery', responses: {'200': {schema: 'PoiPage', description: 'Stable name/id or newest/id page; one extra row determines hasNextPage'}, ...errors}})

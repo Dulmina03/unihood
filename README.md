@@ -173,3 +173,6 @@ UNI-015 adds `pnpm test:e2e`: a complete guest QR → selection → exploration 
 ## Public Essentials layer (UNI-021)
 
 After guarded migrations/seeds, choose a university/campus/public entrance in `/explore`, then Essentials for bounded category/name/sort/page results and synchronized public map markers. Four fictional POIs near (0,0) demonstrate services without claiming real Sri Lankan listings or distances. Public reads exclude all boardings and deployed synthetic fixtures. See [API/UI/seeds](docs/api/places.md) and [verification](docs/verification/UNI-021/README.md). Existing guest favourites remain gate-only. No POI detail/nearby/contribution/registration workflow is included here.
+
+
+Public service details (UNI-022): choose an entrance in Explore → Essentials → **Details for …**, or open a canonical `/places/<public-poi-uuid>` guest link. Cards/preview/detail show source and confirmation uncertainty; detail adds record-update dates in Asia/Colombo and canonical sharing. Synthetic fixtures are not destinations to visit. Hours/contact/walking routes remain unavailable; no private boarding origin is used. See [public POI contracts and navigation](docs/api/places.md).

@@ -1,6 +1,6 @@
-# Public POI category layers — UNI-021
+# Public POI reads — UNI-021/022
 
-Anonymous read-only foundation, specification §10 UNI-021 and §§5.2/5.4/7.3/8.5; all five ADRs remain unchanged. No new contribution, boarding, detail/nearby-distance, duplicate-scoring or registration workflow.
+Anonymous read-only foundation, specification §10 UNI-021 and §§5.2/5.4/7.3/8.5; all five ADRs remain unchanged. No new contribution, boarding, walking-distance, duplicate-scoring or registration workflow.
 
 ## REST contract
 
@@ -16,7 +16,7 @@ Unavailable DB/migration results give sanitized 503; malformed internal DTOs fai
 
 `/explore` → choose a public entrance → Essentials. It requests a bounded ±0.01-degree window around that already-public gate (clamped at legal coordinate edges, no antimeridian wrap). No GPS, private boarding coordinate, distance estimate or proximity ordering is used. Category/name/sort/20-row pages are functional; the map shows only that current page, with the same strict points as its list. Layer switching clears incompatible public POI selection; changing an entrance resets POI page/selection. A selected place absent from the current filtered page has an explicit clear-selection state, not an invented fallback coordinate.
 
-Additional validated URL fields: poiCategory, poiSort=name|newest, poiPage=1..10000 and canonical place UUID. They round-trip with existing university/campus/entrance/category/q/view state. Reload/Back/Forward/share restore state; no new sensitive favourite snapshot is stored. Guest favourites remain public-gate-only from UNI-014; POI detail/nearby service cards belong to UNI-022. Basic public name/category selection preview is used here without future workflow controls.
+Additional validated URL fields: poiCategory, poiSort=name|newest, poiPage=1..10000 and canonical place UUID. They round-trip with existing university/campus/entrance/category/q/view state. Reload/Back/Forward/share restore state; no new sensitive favourite snapshot is stored. Guest favourites remain public-gate-only from UNI-014. UNI-022 adds detail links and source/freshness labels to cards/previews; no POI favourite snapshot is stored.
 
 Next same-origin `/api/places` and `/api/place-categories` adapters validate query/output, pagination/category/bounds, use the fixed configured upstream, refuse redirects and forward no incoming cookies/auth/identity headers. Error text is generic. Client reads abort on change/unmount, ignore stale completion and time out with retry; map failure preserves the list, desktop rail/tablet collapse/mobile sheet and existing Map/List controls.
 
@@ -27,3 +27,16 @@ After updating code, use existing `pnpm db:up`, `pnpm db:migrate`, `APP_ENV=loca
 The guarded seed now inserts four labeled fictional POIs (pharmacy, restaurant, clinic, hardware), four reference categories and public points around (0,0) from `infra/db/seeds/places.synthetic.json`. These are not Sri Lankan businesses/campuses or verified availability/medicine stock. Names/source labels explicitly say synthetic; nothing is imported from a live provider. Existing fixed-ID/transaction/lock/checksum guards retain local edits and refuse conflicts without overwriting data; repeat seeds retain original timestamps. Applied migration 003 is not edited. Populated POI/category rollback deliberately refuses; use a reviewed forward migration.
 
 [UNI-021 verification](../verification/UNI-021/README.md) distinguishes real Nest/PostGIS reads from synthetic HTTP browser fixtures and mocked MapLibre resources. This feature does not verify real provider coverage, real-world POIs, human screen-reader/device usability or launch readiness.
+
+
+## UNI-022 canonical detail and source/freshness
+
+`GET /api/v1/places/:id` requires a canonical UUID and returns `PublicPoiDetail`: the strict public POI projection plus `updatedAt` (record edit time). It does not expose aliases, internal source refs, private building/residential data, ownership/contact or routing fields. No bbox/origin is needed for an already-public POI identity. The same active/POI/public-location/unmerged/environment eligibility applies as list reads. Unknown, unlisted, pending, merged, archived, BOARDING and deployed synthetic IDs all give the same generic 404; merged IDs do not disclose their successor. Invalid IDs give 400, unavailable DB 503, malformed internal DTO 500. No-store and redacted request IDs/errors remain. No mutation or schema migration is added.
+
+`/places/[id]` uses canonical UUIDs rather than mutable name slugs (UI-09's conceptual `:slug`): existing identity provides stable links without a new slug migration. Server-rendered guest entry returns a not-found view for invalid/unavailable public IDs, or a recoverable directory-unavailable view. Its same-origin GET `/api/places/[id]` supports retry, validates exact response identity/strict DTO, refuses redirects, omits incoming cookies/identity, rejects query parameters and returns sanitized 400/404/503. Client retry aborts/time-limits requests and ignores replaced/unmounted requests. No credentials are exposed to the client.
+
+Cards and previews link to detail while preserving only validated exploration query state for return to the same gate/filter/page/selection. Invalid/repeated/unknown return context falls back to `/explore`; actual directory membership is rechecked there. Canonical sharing intentionally omits all entrance/filter/browser/account context. Direct shared entry remains guest accessible. Map/list/mobile sheet are preserved.
+
+Source verification, public location confirmation and record updates are different facts. Each available timestamp has ISO `dateTime` and visible Asia/Colombo absolute text; confirmation also has descriptive relative recency without inventing a POI expiry threshold. Missing confirmation is explicitly unknown, synthetic provenance is explicitly fictional, future confirmation warns to check the source. A source-verified badge does not imply owner authority, opening hours, endorsements or current availability. Hours/contact are explicitly unvalidated; no guessed hours/phone/directions control appears. The expandable correction guidance states submissions are unavailable and no report is sent; guarded correction workflows remain a later issue.
+
+Nearby service cards retain the existing bounded public entrance area and name/newest sorting. They are not advertised as nearest/walkable services, and never accept a private boarding origin. Later boarding essentials/routing endpoints remain deferred. No public provider call, data import, private-coordinate inference or fabricated real business is introduced.

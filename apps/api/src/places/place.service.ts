@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { PoiCategoryPageSchema, PoiPageSchema, poiBounds, type PoiListQuery } from '@unihood/contracts';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PublicPoiDetailSchema, PoiCategoryPageSchema, PoiPageSchema, poiBounds, type PoiListQuery } from '@unihood/contracts';
 import { UniversityRepository } from '../universities/university.repository';
 // Reuse the existing bounded read-only pool and deployed synthetic-data policy.
 const joins = `FROM public.places p JOIN public.public_place_locations l ON l.place_id=p.id AND l.place_kind=p.kind AND l.place_status=p.status
@@ -9,6 +9,19 @@ const visible = `p.kind='POI' AND p.status='ACTIVE' AND p.merged_into IS NULL AN
 @Injectable()
 export class PlaceService {
   constructor(private readonly repository: UniversityRepository) {}
+  async detail(id: string) {
+    const rows = await this.repository.query(`SELECT p.id,p.kind,p.canonical_name AS name,
+      json_build_object('code',c.code,'label',c.label) AS category,
+      json_build_object('lat',ST_Y(l.entrance_geo),'lng',ST_X(l.entrance_geo)) AS location,
+      json_build_object('dataKind',p.data_kind,'sourceLabel',p.source_label,'verifiedAt',to_char(p.verified_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.US"Z"')) AS provenance,
+      to_char(l.last_confirmed_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS "lastConfirmedAt",
+      to_char(p.updated_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS "updatedAt"
+      ${joins} WHERE p.id=$2 AND p.kind='POI' AND p.status='ACTIVE' AND p.merged_into IS NULL
+      AND ($1::boolean OR p.data_kind='VERIFIED') LIMIT 1`, [this.repository.includeSynthetic, id]);
+    // Identical absence for private, unpublished, merged, archived and unknown IDs.
+    if (!rows.length) throw new NotFoundException();
+    return PublicPoiDetailSchema.parse(rows[0]);
+  }
   async categories(bbox: string) {
     const rows = await this.repository.query(`SELECT DISTINCT c.code,c.label ${joins} WHERE ${visible} ORDER BY c.code LIMIT 101`, [this.repository.includeSynthetic, ...poiBounds(bbox)!]);
     // A bounded category set is metadata, not a hidden unbounded inventory count.

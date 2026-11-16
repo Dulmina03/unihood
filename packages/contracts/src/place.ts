@@ -18,6 +18,9 @@ const provenance = z.discriminatedUnion('dataKind', [
 ]);
 export const PublicPoiSchema = z.strictObject({id: PublicIdSchema, kind: z.literal('POI'), name: z.string().trim().min(1).max(200),
   category: PoiCategorySchema, location: PublicCoordinateSchema, provenance, lastConfirmedAt: z.iso.datetime().nullable()});
+// Record edits, source verification and location confirmation are separate facts.
+export const PublicPoiDetailSchema = PublicPoiSchema.extend({updatedAt: z.iso.datetime()});
+export const PoiPathSchema = z.strictObject({id: PublicIdSchema});
 export const PoiListQuerySchema = PaginationQuerySchema.pick({pageSize: true}).extend({
   page: z.string().regex(/^(?:[1-9]|[1-9][0-9]{1,3}|10000)$/).optional(), bbox: PoiBoundsSchema,
   category: PoiCategoryCodeSchema.optional(), q: z.string().trim().min(1).max(100).regex(/^[^\u0000-\u001f\u007f]+$/).optional(),
@@ -27,4 +30,5 @@ export const PoiPageSchema = paginatedSchema(PublicPoiSchema);
 export const PoiCategoryPageSchema = paginatedSchema(PoiCategorySchema);
 export const PoiCategoryQuerySchema = PoiListQuerySchema.pick({bbox: true});
 export type PublicPoi = z.infer<typeof PublicPoiSchema>;
+export type PublicPoiDetail = z.infer<typeof PublicPoiDetailSchema>;
 export type PoiListQuery = z.infer<typeof PoiListQuerySchema>;

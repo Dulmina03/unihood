@@ -1,7 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { PoiListQuerySchema, PublicPoiSchema, poiBounds } from './place';
+import { PoiListQuerySchema, PublicPoiSchema, PublicPoiDetailSchema, PoiPathSchema, poiBounds } from './place';
 const bbox = '-0.01,-0.01,0.01,0.01';
 describe('bounded public POI contracts', () => {
+  it('detail requires a canonical identity/update date and rejects private or unsupported facts', () => {
+    const detail={id:'40000000-0000-4000-8000-000000000001',kind:'POI',name:'Synthetic example',category:{code:'clinic',label:'Clinic'},location:{lat:0,lng:0},provenance:{dataKind:'SYNTHETIC',sourceLabel:'Synthetic fixture',verifiedAt:null},lastConfirmedAt:null,updatedAt:'2026-11-16T00:00:00Z'};
+    expect(PublicPoiDetailSchema.safeParse(detail).success).toBe(true);
+    for (const extra of [{kind:'BOARDING'},{updatedAt:'yesterday'},{distanceMeters:1},{ownerVerified:true},{phone:'PRIVATE_CANARY'},{provenance:{...detail.provenance,verifiedAt:'2026-11-16T00:00:00Z'}}]) expect(PublicPoiDetailSchema.safeParse({...detail,...extra}).success).toBe(false);
+    expect(PoiPathSchema.safeParse({id:'not-a-uuid'}).success).toBe(false);
+  });
   it('accepts narrow decimal bounds/category/text/sort/page without computing distances', () => {
     expect(PoiListQuerySchema.parse({bbox,q:' Synthetic ',category:'pharmacy',page:'2',pageSize:'1',sort:'name'}).q).toBe('Synthetic');
     expect(poiBounds(bbox)).toEqual([-0.01,-0.01,0.01,0.01]);

@@ -32,10 +32,15 @@ Unit/API tests use a fake repository to inspect parameter binding/DTO failures; 
 
 Synthetic POI seeds have fictional names/source labels around (0,0); category labels do not prove business existence. No public OSM/Nominatim extraction or provider credential is added. Screenshots are agent review, not human certification; further manual accessibility remains visible in [Phase 6 carry-over](../../progress/PHASE-06.md), not automatically PASS.
 
-## Remote integration
+## Original remote integration checkpoint (superseded below)
 
 Issue commit/push/exact-commit CI, fast-forward dev merge/push and dev CI: NOT YET OBSERVED. Do not continue UNI-022 until all required exact-commit issue/dev jobs pass. No Git main/release/deployment action is authorized by this issue. Historical UNI-013 remote uncertainty, CI failures #7/#8/#9/#21 and local Turbopack limitations remain preserved.
 
 Final working-tree review PASS: 105 local Markdown links/anchors, scope/whitespace review, exact screenshot dimensions and zero-violation reports; no DATABASE_URL/API_BASE_URL/synthetic-actor/private test canaries in built client JavaScript. Staging and staged-diff review remain pending. Earlier SQL migrations, extension ownership, five ADRs, .env, dependency lock and approved references/photos remain untouched. Only scoped runtime/contracts/tests/fixtures/evidence and accurate predecessor/progress documentation are included.
 
 Resume checkpoint: the attempted staging action was not executed because automatic approval review reached its service usage limit; this was not a finding that the changes were unsafe. No issue commit, push or remote CI resulted. The latest user-supplied repository instructions require human-only Git operations, so work stops at the human Git checkpoint despite the autonomous policy currently stored on disk. UNI-022 remains unstarted.
+
+
+## Confirmed human integration — 17 November 2026
+
+Human completed staging/commit/push and fast-forward dev integration/push. Read-only inspection confirmed clean dev and issue refs at exact commit `aa8858409d9eedfae654eff3fb5c4278ec534efe`. Independently queried GitHub Actions: [issue run #25](https://github.com/Dulmina03/unihood/actions/runs/43921464129) and [dev run #26](https://github.com/Dulmina03/unihood/actions/runs/43937256705) completed SUCCESS for that exact full SHA. Workspace quality, Isolated PostGIS integration and Component browser acceptance all completed SUCCESS in each. These observations supersede the earlier pending checkpoint, without deleting its failed staging attempt. [Issue metadata](issue-run-25.json), [dev metadata](dev-run-26.json). UNI-022 starts on a separate human-created branch; no agent Git mutation during this follow-up.

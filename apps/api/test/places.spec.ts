@@ -23,4 +23,19 @@ describe('public POI HTTP projections and query boundaries',()=>{
   for(const invalid of [{...row,kind:'BOARDING'},{...row,privateAddress:'PRIVATE_CANARY'},{...row,distanceMeters:1}]){rows=[invalid];const r=await request(app.getHttpServer()).get('/api/v1/places').query({bbox}).expect(500);expect(JSON.stringify(r.body)).not.toContain('PRIVATE_CANARY');}
  });
  it('does not enable anonymous or header-selected writes',async()=>{await request(app.getHttpServer()).post('/api/v1/places').set('X-Role','owner').send({}).expect(404);});
+ it('projects a canonical public detail with separate freshness and parameterized identity',async()=>{
+  rows=[{...row,updatedAt:'2026-11-16T00:00:00Z'}];
+  const r=await request(app.getHttpServer()).get('/api/v1/places/'+row.id).expect(200);
+  expect(r.body).toEqual(rows[0]);expect(r.headers['cache-control']).toBe('no-store');
+  expect(calls[0].values).toEqual([true,row.id]);expect(calls[0].sql).toContain("p.status='ACTIVE'");expect(calls[0].sql).toContain('p.merged_into IS NULL');expect(calls[0].sql).toContain("p.kind='POI'");expect(calls[0].sql).toContain('public.public_place_locations');
+ });
+ it('rejects invalid IDs without querying and gives generic 404 for unavailable identity',async()=>{
+  await request(app.getHttpServer()).get('/api/v1/places/not-a-uuid').expect(400);expect(calls).toHaveLength(0);
+  const r=await request(app.getHttpServer()).get('/api/v1/places/'+row.id).expect(404);expect(r.body.error.code).toBe('NOT_FOUND');
+ });
+ it('redacts unexpected or private detail projections and denies anonymous mutations',async()=>{
+  rows=[{...row,updatedAt:'2026-11-16T00:00:00Z',privateAddress:'PRIVATE_CANARY'}];
+  const r=await request(app.getHttpServer()).get('/api/v1/places/'+row.id).expect(500);expect(JSON.stringify(r.body)).not.toContain('PRIVATE_CANARY');
+  await request(app.getHttpServer()).patch('/api/v1/places/'+row.id).set('X-Role','owner').send({}).expect(404);
+ });
 });

@@ -14,7 +14,12 @@ const server = createServer((request, response) => {
   response.setHeader('Content-Type', 'application/json'); response.setHeader('Cache-Control', 'no-store');
   if (url.searchParams.get('slug') === 'synthetic-unavailable') {response.statusCode = 503; response.end('{}'); return;}
   let rows;
-  if(url.pathname==='/api/v1/places') {
+  if(/^\/api\/v1\/places\/[^/]+$/.test(url.pathname)) {
+    if(url.pathname.endsWith('/40000000-0000-4000-8000-000000000098')){response.statusCode=503;response.end(JSON.stringify({error:'PRIVATE_CANARY synthetic upstream failure'}));return;}
+    const row=poiRows.find(row=>row.id===url.pathname.split('/').at(-1));
+    if(!row){response.statusCode=404;response.end('{}');return;}
+    response.end(JSON.stringify({...row,updatedAt:'2026-11-16T00:00:00Z'}));return;
+  } else if(url.pathname==='/api/v1/places') {
     const [w,s,e,n]=(url.searchParams.get('bbox')??'').split(',').map(Number);
     rows=poiRows.filter(row=>row.location.lng>=w&&row.location.lng<=e&&row.location.lat>=s&&row.location.lat<=n&&(!url.searchParams.has('category')||row.category.code===url.searchParams.get('category'))&&(!url.searchParams.has('q')||row.name.toLowerCase().includes(url.searchParams.get('q').toLowerCase()))).sort((a,b)=>a.name.localeCompare(b.name)||a.id.localeCompare(b.id));
   } else if(url.pathname==='/api/v1/place-categories') {response.end(JSON.stringify({items:poiGraph.categories,page:{page:1,pageSize:100,hasNextPage:false}}));return;}

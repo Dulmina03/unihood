@@ -60,3 +60,8 @@ The human explicitly permits remaining manual accessibility confirmations to car
 ## UNI-021 extension of the owned acceptance gate
 
 The runner now also discovers `public-pois.spec.ts`: one mobile/desktop public Essentials journey against the same real owned Next/Nest/tmpfs PostGIS, increasing six original Phase 1 cases to eight. It checks required bounded query/category/marker/list/URL reload and provider-disabled list use; map style resources alone are intercepted. Existing six guest cases and all 42 browser regressions remain intact; the separate component suite adds four POI cases. Counts are expected coverage until the issue's actual verification record confirms execution. New guarded synthetic POI seeds run only in the already verified disposable database during acceptance. [UNI-021 results](../verification/UNI-021/README.md).
+
+
+## UNI-022 detail extension
+
+The same `pnpm test:e2e` runner includes a second mobile/desktop public POI journey: real Next/Nest/PostGIS detail read → canonical page → reload/share → preserved filtered exploration/selection → map. No directory/POI/detail API is intercepted; only synthetic map resources are mocked. This increases eight integrated cases to ten while preserving the original six Phase 1 cases. Separate `pnpm test:ui` coverage adds four detail/failure/keyboard/axe cases to the prior 46. Counts describe configured scope; [UNI-022 verification](../verification/UNI-022/README.md) records executed results and exclusions. Real AT, field data and live-provider certification remain separate.

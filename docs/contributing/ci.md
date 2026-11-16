@@ -63,3 +63,6 @@ See [Phase 1 acceptance](../testing/phase-1-acceptance.md) for prerequisites, cl
 
 
 UNI-021 preserves the 42 existing component cases and adds four public-POI map/list/query/pagination/retry/axe cases; its separate owned real Next/Nest/PostGIS suite preserves six guest cases and adds two POI cases. Both still use explicit synthetic mocked map resources, not live provider uptime. New POI/category API responses in the integrated suite are not intercepted. The DB suite adds public POI HTTP/seed policy checks while preserving UNI-020/010 rollback and privacy regressions. See the issue verification for actual executed counts/results; configured coverage alone is not a pass.
+
+
+UNI-022 extends the same gates without new privileges: four component browser cases (mobile/desktop detail navigation/history/share/keyboard/retry/axe/not-found) and two owned real Next/Nest/PostGIS detail journeys, preserving previous cases. The resulting configured totals are 50 component cases and ten integrated journeys; consult [actual UNI-022 results](../verification/UNI-022/README.md) before calling them passed. Isolated DB assertions cover public/private/unpublished/archived/merged identity exclusion and separate source/location timestamps. No provider network or production write is required.
