@@ -176,3 +176,5 @@ After guarded migrations/seeds, choose a university/campus/public entrance in `/
 
 
 Public service details (UNI-022): choose an entrance in Explore → Essentials → **Details for …**, or open a canonical `/places/<public-poi-uuid>` guest link. Cards/preview/detail show source and confirmation uncertainty; detail adds record-update dates in Asia/Colombo and canonical sharing. Synthetic fixtures are not destinations to visit. Hours/contact/walking routes remain unavailable; no private boarding origin is used. See [public POI contracts and navigation](docs/api/places.md).
+
+UNI-023 adds an internal, read-only public POI duplicate-candidate foundation with Unicode-preserving normalization and PostGIS/trigram evidence. It does not yet add the UNI-024 warning API/UI or contribution writes. Apply the additive geography index with the existing `pnpm db:migrate` workflow; preserve your .env and persistent volume. `pnpm db:test` exercises the engine on isolated fictional data. Scores require review and never merge places. See [matching design and unfinished scenarios](docs/architecture/poi-duplicate-matching.md).

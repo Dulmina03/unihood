@@ -1,3 +1,4 @@
+import { testPoiMatching } from './lib/test-poi-matching.mjs';
 import { testPublicPois } from './lib/test-public-pois.mjs';
 import { startLandingIntegration } from './lib/test-landing.mjs';
 import { testPlaces } from './lib/test-places.mjs';
@@ -91,11 +92,11 @@ try {
   await expectReadiness(true);
   console.log('PASS: concurrent/repeated migrate serializes without duplicating history or losing ownership');
 
-  const second = { id: '004_order_probe', checksum: '2'.repeat(64),
+  const second = { id: '900_order_probe', checksum: '2'.repeat(64),
     up: `CREATE TABLE public.unihood_migration_probe (id integer PRIMARY KEY, label text, location geometry(Point,4326));
       INSERT INTO public.unihood_migration_probe VALUES (1, 'Synthetic probe', ST_SetSRID(ST_Point(0,0),4326));`,
     down: 'DROP TABLE public.unihood_migration_probe RESTRICT;' };
-  const third = { id: '005_order_probe', checksum: '3'.repeat(64),
+  const third = { id: '901_order_probe', checksum: '3'.repeat(64),
     up: 'CREATE INDEX unihood_probe_trgm ON public.unihood_migration_probe USING gin (label gin_trgm_ops);',
     down: 'DROP INDEX public.unihood_probe_trgm;' };
   const fail = {...third, up: 'SELECT intentionally_missing_column;'};
@@ -103,14 +104,16 @@ try {
   assert.equal((await client.query("SELECT to_regclass('public.unihood_migration_probe') AS name")).rows[0].name, null);
   assert.equal((await client.query('SELECT count(*)::int AS n FROM unihood_migrations.schema_migrations')).rows[0].n, migrations.length);
   const ordered = [...migrations, second, third];
-  assert.deepEqual(await runMigrations(client, ordered, 'migrate'), ['004_order_probe', '005_order_probe']);
-  assert.deepEqual(await runMigrations(client, ordered, 'rollback'), ['005_order_probe']);
+  assert.deepEqual(await runMigrations(client, ordered, 'migrate'), ['900_order_probe', '901_order_probe']);
+  assert.deepEqual(await runMigrations(client, ordered, 'rollback'), ['901_order_probe']);
   assert.equal((await client.query('SELECT count(*)::int AS n FROM public.unihood_migration_probe')).rows[0].n, 1);
   await assert.rejects(runMigrations(client, [migrations[0], {...migrations[1], checksum: 'changed'}], 'migrate'), /checksum mismatch/);
-  assert.deepEqual(await runMigrations(client, ordered, 'rollback'), ['004_order_probe']);
+  assert.deepEqual(await runMigrations(client, ordered, 'rollback'), ['900_order_probe']);
   console.log('PASS: ordered migration/reverse order; failing batch rolls back DDL/history; checksum drift rejected');
 
-  await testPlaces({client, url, migrations});
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['004_public_poi_geography_index']);
+  await testPlaces({client, url, migrations:migrations.slice(0,3)});
+  await runMigrations(client,migrations,'migrate');
   const env = {APP_ENV: 'test', NODE_ENV: 'test'};
   await seedDatabase(client, url, env);
   await seedDatabase(client, url, env);
@@ -130,6 +133,7 @@ try {
   console.log('PASS: repeatable synthetic seeds; production/remote refusal; local edits preserved on conflict');
 
   await testPublicPois({client,url,get,endpoint});
+  await testPoiMatching({client,migrations,url});
   await testUniversities({client, url, get, endpoint, migrations});
   await runMigrations(client, migrations, 'rollback');
   await client.query(`CREATE TABLE public.unihood_extension_guard (label text, location geometry(Point,4326));

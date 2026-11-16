@@ -69,3 +69,8 @@ git push -u origin feat/uni-022-poi-detail-nearby-services
 ```
 
 PR base: dev; PR optional. Observe all three issue-branch CI jobs for the resulting exact commit before human fast-forward-only integration into dev; push dev and verify its exact-commit CI before UNI-023. No new issue commit/SHA/run is invented here.
+
+
+## Confirmed human integration — 17 November 2026
+
+Human commit/push and fast-forward dev integration/push are complete at exact SHA `ecf7a80155d34cf935a7c8ce19d6223ecffbb309`. Read-only Git inspection confirmed clean dev and matching origin-dev/issue refs. Independently queried [issue run #28](https://github.com/Dulmina03/unihood/actions/runs/43946060187) and [dev run #29](https://github.com/Dulmina03/unihood/actions/runs/43947129199): both completed SUCCESS for that full SHA, all three required jobs completed SUCCESS. [Issue metadata](issue-run-28.json), [dev metadata](dev-run-29.json). These observations supersede the earlier pending human checkpoint without altering its original local results or failed attempts. UNI-023 starts on a separate human-created branch; no agent Git mutation in this follow-up.

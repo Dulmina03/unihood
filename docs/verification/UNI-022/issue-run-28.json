@@ -1,0 +1,33 @@
+{
+  "id": 43946060187,
+  "run_number": 28,
+  "run_attempt": 1,
+  "head_sha": "ecf7a80155d34cf935a7c8ce19d6223ecffbb309",
+  "head_branch": "feat/uni-022-poi-detail-nearby-services",
+  "status": "completed",
+  "conclusion": "success",
+  "html_url": "https://github.com/Dulmina03/unihood/actions/runs/43946060187",
+  "jobs": [
+    {
+      "id": 133576084515,
+      "name": "Component browser acceptance",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/43946060187/job/133576084515"
+    },
+    {
+      "id": 133576085000,
+      "name": "Workspace quality",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/43946060187/job/133576085000"
+    },
+    {
+      "id": 133576085284,
+      "name": "Isolated PostGIS integration",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/43946060187/job/133576085284"
+    }
+  ]
+}
