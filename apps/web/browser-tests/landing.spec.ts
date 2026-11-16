@@ -49,14 +49,12 @@ test('guest picker, direct QR route, keyboard and truthful unavailable feature a
   await page.getByLabel('Campus', {exact: true}).selectOption(campusId);
   await page.getByLabel('Public entrance').selectOption(entranceId);
   await page.getByLabel('Public entrance').focus(); await page.keyboard.press('Tab');
+  await page.getByRole('button', {name: 'Explore selected campus', exact: true}).click();
+  await expect(page).toHaveURL(new RegExp(`/explore\\?university=synthetic-demo-university&campus=${campusId}&entrance=${entranceId}`));
+  await page.goBack();
   await page.getByRole('button', {name: 'Explore Map', exact: true}).click();
-  await page.getByRole('dialog').getByRole('link', {name: 'Choose a university'}).click();
-  await expect(page.locator('#campus-start')).toBeFocused();
-  await page.getByRole('button', {name: 'Explore Map', exact: true}).click();
-  await expect(page.getByRole('dialog')).toBeVisible();
-  expect((await new AxeBuilder({page}).include('dialog').withTags(['wcag2a', 'wcag2aa']).analyze()).violations).toEqual([]);
-  await page.keyboard.press('Escape'); await expect(page.getByRole('dialog')).not.toBeVisible();
-  await expect(page.getByRole('button', {name: 'Explore Map', exact: true})).toBeFocused();
+  await expect(page).toHaveURL(/\/explore\?university=synthetic-demo-university$/);
+  await page.goBack();
   if (info.project.name === 'mobile') {
     await page.getByRole('button', {name: 'Open navigation'}).click();
     await page.keyboard.press('Escape'); await expect(page.getByRole('button', {name: 'Open navigation'})).toBeFocused();

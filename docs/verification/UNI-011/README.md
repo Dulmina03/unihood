@@ -1,12 +1,12 @@
 # UNI-011 verification
 
-Recorded 16 November 2026 (Asia/Colombo), Node 22.23.4 / pnpm 10.34.9. Prepared branch verified by reading plain .git/HEAD: `feat/uni-011-landing-university-picker`. No Git command/history audit performed. UNI-011 is implemented and locally verified; human review/stage/commit/push/fast-forward integration pending. Phase 1 remains in progress; no later issue started.
+Recorded 16 November 2026 (Asia/Colombo), Node 22.23.4 / pnpm 10.34.9. Prepared branch verified by reading plain .git/HEAD: `feat/uni-011-landing-university-picker`. No Git command/history audit performed. UNI-011 is now human-confirmed committed and merged into dev. Its original Git checkpoint is resolved; remote CI verification remains outstanding. Phase 1 remains in progress; UNI-012 is separately authorized. Local results below are historical UNI-011 evidence.
 
 ## Human-confirmed integration evidence
 
 UNI-010 was committed and **fast-forward merged into dev** by the human developer. GitHub Actions **SUCCESS**, explicitly human-verified workflow **run #6**, branch **dev**, short commit **f8e6623**. All three jobs passed: **Workspace quality**, **Isolated PostGIS integration**, **Component browser acceptance**. No run URL or full SHA was supplied; neither is invented. Run number #6 is not assumed to be a numeric Actions run ID/URL. No independent remote audit is claimed. [UNI-010 evidence](../UNI-010/README.md) and progress records carry this update.
 
-Remote **UNI-011** Actions: **NOT RUN/NOT OBSERVED** by the assistant. No dispatch, repository settings/ruleset, deployment or Git operation was performed. Configured jobs/local passes are not remote CI results; review the newest issue/dev run after the human pushes.
+Remote **UNI-011** Actions: **NOT RUN/NOT OBSERVED** by the assistant. No dispatch, repository settings/ruleset, deployment or Git operation was performed. Configured jobs/local passes are not remote CI results; review the relevant issue/dev run and record its actual URL, commit SHA and job conclusions. Human merge confirmation alone is not remote CI evidence.
 
 ## Actual local results
 
@@ -43,4 +43,4 @@ No real campus/owner field verification, licensed-provider integration, map/boar
 
 [Landing/source/configuration documentation](../../ui/landing.md) records pagination, no-cookie/identity forwarding, strict payload projections, default/configured API origin, runtime root-env loading and Next streamed notFound semantics (possible HTTP 200 with semantic not-found/noindex). Existing registration/property authorization boundaries remain unchanged; no public mutation handler or synthetic actor bypass was added.
 
-Human-only checkpoint: review/stage/commit/push; optional PR into dev; observe the newest three remote jobs; integrate with git merge --ff-only, no merge commits; main stable releases only. Suggested commit: `feat(web): build campus-first landing workflow`. Stop before UNI-012 or any next issue.
+Human-only checkpoint: review/stage/commit/push; optional PR into dev; observe the newest three remote jobs; integrate with git merge --ff-only, no merge commits; main stable releases only. Suggested commit: `feat(web): build campus-first landing workflow`. This original stop-before-UNI-012 checkpoint is resolved by the human-confirmed integration and separate UNI-012 authorization; the new issue has its own checkpoint.

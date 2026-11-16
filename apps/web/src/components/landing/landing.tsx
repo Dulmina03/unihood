@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useState } from 'react';
+import { exploreHref } from '../../lib/explore/query';
 import { useRouter } from 'next/navigation';
 import { UniversitySchema } from '@unihood/contracts';
 import { AdvertisementGrid, Badge, Button, Icon, Modal, Notice, Photo, PrivacyBadge, SiteHeader } from '@unihood/ui';
@@ -15,7 +16,6 @@ const inspirations = [
 const upcoming = {
   help: {title: 'Help & contact', text: 'This development preview does not have a support or reporting intake connected yet. Do not submit private addresses, contact details or owner documents here. There are no bookings or payments on this page.'},
   terms: {title: 'About this development preview', text: 'This is a university selection and design preview, not an accommodation marketplace available for transactions. Demonstration cards are fictional and photographs are illustrative. Public-launch terms and contact information will be provided before a public service is offered.'},
-  map: {title: 'Your neighborhood, at a glance', text: 'Map discovery is coming soon. For now, choose a university, campus and public entrance. Exact boarding pins will only appear with an authorized owner’s explicit consent.'},
   adverts: {title: 'Real advertisements are on their way', text: 'There are no live boarding advertisements here yet. The photographs below are inspiration only, with synthetic demonstration cards. They cannot be booked or contacted.'},
   essentials: {title: 'The everyday essentials, closer', text: 'Neighborhood service discovery is coming soon. No pharmacies, clinics, shops or transport locations are being claimed or mapped here.'},
   account: {title: 'Explore freely. No account needed.', text: 'You can browse universities and choose a campus entrance as a guest. Sign-in and owner publication are not available yet. Your university choice never gives property authority.'},
@@ -32,7 +32,7 @@ export function Landing({university, unavailableSlug}: {university?: University;
         <div className="hero-content"><p className="landing-kicker"><span /> A NEW CHAPTER. A NEIGHBORHOOD TO CALL HOME.</p>
           <h1 id="hero-title">{en.landing.titleLead}<br />{en.landing.titleIntro}<br className="hero-desktop-break" /> <em>{en.landing.titleEnd}</em></h1>
           <p className="hero-description">A little closer to campus. A little more at home.<br className="hero-wide-break" /> Your starting point for boarding advertisements and the everyday places around your university.</p>
-          <div className="hero-actions"><Button onClick={() => setDialog('map')}><Icon name="compass" /> {en.landing.exploreMap} <Icon name="arrow" /></Button><Button variant="secondary" onClick={() => setDialog('adverts')}>{en.landing.browseAdvertisements} <Icon name="arrow" /></Button></div>
+          <div className="hero-actions"><Button onClick={() => router.push(exploreHref({university: university?.slug}))}><Icon name="compass" /> {en.landing.exploreMap} <Icon name="arrow" /></Button><Button variant="secondary" onClick={() => setDialog('adverts')}>{en.landing.browseAdvertisements} <Icon name="arrow" /></Button></div>
           <p className="hero-reassurance"><Icon name="shield" /> Open to browse. Built around your privacy.</p>
         </div>
         <div className="hero-image-note"><span>01 / THE NEXT CHAPTER</span><a href="#photo-credits">Illustrative photography · view credits <Icon name="arrow" /></a></div>

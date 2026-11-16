@@ -1,7 +1,8 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import Home from '../src/app/page';
-vi.mock('next/navigation', () => ({useRouter: () => ({push: vi.fn(), refresh: vi.fn()})}));
+const {push} = vi.hoisted(() => ({push: vi.fn()}));
+vi.mock('next/navigation', () => ({useRouter: () => ({push, refresh: vi.fn()})}));
 afterEach(() => {cleanup(); vi.unstubAllGlobals();});
 describe('Editorial Explorer landing', () => {
   it('presents the hero, truthful examples, credits and privacy without false inventory', () => {
@@ -14,11 +15,10 @@ describe('Editorial Explorer landing', () => {
     expect(screen.getAllByText('Synthetic example')).toHaveLength(3);
     expect(screen.queryByRole('button', {name: /save|book now|publish/i})).not.toBeInTheDocument();
   });
-  it('gives meaningful availability information instead of dead map/advertisement actions', () => {
+  it('opens exploration and gives meaningful advertisement availability information', () => {
     vi.stubGlobal('fetch', vi.fn(() => new Promise(() => {}))); render(<Home />);
     fireEvent.click(screen.getByRole('button', {name: 'Explore Map'}));
-    expect(screen.getByText(/Map discovery is coming soon/)).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', {name: 'Close dialog'}));
+    expect(push).toHaveBeenCalledWith('/explore');
     fireEvent.click(screen.getByRole('button', {name: 'Browse Advertisements'}));
     expect(screen.getByText(/There are no live boarding advertisements here yet/)).toBeInTheDocument();
   });

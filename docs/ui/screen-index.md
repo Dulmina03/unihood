@@ -1,11 +1,11 @@
-# Screen and component index — UNI-003
+# Screen and component index
 
 ## Implemented routes
 
-- `/`: existing engineering preview, now sharing the Campus Teal header and fonts; links to the component library. It is not the final UI-01 discovery landing page.
+- `/`: UI-01 Editorial Explorer landing, implemented in UNI-011.
 - `/design-system`: responsive, noindex synthetic component demonstration. Header anchors lead to `#foundations`, `#collection`, `#map-components`, `#controls`. A skip link focuses main content. On mobile the same navigation expands inline, closes on selection/Escape and restores toggle focus on Escape. Bottom navigation is not needed for this single demo route; actual discovery navigation belongs to Phase 1.
 
-UI-01/UI-03/UI-06/UI-07 remain reference destinations, not implemented product routes. No university selector, real map provider, registration flow, owner write endpoint or future-route dead link is introduced here.
+UI-01 and the UI-03 shell are implemented below. UI-06/UI-07, real map/provider, registration and owner writes remain future work.
 
 ## Reusable library
 
@@ -23,10 +23,14 @@ Components require **already sanitized public DTOs**. Never pass private coordin
 
 ## Reference interpretation
 
-The four images under `docs/design/references/` informed the compact navy header, serif editorial headings, photographic cards, spacious grid, results rail and restrained layered map controls. Differences are deliberate: no generated reference geography/currency copied, no invented campus distances/ratings/live inventory, no private map pins, no unsupported contact or navigation actions. Only the foundation/demo is shipped; the map slot honestly reports unavailable and the native dialog replaces any decorative overlay. See [verification evidence](../verification/UNI-003/README.md).
+The four images under `docs/design/references/` informed the compact navy header, serif editorial headings, photographic cards, spacious grid, results rail and restrained layered map controls. Differences are deliberate: no generated reference geography/currency copied, no invented campus distances/ratings/live inventory, no private map pins, no unsupported contact or navigation actions. In the UNI-003 foundation/demo, the map slot honestly reports unavailable and the native dialog replaces any decorative overlay. See [verification evidence](../verification/UNI-003/README.md).
 
 Human screen-reader, translated-language and cross-browser approval are not implied by automated Chromium/axe checks. UNI-015 still owns full product E2E and broader assistive-technology smoke testing.
 
 ## UNI-011 implemented routes
 
-`/` now implements UI-01 Editorial Explorer with inline university/campus/entrance selection; `/u/[slug]` is the guest university/QR entry; `/photo-credits` records image context and license. Loading/empty/error/retry/not-found states and targeted keyboard/browser/accessibility tests are included. See [landing behavior and scope](landing.md) and [evidence](../verification/UNI-011/README.md). Map, real advertisement/discovery and final registration routes remain deferred to their specified issues; no placeholder link claims those features work.
+`/` now implements UI-01 Editorial Explorer with inline university/campus/entrance selection; `/u/[slug]` is the guest university/QR entry; `/photo-credits` records image context and license. Loading/empty/error/retry/not-found states and targeted keyboard/browser/accessibility tests are included. See [landing behavior and scope](landing.md) and [evidence](../verification/UNI-011/README.md). Actual map/provider, real advertisement/discovery and final registration features remain deferred to their specified issues; no placeholder link claims those features work.
+
+## UNI-012 implemented route
+
+`/explore` implements the UI-03 responsive shell with real public university/campus/entrance selection, validated URL state, floating filters and selected gate preview, a collapsible tablet rail, mobile results sheet and Map/List toggle. No map provider or listing feed is fabricated. See [shell behavior and boundaries](explore.md) and [screenshots/verification](../verification/UNI-012/README.md).

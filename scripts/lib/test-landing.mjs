@@ -46,7 +46,13 @@ export async function startLandingIntegration(apiEndpoint) {
       const response = await fetch(`${base}/api/universities`, {method, headers: {'X-Role': 'owner', 'X-User-Id': 'admin'}, signal: AbortSignal.timeout(4000)});
       assert.equal(response.status, 405);
     }
-    console.log('PASS: real Next landing/QR and read-only adapter → Nest UNI-010 API → isolated PostGIS; invalid/unknown slug and parent scope');
+    const explore = await get(`/explore?university=synthetic-demo-university&campus=${cid}&entrance=30000000-0000-4000-8000-000000000001&view=list`);
+    assert.equal(explore.status, 200);
+    const shell = await explore.text();
+    assert.match(shell, /Explore your university neighborhood/);
+    assert.match(shell, /Loading exploration controls/);
+    assert.ok(!shell.includes('DATABASE_URL') && !shell.includes('unihood_test_only'));
+    console.log('PASS: real Next explore shell/landing/QR and read-only adapter → Nest UNI-010 API → isolated PostGIS; invalid/unknown slug and parent scope');
     return {close, async checkOutage() {
       const response = await get('/api/universities'); assert.equal(response.status, 503);
       const error = ErrorResponseSchema.parse(await response.json()); assert.equal(error.error.code, 'SERVICE_UNAVAILABLE');

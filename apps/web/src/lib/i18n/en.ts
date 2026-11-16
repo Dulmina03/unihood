@@ -13,6 +13,18 @@ export const en = {
     chooseCampusHint: 'Choose a university, then a campus and public entrance.',
     directoryError: 'We couldn’t load universities', retryUniversities: 'Try universities again',
   },
+  explore: {
+    titleLead: 'Explore around', titleEnd: 'your university.',
+    mapTitleLead: 'Your neighborhood.', mapTitleEnd: 'A new perspective.',
+    university: 'University', campus: 'Campus', entrance: 'Public entrance',
+    mapStatus: 'Map unavailable',
+    filters: 'Filters', share: 'Share', map: 'Map', list: 'List',
+    entrances: 'Campus gates', boardings: 'Boardings', essentials: 'Essentials',
+    search: 'Find a public entrance', publicPlaces: 'Public places',
+    mapUnavailable: 'The map is not connected yet. Explore public campus entrances in the list while the map takes shape.',
+    exploreList: 'Explore the list', invalidSelection: 'This selection is invalid',
+    loadError: 'We couldn’t load public places', retry: 'Retry public places',
+  },
   system: {title: 'Familiar places. Thoughtful details.', edition: 'Campus Teal / Foundation 01'},
   privacy: {
     community: 'Community recommendations appear as advertisements only. They never publish exact boarding pins, official owner prices or confirmed owner vacancies.',

@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { UniversityPageSchema, CampusPageSchema, CampusEntrancePageSchema, UniversitySchema, type RuntimeSchema } from '@unihood/contracts';
+import { exploreHref } from '../../lib/explore/query';
 import { en } from '../../lib/i18n/en';
 import { Badge, Button, Field, Icon, Notice } from '@unihood/ui';
 type University = ReturnType<typeof UniversitySchema.parse>;
@@ -68,6 +69,7 @@ export function UniversityPicker({university}: {university?: University}) {
           <Pagination page={entrancePage} next={entrances.data?.page.hasNextPage ?? false} label="Entrance directory" onChange={(value) => {setEntrancePage(value); setEntranceId('');}} />
         </div></div>
         {selectedEntrance && <p role="status" className="picker-confirmation"><Icon name="check" /> {selectedEntrance.name} selected. {selectedEntrance.provenance.dataKind === 'SYNTHETIC' ? 'Demonstration only; this is not a real gate.' : 'Public campus entrance; no boarding location is shared.'}</p>}
+        <Button variant="secondary" onClick={() => router.push(exploreHref({university: chosen.slug, campus: selectedCampus?.id, entrance: selectedEntrance?.id}))}>Explore selected campus <Icon name="arrow" /></Button>
         <p className="picker-source">Source: {source?.sourceLabel}. {source?.dataKind === 'SYNTHETIC' ? 'Fictional campus data. No real coordinates or listings are implied.' : 'University selection does not imply university endorsement.'}</p>
       </div>}
     </form>
