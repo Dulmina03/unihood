@@ -1,6 +1,6 @@
 # Phase 1 acceptance — UNI-015
 
-This gate covers the existing guest university/campus/entrance, exploration and browser-only favourites workflow (specification §10 UNI-010–015), not later boarding/POI/registration features. [Actual UNI-015 evidence](../verification/UNI-015/README.md) separates automated passes, a partial real Orca attempt and outstanding human approvals.
+This gate covers the existing guest university/campus/entrance, exploration and browser-only favourites workflow (specification §10 UNI-010–015), not later boarding/POI/registration features. [Actual UNI-015 evidence](../verification/UNI-015/README.md) separates historical automated passes, the partial agent Orca attempt and later human-confirmed integration/CI/visual/core Orca results. [Closure review](../verification/UNI-015/human-acceptance.md) records the exact remaining manual checklist evidence; Phase 1 closure is still pending those confirmations.
 
 ## Commands and prerequisites
 
@@ -32,7 +32,7 @@ The complete guest case uses keyboard Tab/Enter/native selectors from a universi
 
 ## Real screen-reader smoke — human gate
 
-Automated keyboard and axe tests are not a screen-reader pass. Use a working desktop screen reader/browser combination (for example Orca with Firefox or Chromium); record actual versions, OS, date and speech/braille behavior. The current session's limited Orca attempt is documented as incomplete, not passed. Do not replace an existing user's screen reader, import settings over their profile or publish raw desktop debug logs. A speech-generation log alone does not establish auditory intelligibility or independent usability.
+Automated keyboard and axe tests are not a screen-reader pass. Use a working desktop screen reader/browser combination (for example Orca with Firefox or Chromium); record actual versions, OS, date and speech/braille behavior. The original agent Orca attempt remains incomplete. A later human Orca/Chrome/Ubuntu core smoke is reported successful for the listed controls/navigation; that does not retroactively pass the agent attempt. [Human observations and unconfirmed checklist items](../verification/UNI-015/human-acceptance.md) distinguish both sources. Actual human test date/versions were not supplied. Do not replace an existing user's screen reader, import settings over their profile or publish raw desktop debug logs. A speech-generation log alone does not establish auditory intelligibility or independent usability.
 
 Perform and record each step as PASS / FAIL / NOT RUN:
 
@@ -49,4 +49,4 @@ Perform and record each step as PASS / FAIL / NOT RUN:
 
 Review UI-01 and UI-03 independently at 390×844 and 1440×900 against [Editorial Explorer](../design/references/01_landing_editorial.png) and [Urban Map](../design/references/02_explore_urban_map.png). Check tablet 768px and no overflow at 320px. Retain existing Campus Teal, photo provenance, public-only labels, rail/sheet and usable map-failure alternative. Record intentional differences: synthetic public gates rather than fictional boardings, mocked basemap resources and no unsupported routes/distances/owner claims.
 
-Agent screenshot inspection is recorded separately from **human visual approval**. Phase 1 remains **in progress** until the real screen-reader gate, separate human UI-01/UI-03 approvals, issue verification and human Git checkpoint are resolved. UNI-015 remote CI also requires new run evidence; earlier green runs do not prove this new command passed remotely. Human-only Git, optional PRs, fast-forward-only dev integration and stable-release main remain unchanged. Stop before Phase 2.
+Agent screenshot inspection is recorded separately from **human visual approval**. Human approval of UI-01/UI-03 desktop/mobile and live OpenFreeMap with synthetic fixtures is now confirmed. UNI-015 commit/merge into dev and run #16 SUCCESS on short commit 432e83c (all three jobs PASS) are human-confirmed; no run URL/full SHA or per-command logs supplied. The core human Orca smoke is confirmed, while the remaining checklist evidence in the closure review keeps Phase 1 **in progress**. These are remaining manual confirmations, not an assertion of a new application failure. The documentation update has its own human Git checkpoint. Human-only Git, optional PRs, fast-forward-only dev integration and stable-release main remain unchanged. Stop before Phase 2.

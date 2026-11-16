@@ -1,6 +1,6 @@
 # UNI-015 local development startup repair
 
-Verified 16 November 2026 on human-created `fix/uni-015-local-dev-startup`, read from plain `.git/HEAD`; no Git commands performed. The prior UNI-015 checkpoint and outstanding manual acceptance remain historical/open; this branch is a scoped startup repair, not Phase 2 or proof of human integration/remote CI.
+Verified 16 November 2026 on human-created `fix/uni-015-local-dev-startup`, read from plain `.git/HEAD`; no Git commands performed. The original pending UNI-015 integration/visual/CI status is superseded by the later [human acceptance record](human-acceptance.md); remaining manual screen-reader evidence is listed there; this branch is a scoped startup repair, not Phase 2 or proof of human integration/remote CI.
 
 ## Observed cause and correction
 
@@ -21,4 +21,4 @@ Initial attempts inside the restricted execution environment failed to start the
 
 ## Human checkpoint
 
-Run `pnpm dev`, then open http://127.0.0.1:3000 using the normal root `.env`; existing persistent data is preserved. Human Git review/commit/push and optional PR/fast-forward integration remain required. No remote run/commit evidence is inferred. UNI-013 remote CI remains unverified; UNI-014 run #14 human-confirmed success at short commit 9eefe89 remains unchanged. Full real screen-reader completion and human UI-01/UI-03 visual approval remain open.
+Run `pnpm dev`, then open http://127.0.0.1:3000 using the normal root `.env`; existing persistent data is preserved. Human Git review/commit/push and optional PR/fast-forward integration remain required. No remote run/commit evidence is inferred. UNI-013 remote CI remains unverified; UNI-014 run #14 human-confirmed success at short commit 9eefe89 remains unchanged. This was the original startup-repair handoff. The later [human acceptance record](human-acceptance.md) confirms UNI-015 integration, run #16 success, UI-01/UI-03 desktop/mobile approval and core Orca smoke; only the detailed remaining manual screen-reader confirmations keep Phase 1 open. It does not independently establish a separate startup-repair merge or CI run.
