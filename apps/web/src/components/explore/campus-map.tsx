@@ -37,6 +37,8 @@ export function CampusMap({provider, points, selected, expanded, onSelect, onSho
     return () => {active = false; clearTimeout(importTimer); engine.current?.destroy(); engine.current = null;};
   }, [provider, attempt]);
   useEffect(() => {engine.current?.update(points, selected, expanded);}, [points, selected, expanded]);
+  // Fit after the ready legend mounts, so pin visibility accounts for its overlay.
+  useEffect(() => {if (status === 'ready') engine.current?.fit();}, [status]);
   return <>
     <div className="campus-map-canvas" ref={container} hidden={status !== 'ready' && status !== 'loading'} />
     {status !== 'ready' && <div className="explore-map-message"><span className="explore-compass"><Icon name="compass" /></span><p className="explore-kicker">A LITTLE CLOSER TO CAMPUS</p><h2>{en.explore.mapTitleLead}<br /><em>{en.explore.mapTitleEnd}</em></h2><p role="status">{messages[status]}</p><div className="campus-map-actions">{['network', 'webgl', 'context'].includes(status) && <Button variant="secondary" onClick={() => setAttempt((value) => value + 1)}>Retry map</Button>}<Button onClick={onShowList}>{en.explore.exploreList} <Icon name="arrow" /></Button></div><span className="explore-provider-note">No boarding pins or walking routes are displayed.</span></div>}

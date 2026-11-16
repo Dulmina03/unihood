@@ -25,7 +25,7 @@ Components require **already sanitized public DTOs**. Never pass private coordin
 
 The four images under `docs/design/references/` informed the compact navy header, serif editorial headings, photographic cards, spacious grid, results rail and restrained layered map controls. Differences are deliberate: no generated reference geography/currency copied, no invented campus distances/ratings/live inventory, no private map pins, no unsupported contact or navigation actions. In the UNI-003 foundation/demo, the map slot honestly reports unavailable and the native dialog replaces any decorative overlay. See [verification evidence](../verification/UNI-003/README.md).
 
-Human screen-reader, translated-language and cross-browser approval are not implied by automated Chromium/axe checks. UNI-015 still owns full product E2E and broader assistive-technology smoke testing.
+Human screen-reader, translated-language and cross-browser approval are not implied by automated Chromium/axe checks. UNI-015 adds integrated Phase 1 guest E2E and records broader assistive-technology/visual smoke evidence; real screen-reader completion and human visual approval remain separate gates.
 
 ## UNI-011 implemented routes
 

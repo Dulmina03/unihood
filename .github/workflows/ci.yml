@@ -108,3 +108,12 @@ jobs:
         env:
           PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/unihood-playwright
           UI_EVIDENCE_DIR: ${{ runner.temp }}/unihood-ui-evidence
+      - name: Build API for real Phase 1 browser integration
+        run: pnpm --filter @unihood/api build
+      - name: Prepare synthetic disposable Compose settings
+        run: cp .env.example .env
+      - name: Run Phase 1 guest E2E against isolated PostGIS
+        run: pnpm test:e2e
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: ${{ runner.temp }}/unihood-playwright
+          UI_EVIDENCE_DIR: ${{ runner.temp }}/unihood-phase1-evidence

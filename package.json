@@ -12,7 +12,7 @@
     "typecheck": "pnpm --filter @unihood/contracts build && pnpm -r typecheck",
     "test": "node --test scripts/lib/database.test.mjs scripts/check-repository.test.mjs && pnpm --filter @unihood/contracts build && pnpm -r test",
     "build": "pnpm -r build",
-    "test:e2e": "node scripts/e2e-pending.mjs",
+    "test:e2e": "node scripts/test-phase-one.mjs",
     "db:up": "docker compose --env-file .env -f infra/compose.yaml up -d --wait db",
     "db:down": "docker compose --env-file .env -f infra/compose.yaml stop db",
     "db:migrate": "node --env-file-if-exists=.env scripts/db.mjs migrate",

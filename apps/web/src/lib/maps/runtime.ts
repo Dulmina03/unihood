@@ -17,7 +17,23 @@ export function mountMap(container: HTMLElement, provider: Extract<MapProvider, 
     disposed = true; clearTimeout(timer); observer?.disconnect();
     for (const item of markers) {item.button.removeEventListener('click', item.click); item.marker.remove();}
     markers = [];
-    if (map) {map.off('load', loaded); map.off('error', failed); map.off('webglcontextlost', lost); map.remove();}
+    if (map) {map.off('load', loaded); map.off('error', failed); map.off('webglcontextlost', lost); map.off('render', syncMarkerVisibility); map.remove();}
+  };
+  // Do not leave a partially covered pin as a tiny click target or invisible tab stop.
+  // Visibility preserves layout, so subsequent pan/resize renders can expose it again.
+  const syncMarkerVisibility = () => {
+    if (disposed || !map) return;
+    const viewport = container.getBoundingClientRect();
+    const workspace = container.closest('.explore-workspace');
+    const covers = Array.from(workspace?.querySelectorAll<HTMLElement>('.explore-floating, .campus-map-attribution, .campus-map-legend, .explore-rail, .explore-preview, .explore-rail-toggle, .maplibregl-ctrl') ?? [])
+      .filter((element) => element.getClientRects().length > 0).map((element) => element.getBoundingClientRect());
+    for (const {button} of markers) {
+      const box = button.getBoundingClientRect();
+      const obscured = box.width === 0 || box.height === 0 || box.left < viewport.left || box.top < viewport.top || box.right > viewport.right || box.bottom > viewport.bottom || covers.some((cover) => box.left < cover.right && box.right > cover.left && box.top < cover.bottom && box.bottom > cover.top);
+      button.style.visibility = obscured ? 'hidden' : '';
+      button.tabIndex = obscured ? -1 : 0;
+      if (obscured && document.activeElement === button) map.getCanvas().focus();
+    }
   };
   const fail = (state: MapState) => {if (!disposed) {destroy(); onState(state);}};
   const loaded = () => {if (!disposed) {clearTimeout(timer); if ((map.getStyle().metadata as Record<string, unknown> | undefined)?.['unihood:demo'] === true) onState('ready', true); else onState('ready');}};
@@ -46,7 +62,7 @@ export function mountMap(container: HTMLElement, provider: Extract<MapProvider, 
       transformRequest: (url) => {if (!allowedMapResource(url)) throw new Error('Map resource is not allowed'); return {url, credentials: 'same-origin', referrerPolicy: 'no-referrer'};}});
     map.addControl(new gl.NavigationControl({showCompass: false}), 'top-right');
     map.getCanvas().setAttribute('aria-label', 'Campus map. Arrow keys pan; plus and minus zoom. Use the public places list for equivalent selection.');
-    map.on('load', loaded); map.on('error', failed); map.on('webglcontextlost', lost);
+    map.on('load', loaded); map.on('error', failed); map.on('webglcontextlost', lost); map.on('render', syncMarkerVisibility);
     observer = new ResizeObserver(fit); observer.observe(container);
     timer = setTimeout(() => fail('network'), 12000);
   } catch {destroy(); onState('webgl');}

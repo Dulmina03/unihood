@@ -39,7 +39,7 @@ pnpm test
 pnpm build
 ```
 
-Tests cover migration file/CLI safeguards, strict health/readiness validation, the landing preview/privacy message and real Nest HTTP routing, including rejection of nonexistent write routes even with a forged role header. `pnpm db:test` separately exercises actual PostgreSQL and API readiness. `pnpm test:e2e` deliberately exits **1** with a not-configured message; browser E2E arrives in UNI-015. It is not counted as a passing check.
+Tests cover migration file/CLI safeguards, strict health/readiness validation, the landing preview/privacy message and real Nest HTTP routing, including rejection of nonexistent write routes even with a forged role header. `pnpm db:test` separately exercises actual PostgreSQL and API readiness. `pnpm test:e2e` now runs the integrated Phase 1 guest acceptance journey against owned production Next/Nest and disposable PostGIS after build; see [prerequisites and boundaries](docs/testing/phase-1-acceptance.md). Later product-domain E2E and human accessibility/visual approval remain separate.
 
 After building, run each in a separate terminal:
 
@@ -127,7 +127,7 @@ pnpm build
 pnpm test:ui
 ```
 
-Playwright starts/stops its own production server on loopback port 3180 and writes evidence under `docs/verification/UNI-003`. The port must be free. Set `PLAYWRIGHT_BROWSERS_PATH` consistently for installation and testing if using a nondefault browser cache. Chromium system dependencies may need provision on a clean machine. Browser reports/traces use `/tmp/unihood-ui-test-results`; this is component acceptance, not the pending UNI-015 full-product `pnpm test:e2e` suite. UNI-003 originally did not configure remote browser CI. UNI-006 now configures the existing component suite as a separate gate; remote execution is not claimed without an observed run. Set UI_EVIDENCE_DIR to a temporary directory to avoid replacing checked-in evidence when testing CI behavior.
+Playwright starts/stops its own production server on loopback port 3180 and writes evidence under `docs/verification/UNI-003`. The port must be free. Set `PLAYWRIGHT_BROWSERS_PATH` consistently for installation and testing if using a nondefault browser cache. Chromium system dependencies may need provision on a clean machine. Browser reports/traces use `/tmp/unihood-ui-test-results`; this is component acceptance, separate from the integrated UNI-015 `pnpm test:e2e` Phase 1 guest journey. UNI-003 originally did not configure remote browser CI. UNI-006 now configures the existing component suite as a separate gate; remote execution is not claimed without an observed run. Set UI_EVIDENCE_DIR to a temporary directory to avoid replacing checked-in evidence when testing CI behavior.
 
 ## REST contract and actor baseline (UNI-005)
 
@@ -151,7 +151,7 @@ Open `/` to choose a university, campus and public entrance from the UNI-010 API
 
 The photographic landing uses approved Campus Teal components and explicitly synthetic inspiration cards with no live listings/prices/owner claims. Explore Map now opens the UNI-012 shell; real advertisements/essentials and account actions explain their current availability. [Landing/source documentation](docs/ui/landing.md), [photography manifest](docs/ui/landing-assets.json) and [screenshots/verification](docs/verification/UNI-011/README.md) record behavior and scope. Final registration and live boarding discovery remain deferred; the UNI-013 map integration is described below.
 
-For the real web → API → isolated PostGIS regression after building: `TEST_LANDING_WEB=1 pnpm db:test`. CI's isolated DB job enables it, preserving tmpfs storage and ownership checks. `pnpm test:ui` also runs targeted landing/QR/accessibility tests with a test-only local HTTP upstream; this is separate from UNI-015's unimplemented full-product E2E. UNI-010 integration and remote CI are human-verified SUCCESS (run #6, dev, f8e6623; all three jobs); run URL/full SHA were not supplied. UNI-011 is human-confirmed committed and merged into dev; remote runs #7/#8 are now verified failed at the browser job’s web build, with the same missing contracts prerequisite as UNI-012 run #9; see [CI repair evidence](docs/verification/UNI-012/ci-repair.md).
+For the real web → API → isolated PostGIS regression after building: `TEST_LANDING_WEB=1 pnpm db:test`. CI's isolated DB job enables it, preserving tmpfs storage and ownership checks. `pnpm test:ui` also runs targeted landing/QR/accessibility tests with a test-only local HTTP upstream; this is separate from UNI-015's integrated Phase 1 guest E2E. UNI-010 integration and remote CI are human-verified SUCCESS (run #6, dev, f8e6623; all three jobs); run URL/full SHA were not supplied. UNI-011 is human-confirmed committed and merged into dev; remote runs #7/#8 are now verified failed at the browser job’s web build, with the same missing contracts prerequisite as UNI-012 run #9; see [CI repair evidence](docs/verification/UNI-012/ci-repair.md).
 
 
 ## Urban Map shell (UNI-012)
@@ -166,3 +166,5 @@ Set `MAP_PROVIDER=openfreemap` and `MAP_STYLE=liberty` (or `bright`) to enable t
 UNI-012 was human-confirmed committed, fast-forward merged and pushed to dev. Its repaired remote CI passed Workspace quality, Isolated PostGIS integration and Component browser acceptance at short commit **99eeef1**. Run number/URL/full SHA were not supplied; failed runs #7/#8/#9 remain historical evidence.
 
 UNI-014 adds [guest favourites](docs/ui/favourites.md) at `/saved`, using only browser localStorage and current public gate reads. No account, sync or new environment setting is required. Existing private data and map-provider boundaries remain unchanged. Verification: [UNI-014](docs/verification/UNI-014/README.md).
+
+UNI-015 adds `pnpm test:e2e`: a complete guest QR → selection → exploration → preview → favourite → Saved → reopen/share journey against owned production Next/Nest and disposable tmpfs PostGIS. Build contracts, API and web first. See [acceptance commands and manual gates](docs/testing/phase-1-acceptance.md) and [actual verification](docs/verification/UNI-015/README.md). Existing `pnpm test:ui` regressions remain separate. Real screen-reader completion and human UI-01/UI-03 visual approval are not implied by automated passes. UNI-014 merge/push and run #14 SUCCESS at short commit 9eefe89 are human-confirmed; run URL/full SHA unspecified. UNI-013 remote CI remains unverified.

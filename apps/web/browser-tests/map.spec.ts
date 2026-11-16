@@ -13,6 +13,7 @@ async function ready(page: Page) {await expect(page.locator('.explore-context sm
 test('real MapLibre worker, synthetic resource screenshots, responsive composition and accessibility', async ({page}, info) => {
   await mockProvider(page); await page.goto(selected); await ready(page); await page.evaluate(() => document.fonts.ready);
   await expect(page.locator('.maplibregl-canvas')).toHaveCount(1);
+  if (info.project.name === 'mobile') await page.getByRole('button', {name: 'Collapse results'}).click();
   await expect(page.getByRole('button', {name: 'Select Synthetic Primary Gate on map · Synthetic example', exact: true})).toHaveAttribute('aria-pressed', 'true');
   for (const width of [320, 390, 768, 1440]) {
     await page.setViewportSize({width, height: width === 390 ? 844 : 900});
@@ -29,7 +30,7 @@ test('real MapLibre worker, synthetic resource screenshots, responsive compositi
     }
   }
   await page.setViewportSize(info.project.use.viewport!);
-  if (info.project.name === 'mobile') await page.getByRole('button', {name: 'Collapse results'}).click();
+  if (info.project.name === 'mobile' && await page.getByRole('button', {name: 'Collapse results'}).isVisible()) await page.getByRole('button', {name: 'Collapse results'}).click();
   await page.getByRole('button', {name: 'Recenter gates'}).click(); await page.waitForTimeout(200);
   await mkdir(evidence, {recursive: true}); await page.screenshot({path: `${evidence}/map-${info.project.name}.png`});
   const report = await new AxeBuilder({page}).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();

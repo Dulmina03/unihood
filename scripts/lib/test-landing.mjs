@@ -3,13 +3,13 @@ import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
 import { fileURLToPath } from 'node:url';
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-export async function startLandingIntegration(apiEndpoint) {
+export async function startLandingIntegration(apiEndpoint, {provider = 'disabled'} = {}) {
   const root = fileURLToPath(new URL('../../', import.meta.url));
   const probe = createServer();
   await new Promise((resolve, reject) => {probe.once('error', reject); probe.listen(0, '127.0.0.1', resolve);});
   const port = probe.address().port; await new Promise((resolve) => probe.close(resolve));
   const child = spawn(process.execPath, ['--env-file-if-exists=../../.env', 'scripts/next.mjs', 'start'], {cwd: `${root}apps/web`, stdio: 'ignore',
-    env: {...process.env, WEB_PORT: String(port), API_BASE_URL: `${apiEndpoint}/api/v1`, ENABLE_SYNTHETIC_ACTORS: 'false', SYNTHETIC_ACTOR: '', NEXT_TELEMETRY_DISABLED: '1'}});
+    env: {...process.env, MAP_PROVIDER: provider, MAP_STYLE: 'liberty', APP_ENV: 'test', WEB_PORT: String(port), API_BASE_URL: `${apiEndpoint}/api/v1`, ENABLE_SYNTHETIC_ACTORS: 'false', SYNTHETIC_ACTOR: '', NEXT_TELEMETRY_DISABLED: '1'}});
   const base = `http://127.0.0.1:${port}`;
   const get = (path) => fetch(`${base}${path}`, {signal: AbortSignal.timeout(8000)});
   const close = async () => {
@@ -53,7 +53,7 @@ export async function startLandingIntegration(apiEndpoint) {
     assert.match(shell, /Loading exploration controls/);
     assert.ok(!shell.includes('DATABASE_URL') && !shell.includes('unihood_test_only'));
     console.log('PASS: real Next explore shell/landing/QR and read-only adapter → Nest UNI-010 API → isolated PostGIS; invalid/unknown slug and parent scope');
-    return {close, async checkOutage() {
+    return {base, close, async checkOutage() {
       const response = await get('/api/universities'); assert.equal(response.status, 503);
       const error = ErrorResponseSchema.parse(await response.json()); assert.equal(error.error.code, 'SERVICE_UNAVAILABLE');
       assert.ok(!JSON.stringify(error).includes('postgres') && !JSON.stringify(error).includes('127.0.0.1'));

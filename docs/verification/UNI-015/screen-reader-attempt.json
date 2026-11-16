@@ -1,0 +1,30 @@
+{
+  "status": "PARTIAL / INCOMPLETE; no complete screen-reader pass",
+  "screenReader": "Orca 50.3",
+  "accessibilityBus": "AT-SPI2 2.60.4",
+  "browser": "Google Chrome for Testing 159.0.8154.6, headed X11, force-renderer-accessibility",
+  "speechBackend": "speechdispatcherfactory; actual SPEECH OUTPUT and SPEECH DISPATCHER Speaking events observed",
+  "environment": "Wayland Ubuntu session; process-local system schemas/library cleanup, GSETTINGS_BACKEND=memory; no --replace or settings import requested",
+  "directoryBoundary": "test-only synthetic HTTP upstream; not Nest/PostGIS in this AT attempt",
+  "actualObservedAnnouncements": [
+    "'document web'",
+    "'Browse mode'",
+    "'Your university | UniHood'",
+    "'Finished loading Your university | UniHood.'",
+    "'Page has 11 landmarks, 15 headings, 1 form, 14 unvisited links.'"
+  ],
+  "attempt": "QR page load and programmatic control focus/keyboard actions; attempted campus/entrance selection and exploration navigation",
+  "result": "Page/title/landmark announcements observed. Control journey did not reliably complete: heading wait timed out after navigation to root. No application root cause or completed control-reading result is inferred.",
+  "notVerified": [
+    "auditory intelligibility",
+    "screen-reader keyboard browse/focus-mode journey",
+    "selector/save/dialog/live-region announcements",
+    "human screen-reader acceptance"
+  ],
+  "cleanup": "Only owned Orca debug-log process and test server stopped. Raw desktop debug log excluded; only allowlisted UniHood page speech retained.",
+  "diagnostics": [
+    "Initial restricted AT-SPI bus access and editor schema/library conflicts required process-local system overrides.",
+    "Orca emitted a speech callback traceback and XKB keymap diagnostics during the attempt/shutdown; full control-reading success was not established.",
+    "Existing local Orca customizations were loaded; no factory-profile certification is claimed."
+  ]
+}

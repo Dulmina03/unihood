@@ -19,6 +19,7 @@ test('rejects moving actions, unsafe shell interpolation, hidden failures and ac
     (value) => {value.jobs.checks.steps[0].with['persist-credentials'] = true;},
     (value) => {value.jobs.checks.steps.push({run: 'echo ${{ github.event.pull_request.title }}'});},
     (value) => {value.jobs.checks.steps.push({run: 'pnpm test || true'});},
+    (value) => {value.jobs.ui.steps.push({run: 'pnpm db:seed'});},
     (value) => {value.jobs.checks['continue-on-error'] = true;},
     (value) => {value.jobs.checks.env = {ENABLE_SYNTHETIC_ACTORS: 'true'};},
   ]) {const copy = structuredClone(original); mutate(copy); assert.throws(() => validateWorkflow(copy, 'unsafe'));}
@@ -33,4 +34,12 @@ test('browser job builds generated contracts before web and runs browser accepta
   const web = commands.indexOf('pnpm --filter @unihood/web build');
   const browser = commands.indexOf('pnpm test:ui');
   assert.ok(contracts >= 0 && web > contracts && browser > web, 'Fresh browser runners need contracts dist before web build and browser acceptance');
+});
+
+test('Phase 1 E2E preserves browser regressions and builds API before the isolated journey', () => {
+  const commands = original.jobs.ui.steps.map((step) => step.run);
+  assert.ok(commands.indexOf('pnpm test:e2e') > commands.indexOf('pnpm test:ui'));
+  assert.ok(commands.indexOf('pnpm --filter @unihood/api build') > commands.indexOf('pnpm --filter @unihood/contracts build'));
+  assert.ok(commands.indexOf('pnpm test:e2e') > commands.indexOf('pnpm --filter @unihood/api build'));
+  assert.ok(commands.indexOf('cp .env.example .env') < commands.indexOf('pnpm test:e2e'));
 });

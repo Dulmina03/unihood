@@ -40,7 +40,7 @@ export function validateWorkflow(workflow, name) {
       }
       if (step.run) {
         assert.ok(!step.run.includes('${{'), `${name}/${id}: do not interpolate contexts into shell code`);
-        assert.ok(!/continue-on-error|\|\|\s*true|pnpm\s+test:e2e\b|pnpm\s+db:(?:up|down|seed|migrate|rollback)\b|git\s+(?:add|commit|push|merge|rebase|tag)|gh\s+pr\s+(?:create|merge)/.test(step.run), `${name}/${id}: masked checks, persistent DB commands or Git mutation`);
+        assert.ok(!/continue-on-error|\|\|\s*true|pnpm\s+db:(?:up|down|seed|migrate|rollback)\b|git\s+(?:add|commit|push|merge|rebase|tag)|gh\s+pr\s+(?:create|merge)/.test(step.run), `${name}/${id}: masked checks, persistent DB commands or Git mutation`);
       }
     }
   }
@@ -55,10 +55,14 @@ export async function checkRepository(root = process.cwd()) {
   for (const command of ['pnpm install --frozen-lockfile', 'pnpm check:repo', 'pnpm check:workflows', 'pnpm lint', 'pnpm typecheck', 'pnpm test', 'pnpm build']) assert.ok(runs('checks').includes(command), `Missing workspace gate: ${command}`);
   assert.ok(runs('database').includes('pnpm db:test'), 'Isolated database gate required');
   assert.ok(runs('ui').includes('pnpm test:ui'), 'Component browser gate required');
+  assert.ok(runs('ui').includes('pnpm test:e2e'), 'Phase 1 E2E gate required');
+  const e2eStep = ci.jobs.ui.steps.find((step) => step.run === 'pnpm test:e2e');
+  assert.ok(e2eStep.env.UI_EVIDENCE_DIR.startsWith('${{ runner.temp }}/'), 'Phase 1 evidence must use temporary storage');
   const uiStep = ci.jobs.ui.steps.find((step) => step.run === 'pnpm test:ui');
   const installBrowser = ci.jobs.ui.steps.find((step) => step.run?.includes('playwright install'));
   assert.ok(uiStep.env.UI_EVIDENCE_DIR.startsWith('${{ runner.temp }}/'), 'Browser evidence must use temporary storage');
   assert.equal(uiStep.env.PLAYWRIGHT_BROWSERS_PATH, installBrowser.env.PLAYWRIGHT_BROWSERS_PATH, 'Browser install/test paths must match');
+  assert.equal(e2eStep.env.PLAYWRIGHT_BROWSERS_PATH, installBrowser.env.PLAYWRIGHT_BROWSERS_PATH, 'Phase 1 browser install/test paths must match');
   for (const branch of ['dev', 'main', 'feat/uni-*', 'fix/uni-*', 'chore/uni-*', 'test/uni-*', 'docs/uni-*']) assert.ok(ci.on.push.branches.includes(branch), `Missing solo branch trigger: ${branch}`);
   for (const branch of ['dev', 'main']) assert.ok(ci.on.pull_request.branches.includes(branch), `Missing optional PR target: ${branch}`);
   assert.equal(ci.concurrency?.['cancel-in-progress'], true, 'Superseded runs must be cancellable');
@@ -77,6 +81,7 @@ export async function checkRepository(root = process.cwd()) {
   const pr = await read('.github/pull_request_template.md');
   for (const term of ['UNI-', 'NOT RUN', 'remote CI', 'git merge --ff-only', 'dev', 'privacy', 'human']) assert.ok(pr.toLowerCase().includes(term.toLowerCase()), `PR template missing ${term}`);
   const manifest = JSON.parse(await read('package.json'));
+  assert.equal(manifest.scripts['test:e2e'], 'node scripts/test-phase-one.mjs', 'Phase 1 E2E must use the owned isolated runner');
   assert.match(manifest.packageManager, /^pnpm@\d+\.\d+\.\d+$/, 'Exact pnpm version required');
   console.log(`PASS: ${workflows.length} workflow(s), quality/security policy, isolated Compose test storage and issue/PR metadata`);
 }
