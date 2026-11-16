@@ -1,4 +1,13 @@
-// Node loads the repository .env before this launcher. Existing exported variables win.
+import { loadEnvFile } from 'node:process';
+import { fileURLToPath } from 'node:url';
+
+// Load in-process: Next dev forwards execArgv into NODE_OPTIONS, where Node
+// rejects --env-file / --env-file-if-exists. Existing exported variables win.
+try {
+  loadEnvFile(fileURLToPath(new URL('../../../.env', import.meta.url)));
+} catch (error) {
+  if (error.code !== 'ENOENT') throw error;
+}
 // Resolve WEB_PORT after env loading, rather than expanding it early in a shell.
 const mode = process.argv[2];
 if (!['dev', 'start'].includes(mode)) throw new Error('Expected dev or start');

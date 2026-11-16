@@ -3,9 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "node --env-file-if-exists=../../.env scripts/next.mjs dev",
+    "dev": "node scripts/next.mjs dev",
     "build": "next build",
-    "start": "node --env-file-if-exists=../../.env scripts/next.mjs start",
+    "start": "node scripts/next.mjs start",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:ui": "playwright test"

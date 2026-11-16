@@ -8,7 +8,7 @@ export async function startLandingIntegration(apiEndpoint, {provider = 'disabled
   const probe = createServer();
   await new Promise((resolve, reject) => {probe.once('error', reject); probe.listen(0, '127.0.0.1', resolve);});
   const port = probe.address().port; await new Promise((resolve) => probe.close(resolve));
-  const child = spawn(process.execPath, ['--env-file-if-exists=../../.env', 'scripts/next.mjs', 'start'], {cwd: `${root}apps/web`, stdio: 'ignore',
+  const child = spawn(process.execPath, ['scripts/next.mjs', 'start'], {cwd: `${root}apps/web`, stdio: 'ignore',
     env: {...process.env, MAP_PROVIDER: provider, MAP_STYLE: 'liberty', APP_ENV: 'test', WEB_PORT: String(port), API_BASE_URL: `${apiEndpoint}/api/v1`, ENABLE_SYNTHETIC_ACTORS: 'false', SYNTHETIC_ACTOR: '', NEXT_TELEMETRY_DISABLED: '1'}});
   const base = `http://127.0.0.1:${port}`;
   const get = (path) => fetch(`${base}${path}`, {signal: AbortSignal.timeout(8000)});
