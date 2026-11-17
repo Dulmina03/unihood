@@ -184,3 +184,5 @@ UNI-024 adds [public POI duplicate review](docs/api/duplicates.md) at `/places/c
 UNI-025 adds an internal [pending public POI transaction foundation](docs/architecture/poi-submission-transactions.md): actor-scoped idempotency, canonical/pending final rechecks, exact source collision guards and held synthetic intents. Apply ordered migration 005 without resetting data. No new public submit route/wizard/publication is added; these remain UNI-026. [Actual verification](docs/verification/UNI-025/README.md).
 
 UNI-026 adds the guarded synthetic [public-place proposal demonstration](docs/api/poi-proposals.md) at `/contribute/place`: category/name/source/entrance draft, duplicate review and a private held receipt. Nothing is published. Enable the explicit loopback local/test contributor simulator only; production and staging remain denied.
+
+UNI-027 documents the [provider/license register and controlled public-POI import strategy](docs/architecture/poi-provider-import-strategy.md). It adds no importer or real data; public Nominatim harvesting, tile scraping and unauthorized boarding geometry remain excluded.

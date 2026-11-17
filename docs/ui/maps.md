@@ -45,3 +45,7 @@ Deployments applying CSP need same-origin workers and bundled assets plus `https
 ## UNI-021 public service layers
 
 Essentials uses [bounded public POI reads](../api/places.md) around the already-public selected gate, exact category/name/sort/page URL state and strict POI-only map points. Category glyphs and labels are distinct from gate arrows; only the current result page is mapped. Marker/list/selection/reload/history share a canonical public place UUID. No private boarding origin, inferred distance or owner claim is introduced. Existing worker/provider/license/failure lifecycle is preserved; disabled maps retain the same public service list. New synthetic POIs remain near (0,0), not real Sri Lankan inventory.
+
+## UNI-027 source/import review
+
+The [provider register and import strategy](../architecture/poi-provider-import-strategy.md) rechecks primary service/policy/license sources on 17 November 2026. A HEAD of Liberty again returned 200, public max-age=86400 and CORS `*`; this is not a quota/SLA or all-resource cache promise. It separates basemap display from proposed OSM-derived POI ingestion, records output-attribution/rights and public-deployment age/privacy review gates, and adds no provider activation or runtime change. Existing UNI-013 observations above remain historical.

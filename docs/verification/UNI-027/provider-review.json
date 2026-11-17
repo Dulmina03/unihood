@@ -1,0 +1,34 @@
+{
+  "reviewDate": "2026-11-17",
+  "reviewTimezone": "Asia/Colombo",
+  "scope": "Read-only policy/license pages and one configured-style HEAD; no dataset download, import, account creation or provider activation",
+  "styleHead": {
+    "url": "https://tiles.openfreemap.org/styles/liberty",
+    "httpStatus": 200,
+    "cacheControl": ["max-age=86400", "public"],
+    "accessControlAllowOrigin": "*",
+    "limitation": "One response; not all-resource caching, offline permission, quota, SLA or browser/live-map certification"
+  },
+  "primaryPagesRead": [
+    "https://openfreemap.org/",
+    "https://openfreemap.org/tos/",
+    "https://openfreemap.org/privacy/",
+    "https://raw.githubusercontent.com/hyperknot/openfreemap/main/LICENSE.md",
+    "https://www.openstreetmap.org/copyright",
+    "https://opendatacommons.org/licenses/odbl/1-0/",
+    "https://osmfoundation.org/wiki/Licence/Attribution_Guidelines",
+    "https://operations.osmfoundation.org/policies/nominatim/",
+    "https://operations.osmfoundation.org/policies/tiles/",
+    "https://download.geofabrik.de/",
+    "https://download.geofabrik.de/technical.html",
+    "https://download.geofabrik.de/asia/sri-lanka.html"
+  ],
+  "realDatasetImported": false,
+  "publicDeploymentLegalApproval": "NOT GIVEN",
+  "remainingGates": [
+    "Pilot/source and field verification approval",
+    "ODbL compatibility/share-alike distribution and attribution for actual outputs",
+    "Provider age/privacy language review before public deployment",
+    "Real-source retention, protected importer implementation and actual importer/restore tests"
+  ]
+}

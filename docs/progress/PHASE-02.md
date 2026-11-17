@@ -1,6 +1,6 @@
 # Phase 2 — public POIs and canonical duplicate engine
 
-Status: **UNI-020–025 complete/integrated; UNI-026 in progress** on `feat/uni-026-public-poi-proposals` from clean verified dev a3f3796. Exact roadmap remains UNI-020 → UNI-021 → UNI-022 → UNI-023 → UNI-024 → UNI-025 → UNI-026 → UNI-027. No later issue implemented.
+Status: **UNI-020–026 complete/integrated; UNI-027 in progress** on `docs/uni-027-provider-import-strategy` from clean verified dev acb98a5. Exact roadmap remains UNI-020 → UNI-021 → UNI-022 → UNI-023 → UNI-024 → UNI-025 → UNI-026 → UNI-027. No later issue implemented.
 
 The human has replaced routine human-only Git checkpoints with autonomous one-issue branches, local checks, relevant diff/staging review, conventional commits, issue push/exact-commit CI, fast-forward-only dev integration, dev push/exact-commit CI, then continuation. No force-push/shared-history rewrite/main/release/deployment/data deletion is authorized. Remote CI unavailable/unverified blocks integration/continuation. All five ADRs remain intact. Remaining Phase 1 manual accessibility is [deferred to Phase 6](PHASE-06.md), not PASS.
 
@@ -84,3 +84,15 @@ Depends on UNI-020–025, existing actor/permission interfaces, Campus Teal UI a
 
 
 UNI-026 local acceptance PASS: **320 tests** (13 Node/51 contracts/107 API/149 web), **64 component browser cases**, **12 real integrated E2E** (ten actor-disabled guests plus two separate synthetic contributors), **23 isolated Docker groups**, lint/typecheck/frozen offline install/repository/checksum-verified actionlint/Compose/script/link checks, API and supported Webpack builds. Four 390×844/1440×900 viewport/full-page screenshots reviewed, two zero-violation axe reports and 320/768px overflow checks pass. Receipt contrast and post-commit focus defects corrected; metadata failure rollback/retry and protected/deployed denials exercised. Mock map resources and synthetic browser receipts are distinct from actual Nest/PostGIS E2E. Default local Turbopack remains BLOCKED; failed initial attempts and human/manual/provider limits remain documented. Exact new commit/remote issue and dev CI/integration are pending; UNI-027 not begun. [Evidence](../verification/UNI-026/README.md).
+
+
+## UNI-026 observed integration follow-up
+
+Exact commit `acb98a5514083994d607a033791e79cffd5e98af`; [issue #36](https://github.com/Dulmina03/unihood/actions/runs/44008792025) and [dev #37](https://github.com/Dulmina03/unihood/actions/runs/44009478550) independently observed SUCCESS, all three jobs each. Agent fast-forward integrated/pushed after exact issue checks passed. Earlier pending status is historical and resolved. [Evidence](../verification/UNI-026/README.md).
+
+## UNI-027 — provider/license and controlled import strategy
+
+M2/M5 documentation; depends on UNI-013/020–026 and five ADRs. Rechecks primary provider/license/policy sources; separates optional basemap resources from proposed licensed public-POI extract ingestion. Documents attribution, ODbL/rights review, quotas/caching/token/privacy boundaries, explicit public Nominatim/Google scraping exclusions, manifest provenance, synthetic-first quarantine/recheck/hold/apply/refresh/compensation design and future real-data gates. No importer/runtime/migration/real-data/provider/auth change. [Strategy](../architecture/poi-provider-import-strategy.md), [verification](../verification/UNI-027/README.md). Local validation in progress; new exact issue/dev CI and integration pending. Phase 3 not started.
+
+
+UNI-027 local documentation validation PASS: primary policy/license pages reviewed, one live Liberty HEAD (200/public max-age=86400/CORS `*`), manifest unknowns remain null, links/JSON/diff/repository/checksum-verified actionlint, lint/typecheck and **320 existing tests**. No runtime changes or new mirror tests. Local browser/build/Docker checks are not rerun for the docs-only diff; predecessor UNI-026 results remain separately attributed and all three remote jobs remain required for the exact new commit. Real importer, legal/public-deployment approval, field data and full future §6.3 boarding/media/import acceptance are not claimed. New issue/dev CI and integration pending.

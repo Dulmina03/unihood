@@ -40,3 +40,8 @@ Additional acceptance attempt: the real desktop contributor journey and mobile c
 
 
 A later full unit attempt overlapping browser acceptance again failed only the two unchanged public-result heading awaits. The final full unchanged suite subsequently passed all 320 tests after the browser workload stopped; these failed attempts are retained, not reclassified as PASS. Final lint/typecheck and script/diff checks also pass.
+
+
+### Observed Git/CI integration follow-up
+
+Exact commit `acb98a5514083994d607a033791e79cffd5e98af`, branch `feat/uni-026-public-poi-proposals`. Independently observed [issue run #36](https://github.com/Dulmina03/unihood/actions/runs/44008792025) SUCCESS for that full commit/workflow/branch and all three required jobs, then fetched/rechecked clean synchronized dev, merged fast-forward only and pushed. [Dev run #37](https://github.com/Dulmina03/unihood/actions/runs/44009478550) independently completed SUCCESS for the same exact commit; Workspace quality, Isolated PostGIS integration and Component browser acceptance all passed. [Issue JSON](issue-run-36.json), [dev JSON](dev-run-37.json). Earlier pending statements are historical and resolved. No merge commit, main change or shared-history rewrite. Local limitations/manual checks above remain unchanged.
