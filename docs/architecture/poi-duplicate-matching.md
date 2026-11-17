@@ -40,3 +40,5 @@ Technical references: [PostGIS ST_DWithin](https://postgis.net/docs/ST_DWithin.h
 
 
 UNI-024 follow-up: [guarded duplicate review API/UI](../api/duplicates.md) now wraps this internal engine with a strict public-only input, contributing-actor boundary, bounded local simulator rate/concurrency limits and ephemeral choices. The original UNI-023 scope statements above describe that issue's delivery. Final transactional checks/pending sources and actual proposals remain UNI-025/026; no public source-ID/private-building lookup or mutation was added.
+
+UNI-025 follow-up: [transactional pending-intent foundation](poi-submission-transactions.md) now reuses this canonical matcher on the same checked-out client and separately checks private pending candidates/source reservations. It adds no public pending projection, real submission UI or canonical merge. Full future boarding/media/contact matching remains deferred.

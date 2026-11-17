@@ -68,3 +68,8 @@ git push -u origin feat/uni-024-duplicate-warning
 ```
 
 Observe all three required issue jobs on the exact new commit before human `git merge --ff-only` into dev; push dev and independently observe exact-commit dev CI before creating UNI-025. No agent Git mutations or next issue implementation.
+
+
+## Integration observed under replacement autonomous instructions
+
+Human committed and pushed exact **09071b5944470db3259dda29291af4f90c73e3ce** on `feat/uni-024-duplicate-warning`. Independently observed [issue run #32](https://github.com/Dulmina03/unihood/actions/runs/43995009395) SUCCESS, all three jobs. The human then replaced the earlier supplied human-only rules with autonomous Git authorization. Agent fetched/rechecked clean synchronized dev, fast-forwarded it to that exact verified commit and pushed dev, without a merge commit/history rewrite/main change. [Dev run #33](https://github.com/Dulmina03/unihood/actions/runs/43995965834) independently observed SUCCESS, all three jobs. Public metadata: [issue](issue-run-32.json), [dev](dev-run-33.json). The earlier handoff is historical and complete; new-screen manual visual/AT approval is still NOT RUN. UNI-025 branch was created only after both CI gates completed.

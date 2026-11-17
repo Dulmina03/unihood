@@ -29,3 +29,5 @@ See [UNI-020 verification](../verification/UNI-020/README.md) for actual command
 ## UNI-023 metric candidate index
 
 Paired migration `004_public_poi_geography_index` adds only a GiST expression index on `public_place_locations.entrance_geo::geography` for metre-based candidate queries. It does not rewrite old migration 003, stored names, rows, consent or extension ownership. The new down migration drops only its index and safely succeeds with populated POIs; the older 003 populated-table guard still refuses data deletion. Apply in order with `pnpm db:migrate`; never reset persistent storage. Transactional creation may take a write lock, so production scheduling is a separate reviewed operation. [Matching policy, limits and fixture coverage](poi-duplicate-matching.md).
+
+UNI-025 migration 005 adds [private pending intent/idempotency storage and exact source collision guards](poi-submission-transactions.md). Canonical source rows remain intact; public POI projections exclude pending storage. Populated rollback refuses rather than deleting pending history.

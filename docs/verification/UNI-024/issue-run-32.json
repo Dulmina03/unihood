@@ -1,0 +1,33 @@
+{
+  "id": 43995009395,
+  "run_number": 32,
+  "run_attempt": 1,
+  "head_sha": "09071b5944470db3259dda29291af4f90c73e3ce",
+  "head_branch": "feat/uni-024-duplicate-warning",
+  "status": "completed",
+  "conclusion": "success",
+  "html_url": "https://github.com/Dulmina03/unihood/actions/runs/43995009395",
+  "jobs": [
+    {
+      "id": 133744787941,
+      "name": "Component browser acceptance",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/43995009395/job/133744787941"
+    },
+    {
+      "id": 133744788137,
+      "name": "Workspace quality",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/43995009395/job/133744788137"
+    },
+    {
+      "id": 133744788474,
+      "name": "Isolated PostGIS integration",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/43995009395/job/133744788474"
+    }
+  ]
+}

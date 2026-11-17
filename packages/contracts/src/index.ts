@@ -8,3 +8,4 @@ export * from './university';
 export * from './place';
 export * from './poi-matching';
 export * from './duplicate-check';
+export * from './poi-submission';

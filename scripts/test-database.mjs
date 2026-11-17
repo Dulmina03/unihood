@@ -1,3 +1,4 @@
+import { testPoiSubmissions } from './lib/test-poi-submissions.mjs';
 import { testPoiMatching } from './lib/test-poi-matching.mjs';
 import { testPublicPois } from './lib/test-public-pois.mjs';
 import { startLandingIntegration } from './lib/test-landing.mjs';
@@ -111,6 +112,7 @@ try {
   assert.deepEqual(await runMigrations(client, ordered, 'rollback'), ['900_order_probe']);
   console.log('PASS: ordered migration/reverse order; failing batch rolls back DDL/history; checksum drift rejected');
 
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['005_poi_submission_transactions']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['004_public_poi_geography_index']);
   await testPlaces({client, url, migrations:migrations.slice(0,3)});
   await runMigrations(client,migrations,'migrate');
@@ -133,7 +135,10 @@ try {
   console.log('PASS: repeatable synthetic seeds; production/remote refusal; local edits preserved on conflict');
 
   await testPublicPois({client,url,get,endpoint});
-  await testPoiMatching({client,migrations,url});
+  await testPoiSubmissions({client,migrations,url,endpoint});
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['005_poi_submission_transactions']);
+  await testPoiMatching({client,migrations:migrations.slice(0,4),url});
+  await runMigrations(client,migrations,'migrate');
   await testUniversities({client, url, get, endpoint, migrations});
   await runMigrations(client, migrations, 'rollback');
   await client.query(`CREATE TABLE public.unihood_extension_guard (label text, location geometry(Point,4326));

@@ -29,7 +29,7 @@ function localRequest(input: unknown): boolean {
   } catch {return false;}
   return true;
 }
-type Grants = {contribute: boolean; properties: ReadonlyArray<{boardingId: string; permissions: readonly string[]}>};
+type Grants = {actorId: string; contribute: boolean; properties: ReadonlyArray<{boardingId: string; permissions: readonly string[]}>};
 const ownerPermissions = ['MANAGE_PROPERTY', 'PUBLISH_EXACT_LOCATION', 'SET_OFFICIAL_PRICE', 'CONFIRM_VACANCY'];
 // No request header/cookie/body selects a fixture. Selection is server-side and synthetic only.
 @Injectable()
@@ -41,13 +41,17 @@ export class SyntheticActors implements IdentityProvider, PermissionService {
     const properties = this.config.fixture === 'contributor' ? [] : [{boardingId: SYNTHETIC_PROPERTY_A, permissions: this.config.fixture === 'owner-a' ? [...ownerPermissions] : ['MANAGE_PROPERTY', 'SET_OFFICIAL_PRICE']}];
     const actor: ActorContext = {actorId: `synthetic:${this.config.fixture}`, authStatus: 'LOCAL_TEST_ACTOR', memberships: structuredClone(properties)};
     // Privileges come from this instance's private issuance record, never mutable caller-supplied fields.
-    this.issued.set(actor, {contribute: true, properties});
+    this.issued.set(actor, {actorId: actor.actorId!, contribute: true, properties});
     return actor;
   }
-  private permitted(actor: ActorContext, boardingId: string, permission: string): boolean {
-    return this.config.enabled && this.issued.get(actor)?.properties.some((membership) => membership.boardingId === boardingId && membership.permissions.includes('MANAGE_PROPERTY') && membership.permissions.includes(permission)) === true;
+  private grants(actor:ActorContext):Grants|undefined {
+    const value=this.issued.get(actor);
+    return actor.authStatus==='LOCAL_TEST_ACTOR'&&value?.actorId===actor.actorId?value:undefined;
   }
-  async canSuggestPlace(actor: ActorContext): Promise<boolean> {return this.config.enabled && this.issued.get(actor)?.contribute === true;}
+  private permitted(actor: ActorContext, boardingId: string, permission: string): boolean {
+    return this.config.enabled && this.grants(actor)?.properties.some((membership) => membership.boardingId === boardingId && membership.permissions.includes('MANAGE_PROPERTY') && membership.permissions.includes(permission)) === true;
+  }
+  async canSuggestPlace(actor: ActorContext): Promise<boolean> {return this.config.enabled && this.grants(actor)?.contribute === true;}
   async canManageProperty(actor: ActorContext, id: string) {return this.permitted(actor, id, 'MANAGE_PROPERTY');}
   async canPublishExactBoardingLocation(actor: ActorContext, id: string) {return this.permitted(actor, id, 'PUBLISH_EXACT_LOCATION');}
   async canSetOfficialPrice(actor: ActorContext, id: string) {return this.permitted(actor, id, 'SET_OFFICIAL_PRICE');}
