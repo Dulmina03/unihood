@@ -1,8 +1,8 @@
 # Phase 3 — boardings, advertisements, privacy and vacancy
 
-Status: **UNI-030/031/032/033/034/035 complete/integrated; UNI-036 in progress**, branch `feat/uni-036-vacancy-freshness` from clean synchronized dev `3a156380fb47f10d54cf7c70adc8497caed1b5eb` after UNI-035 exact issue #53/dev #54 all-job CI success. Autonomous issue branches, exact-commit remote checks and fast-forward-only dev integration apply; no routine human Git checkpoints.
+Status: **UNI-030/031/032/033/034/035 complete/integrated; UNI-036 in progress**, branch `feat/uni-036-vacancy-freshness`; initial a904cad integrated with issue #55/dev #56 all-job CI SUCCESS, canonical PATCH correction now being verified. Autonomous issue branches, exact-commit remote checks and fast-forward-only dev integration apply; no routine human Git checkpoints.
 
-Exact roadmap: UNI-030 canonical property/unit/listing/media schema and all public visibility DTO variants → UNI-031 ad feed/detail → UNI-032 local-only owner wizard → UNI-033 visibility/serialization → UNI-034 eligible public map pins/revocation → UNI-035 official pricing/inventory → UNI-036 vacancy freshness → UNI-037 media/phone/audit safety → UNI-038 details/comparison/essentials → UNI-039 comprehensive privacy acceptance. UNI-036 is now in progress; UNI-037 onward have not started.
+Exact roadmap: UNI-030 canonical property/unit/listing/media schema and all public visibility DTO variants → UNI-031 ad feed/detail → UNI-032 local-only owner wizard → UNI-033 visibility/serialization → UNI-034 eligible public map pins/revocation → UNI-035 official pricing/inventory → UNI-036 vacancy freshness → UNI-037 media/phone/audit safety → UNI-038 details/comparison/essentials → UNI-039 comprehensive privacy acceptance. UNI-036 canonical PATCH correction is in progress; UNI-037 branch exists but no implementation began, and later issues remain unstarted.
 
 ## UNI-030 — canonical boarding foundation
 
@@ -33,3 +33,7 @@ Complete and fast-forward integrated/pushed at `3a156380fb47f10d54cf7c70adc8497c
 ## UNI-036 — vacancy confirmation and freshness
 
 In progress after verified UNI-035 dev CI. Local workspace418, browser90, real E2E16, isolated DB40 result groups, lint/typecheck and supported builds PASS, with nine screenshots/four zero-violation axe reports; four final-build browser rechecks PASS; exact issue/dev CI pending. Property-scoped, guarded synthetic owner confirmations per unit, retained revision/actor/reason/timestamp history, configurable example TTL and automatic UNKNOWN for expired/missing facts. Preserve capacity versus vacancy distinction, community/production denial and all location boundaries. No media/contact, comparison/nearby or final auth. [Verification](../verification/UNI-036/README.md).
+
+UNI-036 correction: initial a904cad was verified/integrated, but §7.4 canonical unit PATCH was omitted. Reuse the same guarded transaction, reject body/path unit conflicts, switch owner controls and verify HTTP/OpenAPI/DB/browser regressions before another exact issue/dev CI cycle. [Historical runs and actual correction results](../verification/UNI-036/README.md#canonical-endpoint-correction-after-initial-integration).
+
+Correction local checks PASS: workspace419, typecheck/lint, API/OpenAPI and supported Webpack builds, four targeted canonical PATCH browser cases and isolated DB40 groups. Full browser90/real E2E16 remain initial local evidence and required unchanged remote suites; new exact issue/dev CI is pending.

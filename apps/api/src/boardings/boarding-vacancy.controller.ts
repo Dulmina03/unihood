@@ -1,5 +1,5 @@
-import {Body,Controller,ForbiddenException,Get,Header,HttpCode,Inject,Param,Post,Query,Req} from '@nestjs/common';
-import {BoardingUnitQuerySchema,OwnerVacancyInputSchema,PublicIdSchema,type IdentityProvider,type PermissionService,type OwnerVacancyInput} from '@unihood/contracts';
+import {Body,Controller,ForbiddenException,Get,Header,HttpCode,Inject,Param,Patch,Post,Query,Req} from '@nestjs/common';
+import {BoardingUnitQuerySchema,OwnerUnitVacancyInputSchema,OwnerVacancyInputSchema,PublicIdSchema,type IdentityProvider,type PermissionService,type OwnerVacancyInput,type OwnerUnitVacancyInput} from '@unihood/contracts';
 import {ApiContract} from '../openapi/operation';
 import {ContractValidationPipe} from '../http/contract-validation.pipe';
 import {RequirePermission} from '../identity/protected-boundary.guard';
@@ -10,6 +10,9 @@ const errors={'400':{schema:'ErrorResponse',description:'Invalid confirmation'},
 export class BoardingVacancyController{
  constructor(private readonly service:BoardingVacancyService,@Inject(IDENTITY_PROVIDER)private readonly identity:IdentityProvider,@Inject(PERMISSION_SERVICE)private readonly permissions:PermissionService){}
  private async authorize(req:unknown,id:string,confirm=false){const actor=await this.identity.resolveRequestActor(req);if(actor.authStatus!=='LOCAL_TEST_ACTOR'||!actor.actorId||!await this.permissions.canManageProperty(actor,id)||(confirm&&!await this.permissions.canConfirmVacancy(actor,id)))throw new ForbiddenException();return actor.actorId;}
+ @Patch('boardings/:id/units/:unitId/availability') @Header('Cache-Control','no-store') @RequirePermission({action:'confirmVacancy',propertyParam:'id'})
+ @ApiContract({summary:'Canonical scoped synthetic owner unit availability confirmation; path-bound unit, server time/expiry',protected:true,authorization:'Issued local/test management plus CONFIRM_VACANCY for exact property/unit; deployed writes denied',bodySchema:'OwnerUnitVacancyInput',responses:{'200':{schema:'InventoryMutation',description:'Versioned confirmation retained; expired public status becomes UNKNOWN'},...errors}})
+ async availability(@Param('id',new ContractValidationPipe(PublicIdSchema))id:string,@Param('unitId',new ContractValidationPipe(PublicIdSchema))unitId:string,@Body(new ContractValidationPipe(OwnerUnitVacancyInputSchema))input:OwnerUnitVacancyInput,@Req()req:unknown){const actor=await this.authorize(req,id,true);return this.service.confirm(id,{...input,unitId},actor);}
  @Post('boardings/:id/vacancy-confirmations') @HttpCode(200) @Header('Cache-Control','no-store') @RequirePermission({action:'confirmVacancy',propertyParam:'id'})
  @ApiContract({summary:'Append a scoped synthetic owner unit confirmation with server time/expiry; no geography or production writer',protected:true,authorization:'Issued local/test management plus CONFIRM_VACANCY for exact property/unit; no map consent required',bodySchema:'OwnerVacancyInput',responses:{'200':{schema:'InventoryMutation',description:'Confirmation retained; public expiry becomes UNKNOWN'},...errors}})
  async confirm(@Param('id',new ContractValidationPipe(PublicIdSchema))id:string,@Body(new ContractValidationPipe(OwnerVacancyInputSchema))input:OwnerVacancyInput,@Req()req:unknown){const actor=await this.authorize(req,id,true);return this.service.confirm(id,input,actor);}

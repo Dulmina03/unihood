@@ -1,6 +1,6 @@
 # UNI-036 — vacancy confirmation and freshness
 
-17 November 2026 (Asia/Colombo). **Implementation/local acceptance complete; remote CI NOT OBSERVED, not integrated.** Branch `feat/uni-036-vacancy-freshness` from clean synchronized dev `3a156380fb47f10d54cf7c70adc8497caed1b5eb`, after independently observing UNI-035 issue #53/dev #54 all-job SUCCESS. UNI-035 integration and exact run metadata are recorded in this issue's evidence follow-up; no future documentation-commit pass is claimed.
+17 November 2026 (Asia/Colombo). **Initial implementation integrated at a904cad; canonical endpoint correction in progress, new exact-commit CI pending.** Branch `feat/uni-036-vacancy-freshness` from clean synchronized dev `3a156380fb47f10d54cf7c70adc8497caed1b5eb`, after independently observing UNI-035 issue #53/dev #54 all-job SUCCESS. UNI-035 integration and exact run metadata are recorded in this issue's evidence follow-up; no future documentation-commit pass is claimed.
 
 ## Scope and behavior
 
@@ -32,4 +32,14 @@ Agent inspection so far: Campus Teal/navy editorial typography, two-column deskt
 
 ## Remote integration
 
-Exact issue commit/run, all required jobs, fast-forward dev integration and exact dev CI: **NOT OBSERVED / NOT DONE**. UNI-037 has not begun.
+Correction exact issue commit/run, all required jobs, fast-forward dev integration and exact dev CI: **NOT OBSERVED / NOT DONE**. Initial integration is recorded below; UNI-037 implementation has not begun.
+
+## Canonical endpoint correction after initial integration
+
+Initial `a904cad3e7be640e6d24a1d43d5844de71033378` was independently verified and fast-forward integrated/pushed after [issue #55](https://github.com/Dulmina03/unihood/actions/runs/44132095125) SUCCESS; [dev #56](https://github.com/Dulmina03/unihood/actions/runs/44133574303) then passed all three required jobs. [Issue metadata](issue-run-55.json), [dev metadata](dev-run-56.json). Those runs were green but did not prove conformance to every proposed endpoint.
+
+During the next dependency review, specification §7.4's canonical PATCH `/api/v1/boardings/:id/units/:unitId/availability` was found omitted; only the functional POST alias existed. UNI-037 branch creation occurred after dev #56 passed, but no UNI-037 implementation began. Work returned to the existing UNI-036 branch for this correction. The unused UNI-037 branch is preserved; no history rewrite/reset/branch deletion.
+
+Add the canonical PATCH using the same actor/property/capability checks and confirmation transaction. The unit comes only from the route; strict body rejects unitId/clock/TTL/identity fields. Keep the POST alias compatible and switch owner controls to PATCH. Extend actual HTTP/OpenAPI, real DB/Next and browser body/method assertions. No migration, privacy policy, TTL, permission grant or confirmation history change. New local/CI results are pending; prior green results are historical, not a pass for the correction.
+
+Canonical correction actual local checks: full workspace **419 PASS** (Node13/contracts71/API158/web177), typecheck/lint, API/OpenAPI and supported Webpack builds, **four targeted mobile/desktop browser cases PASS in 20.6s** (canonical PATCH body/method, automatic expiry, responsive/axe), **40 isolated DB result groups PASS**, including actual positive canonical PATCH → stored confirmation/public Next facts. Repository/diff checks PASS. Initial browser90/real E2E16 remain separately historical; they were not rerun locally for this thin endpoint correction, and unchanged full suites remain required in exact-commit remote CI. First correction test run failed only the saved OpenAPI drift assertion (API157 PASS/one FAIL); regenerating from the actual controller restored all 419 PASS without changing the drift assertion. No applied SQL, UI layout, permission or TTL change. Correction remote CI/integration pending.
