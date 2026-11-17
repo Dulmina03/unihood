@@ -5,7 +5,7 @@
 - `/`: UI-01 Editorial Explorer landing, implemented in UNI-011.
 - `/design-system`: responsive, noindex synthetic component demonstration. Header anchors lead to `#foundations`, `#collection`, `#map-components`, `#controls`. A skip link focuses main content. On mobile the same navigation expands inline, closes on selection/Escape and restores toggle focus on Escape. Bottom navigation is not needed for this single demo route; actual discovery navigation belongs to Phase 1.
 
-UI-01, UI-03 with configurable MapLibre, and guest UI-14 are implemented below. UI-06/UI-07 boarding workflows, registration and owner writes remain future work.
+UI-01, UI-03 with configurable MapLibre, and guest UI-14 are implemented below. UNI-031 adds the scoped UI-06/UI-07/UI-08 synthetic read preview below; later boarding publication workflows, registration and owner writes remain future work.
 
 ## Reusable library
 
@@ -57,3 +57,7 @@ UNI-021 extends `/explore` Essentials with bounded public POI/category reads, di
 ## UNI-026 public-service draft (UI-17)
 
 `/contribute/place`, linked from Essentials and duplicate review, composes the existing Campus Teal fields/buttons/notices and editorial header into a public-entrance draft, matching review and private held receipt. Source/category/coordinates, explicit synthetic-public-business confirmation and optional consent-based map placement are functional. Keyboard coordinate adjustments remain usable without MapLibre. No localStorage/URL draft snapshots, publication/owner assertions, correction submissions or residential pins. [API/local demo](../api/poi-proposals.md), [verification](../verification/UNI-026/README.md). New human visual/AT approval is not claimed.
+
+## UNI-031 advertisement previews
+
+`/advertisements` implements the responsive editorial feed with source/privacy/title filters, nonspatial ordering, pagination and useful states. `/boardings/[id]` exposes canonical curated synthetic detail with private-location messaging, source/uncertainty and canonical sharing. The landing CTA/header and explorer boarding-category link reach the feed. No real owner, photo, fee, vacancy, contact, map, nearby or review claim is made. [UI/reference differences](boarding-advertisements.md), [API](../api/boarding-advertisements.md), [actual verification](../verification/UNI-031/README.md). Human visual approval remains pending.

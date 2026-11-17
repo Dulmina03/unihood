@@ -1,5 +1,6 @@
 // Own every service: never accept an external database URL or reuse a developer server.
 import assert from 'node:assert/strict';
+import { seedBoardingAdvertisements } from './lib/boarding-seeds.mjs';
 import { spawn, spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { createServer } from 'node:net';
@@ -64,6 +65,7 @@ try {
   const migrations = await loadMigrations();
   await runMigrations(client, migrations, 'migrate');
   await seedDatabase(client, url, {APP_ENV: 'test', NODE_ENV: 'test'});
+  await seedBoardingAdvertisements(client,url,{APP_ENV:'test',NODE_ENV:'test'});
   stage = 'API readiness';
   const port = await freePort();
   api = spawn(process.execPath, ['apps/api/dist/main.js'], {cwd: root, stdio: 'ignore', env: {...process.env, API_HOST: '127.0.0.1', API_PORT: String(port), DATABASE_URL: url, APP_ENV: 'test', NODE_ENV: 'test', ENABLE_SYNTHETIC_ACTORS: 'false', SYNTHETIC_ACTOR: ''}});

@@ -25,14 +25,14 @@ export function Landing({university, unavailableSlug}: {university?: University;
   const [dialog, setDialog] = useState<keyof typeof upcoming | null>(null);
   return <div className="editorial-landing">
     <a className="skip-link" href="#main">Skip to content</a>
-    <SiteHeader edition="SRI LANKA / UNIVERSITY LIFE" status="Browse as a guest" items={[{label: 'Choose a university', href: '#campus-start'}, {label: 'Saved favourites', href: '/saved'}, {label: 'Advertisements', href: '#featured'}, {label: 'Nearby essentials', href: '#essentials'}, {label: 'For owners', href: '#privacy'}]} />
+    <SiteHeader edition="SRI LANKA / UNIVERSITY LIFE" status="Browse as a guest" items={[{label: 'Choose a university', href: '#campus-start'}, {label: 'Saved favourites', href: '/saved'}, {label: 'Advertisements', href: '/advertisements'}, {label: 'Nearby essentials', href: '#essentials'}, {label: 'For owners', href: '#privacy'}]} />
     <main id="main" tabIndex={-1}>
       <section className="editorial-hero" aria-labelledby="hero-title">
         <div className="hero-image"><Photo priority photo={{src: '/editorial/campus-hero.webp', srcSet: '/editorial/campus-hero-small.webp 800w, /editorial/campus-hero.webp 1800w', alt: 'Illustrative campus architecture; not the selected university or a Sri Lankan location'}} /></div>
         <div className="hero-content"><p className="landing-kicker"><span /> A NEW CHAPTER. A NEIGHBORHOOD TO CALL HOME.</p>
           <h1 id="hero-title">{en.landing.titleLead}<br />{en.landing.titleIntro}<br className="hero-desktop-break" /> <em>{en.landing.titleEnd}</em></h1>
           <p className="hero-description">A little closer to campus. A little more at home.<br className="hero-wide-break" /> Your starting point for boarding advertisements and the everyday places around your university.</p>
-          <div className="hero-actions"><Button onClick={() => router.push(exploreHref({university: university?.slug}))}><Icon name="compass" /> {en.landing.exploreMap} <Icon name="arrow" /></Button><Button variant="secondary" onClick={() => setDialog('adverts')}>{en.landing.browseAdvertisements} <Icon name="arrow" /></Button></div>
+          <div className="hero-actions"><Button onClick={() => router.push(exploreHref({university: university?.slug}))}><Icon name="compass" /> {en.landing.exploreMap} <Icon name="arrow" /></Button><Link className="uh-button uh-button--secondary" href="/advertisements">{en.landing.browseAdvertisements} <Icon name="arrow" /></Link></div>
           <p className="hero-reassurance"><Icon name="shield" /> Open to browse. Built around your privacy.</p>
         </div>
         <div className="hero-image-note"><span>01 / THE NEXT CHAPTER</span><a href="#photo-credits">Illustrative photography · view credits <Icon name="arrow" /></a></div>

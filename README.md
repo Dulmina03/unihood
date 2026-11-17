@@ -188,3 +188,5 @@ UNI-026 adds the guarded synthetic [public-place proposal demonstration](docs/ap
 UNI-027 documents the [provider/license register and controlled public-POI import strategy](docs/architecture/poi-provider-import-strategy.md). It adds no importer or real data; public Nominatim harvesting, tile scraping and unauthorized boarding geometry remain excluded.
 
 UNI-030 establishes the [boarding/property privacy foundation](docs/architecture/boarding-privacy.md): distinct canonical property, unit, listing revision and private media/location storage, plus strict public response contracts. Boarding feed, publication and upload APIs remain later issues; no real residences or owner claims are seeded.
+
+UNI-031 adds the [synthetic boarding advertisement feed/detail preview](docs/api/boarding-advertisements.md). After normal local setup/migrations, optionally run `APP_ENV=local pnpm db:seed:boardings` and open `/advertisements`; this is fictional data, with no real owner, inventory or destination. It does not enable production publication or expose private boarding data.

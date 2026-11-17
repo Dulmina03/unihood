@@ -100,7 +100,7 @@ describe('live OpenAPI baseline', () => {
     const document = response.body;
     expect(document.openapi).toBe('3.1.0');
     expect(document).toEqual(JSON.parse(readFileSync(resolve(process.cwd(), '../../docs/api/openapi.json'), 'utf8')));
-    expect(Object.keys(document.paths).sort()).toEqual(['/health', '/health/ready', '/api/v1/duplicates/check', '/api/v1/health', '/api/v1/health/ready', '/api/v1/openapi.json', '/api/v1/places', '/api/v1/places/proposals', '/api/v1/places/{id}', '/api/v1/place-categories', '/api/v1/universities', '/api/v1/universities/{id}/campuses', '/api/v1/universities/{id}/entrances'].sort());
+    expect(Object.keys(document.paths).sort()).toEqual(['/api/v1/boardings', '/api/v1/boardings/{id}', '/health', '/health/ready', '/api/v1/duplicates/check', '/api/v1/health', '/api/v1/health/ready', '/api/v1/openapi.json', '/api/v1/places', '/api/v1/places/proposals', '/api/v1/places/{id}', '/api/v1/place-categories', '/api/v1/universities', '/api/v1/universities/{id}/campuses', '/api/v1/universities/{id}/entrances'].sort());
     for (const [path, methods] of Object.entries(document.paths)) {
       if(path==='/api/v1/duplicates/check'||path==='/api/v1/places/proposals'){
         const operation=(methods as {post:{requestBody:unknown}}).post;expect(operation.requestBody).toBeDefined();await request(app.getHttpServer()).post(path).send({}).expect(401);continue;
@@ -108,7 +108,7 @@ describe('live OpenAPI baseline', () => {
       expect(Object.keys(methods as object)).toEqual(['get']);
       const url = path.replace('{id}', '10000000-0000-4000-8000-000000000001');
       const poi = path === '/api/v1/places' || path === '/api/v1/place-categories';
-      await request(app.getHttpServer()).get(poi ? `${url}?bbox=-0.01,-0.01,0.01,0.01` : url).expect(poi || path === '/api/v1/places/{id}' || path.endsWith('/ready') || path.includes('/universities') ? 503 : 200);
+      await request(app.getHttpServer()).get(poi ? `${url}?bbox=-0.01,-0.01,0.01,0.01` : url).expect(poi || path.startsWith('/api/v1/boardings') || path === '/api/v1/places/{id}' || path.endsWith('/ready') || path.includes('/universities') ? 503 : 200);
     }
     expect(document.paths['/api/v1/places'].get.parameters.find((p:{name:string})=>p.name==='bbox').required).toBe(true);
     const refs = JSON.stringify(document).matchAll(/"\$ref":"#\/components\/schemas\/([^"]+)"/g);

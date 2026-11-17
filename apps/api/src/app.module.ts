@@ -17,5 +17,7 @@ import { Module } from '@nestjs/common';
 import { HealthController } from './health.controller';
 import { DatabaseReadinessService } from './database-readiness.service';
 import { ReadinessController } from './readiness.controller';
-@Module({ controllers: [PoiProposalController, DuplicateController, PlaceController, UniversityController, HealthController, ReadinessController, OpenApiController], providers: [PoiSubmissionService, DuplicateRateGuard, PoiMatcherService, PlaceService, UniversityService, UniversityRepository, DatabaseReadinessService, OpenApiService, {provide: SyntheticActors, useFactory: () => new SyntheticActors()}, {provide: IDENTITY_PROVIDER, useExisting: SyntheticActors}, {provide: PERMISSION_SERVICE, useExisting: SyntheticActors}, {provide: APP_GUARD, useClass: ProtectedBoundaryGuard}] })
+import { BoardingController } from './boardings/boarding.controller';
+import { BoardingService } from './boardings/boarding.service';
+@Module({ controllers: [BoardingController, PoiProposalController, DuplicateController, PlaceController, UniversityController, HealthController, ReadinessController, OpenApiController], providers: [BoardingService, PoiSubmissionService, DuplicateRateGuard, PoiMatcherService, PlaceService, UniversityService, UniversityRepository, DatabaseReadinessService, OpenApiService, {provide: SyntheticActors, useFactory: () => new SyntheticActors()}, {provide: IDENTITY_PROVIDER, useExisting: SyntheticActors}, {provide: PERMISSION_SERVICE, useExisting: SyntheticActors}, {provide: APP_GUARD, useClass: ProtectedBoundaryGuard}] })
 export class AppModule {}

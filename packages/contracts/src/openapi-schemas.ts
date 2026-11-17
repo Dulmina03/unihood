@@ -9,8 +9,10 @@ import { HealthResponseSchema, ReadinessResponseSchema, ReadyResponseSchema, Not
 import * as enums from './enums';
 import { ErrorResponseSchema, PaginationQuerySchema, PageMetaSchema } from './rest';
 import { PublicBoardingResponseSchema, PublicBoardingPageSchema, OwnerPublicMapSchema } from './boarding-public';
+import { BoardingAdvertisementQuerySchema,PublicBoardingAdvertisementSchema,BoardingAdvertisementPageSchema } from './boarding-advertisement';
 // No actor identities/memberships or private schemas belong in public OpenAPI components.
 export const PublicSchemaRegistry = {
+  BoardingAdvertisementQuery:BoardingAdvertisementQuerySchema, PublicBoardingAdvertisement:PublicBoardingAdvertisementSchema, BoardingAdvertisementPage:BoardingAdvertisementPageSchema,
   PublicBoardingListing:PublicBoardingListingSchema, PublicBoardingListingPage:PublicBoardingListingPageSchema,
   PublicPoiProposalInput:PublicPoiProposalInputSchema, PublicPoiProposalResult:PublicPoiProposalResultSchema,
   DuplicateCheckInput: DuplicateCheckInputSchema, DuplicateCheckResult: DuplicateCheckResultSchema,

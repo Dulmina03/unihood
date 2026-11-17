@@ -6,6 +6,255 @@
     "description": "Only implemented routes are listed. Shared boarding schemas are contract foundations, not live workflows. Identity/owner verification remains deferred."
   },
   "paths": {
+    "/api/v1/boardings": {
+      "get": {
+        "operationId": "BoardingController_list__api_v1_boardings",
+        "summary": "Read-only curated synthetic advertisement previews in local/test; no production inventory or spatial search",
+        "security": [],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/BoardingAdvertisementQuery/properties/page"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/BoardingAdvertisementQuery/properties/pageSize"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/BoardingAdvertisementQuery/properties/sort"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/BoardingAdvertisementQuery/properties/q"
+            }
+          },
+          {
+            "name": "publisherKind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/BoardingAdvertisementQuery/properties/publisherKind"
+            }
+          },
+          {
+            "name": "visibility",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/BoardingAdvertisementQuery/properties/visibility"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stable bounded public page; no raw/private content",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardingAdvertisementPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid nonspatial request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Advertisements unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/boardings/{id}": {
+      "get": {
+        "operationId": "BoardingController_detail__api_v1_boardings__id_",
+        "summary": "Canonical boarding advertisement preview; no contacts/media/geometry or inferred owner claims",
+        "security": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PublicId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current eligible curated preview",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicBoardingAdvertisement"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid nonspatial request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not publicly available",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Advertisements unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/places/proposals": {
       "post": {
         "operationId": "PoiProposalController_create__api_v1_places_proposals",
@@ -1329,6 +1578,1041 @@
   },
   "components": {
     "schemas": {
+      "BoardingAdvertisementQuery": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,6}$"
+          },
+          "pageSize": {
+            "type": "string",
+            "pattern": "^(?:[1-9]|[1-9][0-9]|100)$"
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "newest",
+              "title"
+            ]
+          },
+          "q": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "publisherKind": {
+            "type": "string",
+            "enum": [
+              "OWNER_OFFICIAL",
+              "COMMUNITY_RECOMMENDATION"
+            ]
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "AREA_ONLY",
+              "HIDDEN"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "PublicBoardingAdvertisement": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "listing": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 160
+                  },
+                  "publisherKind": {
+                    "type": "string",
+                    "const": "OWNER_OFFICIAL"
+                  },
+                  "ownerVerified": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "price": {
+                    "type": "null"
+                  },
+                  "vacancy": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "const": "UNKNOWN"
+                      },
+                      "confirmedAt": {
+                        "type": "null"
+                      },
+                      "expiresAt": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "status",
+                      "confirmedAt",
+                      "expiresAt"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "visibility": {
+                    "type": "string",
+                    "const": "AREA_ONLY"
+                  },
+                  "entrance": {
+                    "type": "null"
+                  },
+                  "locationLabel": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 160
+                  },
+                  "distanceMeters": {
+                    "type": "null"
+                  },
+                  "route": {
+                    "type": "null"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "BOARDING"
+                  },
+                  "listingId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "dataKind": {
+                        "type": "string",
+                        "const": "SYNTHETIC"
+                      },
+                      "sourceLabel": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 160
+                      },
+                      "verifiedAt": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "dataKind",
+                      "sourceLabel",
+                      "verifiedAt"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "publisherKind",
+                  "ownerVerified",
+                  "price",
+                  "vacancy",
+                  "visibility",
+                  "entrance",
+                  "locationLabel",
+                  "distanceMeters",
+                  "route",
+                  "kind",
+                  "listingId",
+                  "provenance"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 160
+                  },
+                  "publisherKind": {
+                    "type": "string",
+                    "const": "OWNER_OFFICIAL"
+                  },
+                  "ownerVerified": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "price": {
+                    "type": "null"
+                  },
+                  "vacancy": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "const": "UNKNOWN"
+                      },
+                      "confirmedAt": {
+                        "type": "null"
+                      },
+                      "expiresAt": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "status",
+                      "confirmedAt",
+                      "expiresAt"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "visibility": {
+                    "type": "string",
+                    "const": "HIDDEN"
+                  },
+                  "entrance": {
+                    "type": "null"
+                  },
+                  "locationLabel": {
+                    "type": "null"
+                  },
+                  "distanceMeters": {
+                    "type": "null"
+                  },
+                  "route": {
+                    "type": "null"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "BOARDING"
+                  },
+                  "listingId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "dataKind": {
+                        "type": "string",
+                        "const": "SYNTHETIC"
+                      },
+                      "sourceLabel": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 160
+                      },
+                      "verifiedAt": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "dataKind",
+                      "sourceLabel",
+                      "verifiedAt"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "publisherKind",
+                  "ownerVerified",
+                  "price",
+                  "vacancy",
+                  "visibility",
+                  "entrance",
+                  "locationLabel",
+                  "distanceMeters",
+                  "route",
+                  "kind",
+                  "listingId",
+                  "provenance"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 160
+                  },
+                  "publisherKind": {
+                    "type": "string",
+                    "const": "COMMUNITY_RECOMMENDATION"
+                  },
+                  "price": {
+                    "type": "null"
+                  },
+                  "vacancy": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "const": "UNKNOWN"
+                      },
+                      "confirmedAt": {
+                        "type": "null"
+                      },
+                      "expiresAt": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "status",
+                      "confirmedAt",
+                      "expiresAt"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "disclaimer": {
+                    "type": "string",
+                    "const": "Community-submitted, not owner-verified"
+                  },
+                  "entrance": {
+                    "type": "null"
+                  },
+                  "distanceMeters": {
+                    "type": "null"
+                  },
+                  "route": {
+                    "type": "null"
+                  },
+                  "visibility": {
+                    "type": "string",
+                    "const": "AREA_ONLY"
+                  },
+                  "locationLabel": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 160
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "BOARDING"
+                  },
+                  "listingId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "dataKind": {
+                        "type": "string",
+                        "const": "SYNTHETIC"
+                      },
+                      "sourceLabel": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 160
+                      },
+                      "verifiedAt": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "dataKind",
+                      "sourceLabel",
+                      "verifiedAt"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "publisherKind",
+                  "price",
+                  "vacancy",
+                  "disclaimer",
+                  "entrance",
+                  "distanceMeters",
+                  "route",
+                  "visibility",
+                  "locationLabel",
+                  "kind",
+                  "listingId",
+                  "provenance"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 160
+                  },
+                  "publisherKind": {
+                    "type": "string",
+                    "const": "COMMUNITY_RECOMMENDATION"
+                  },
+                  "price": {
+                    "type": "null"
+                  },
+                  "vacancy": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "const": "UNKNOWN"
+                      },
+                      "confirmedAt": {
+                        "type": "null"
+                      },
+                      "expiresAt": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "status",
+                      "confirmedAt",
+                      "expiresAt"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "disclaimer": {
+                    "type": "string",
+                    "const": "Community-submitted, not owner-verified"
+                  },
+                  "entrance": {
+                    "type": "null"
+                  },
+                  "distanceMeters": {
+                    "type": "null"
+                  },
+                  "route": {
+                    "type": "null"
+                  },
+                  "visibility": {
+                    "type": "string",
+                    "const": "HIDDEN"
+                  },
+                  "locationLabel": {
+                    "type": "null"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "const": "BOARDING"
+                  },
+                  "listingId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "dataKind": {
+                        "type": "string",
+                        "const": "SYNTHETIC"
+                      },
+                      "sourceLabel": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 160
+                      },
+                      "verifiedAt": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "dataKind",
+                      "sourceLabel",
+                      "verifiedAt"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "publisherKind",
+                  "price",
+                  "vacancy",
+                  "disclaimer",
+                  "entrance",
+                  "distanceMeters",
+                  "route",
+                  "visibility",
+                  "locationLabel",
+                  "kind",
+                  "listingId",
+                  "provenance"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 800
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+          }
+        },
+        "required": [
+          "listing",
+          "summary",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "BoardingAdvertisementPage": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "items": {
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "listing": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "title": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 160
+                        },
+                        "publisherKind": {
+                          "type": "string",
+                          "const": "OWNER_OFFICIAL"
+                        },
+                        "ownerVerified": {
+                          "type": "boolean",
+                          "const": true
+                        },
+                        "price": {
+                          "type": "null"
+                        },
+                        "vacancy": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "const": "UNKNOWN"
+                            },
+                            "confirmedAt": {
+                              "type": "null"
+                            },
+                            "expiresAt": {
+                              "type": "null"
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "confirmedAt",
+                            "expiresAt"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "visibility": {
+                          "type": "string",
+                          "const": "AREA_ONLY"
+                        },
+                        "entrance": {
+                          "type": "null"
+                        },
+                        "locationLabel": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 160
+                        },
+                        "distanceMeters": {
+                          "type": "null"
+                        },
+                        "route": {
+                          "type": "null"
+                        },
+                        "kind": {
+                          "type": "string",
+                          "const": "BOARDING"
+                        },
+                        "listingId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "provenance": {
+                          "type": "object",
+                          "properties": {
+                            "dataKind": {
+                              "type": "string",
+                              "const": "SYNTHETIC"
+                            },
+                            "sourceLabel": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 160
+                            },
+                            "verifiedAt": {
+                              "type": "null"
+                            }
+                          },
+                          "required": [
+                            "dataKind",
+                            "sourceLabel",
+                            "verifiedAt"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "publisherKind",
+                        "ownerVerified",
+                        "price",
+                        "vacancy",
+                        "visibility",
+                        "entrance",
+                        "locationLabel",
+                        "distanceMeters",
+                        "route",
+                        "kind",
+                        "listingId",
+                        "provenance"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "title": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 160
+                        },
+                        "publisherKind": {
+                          "type": "string",
+                          "const": "OWNER_OFFICIAL"
+                        },
+                        "ownerVerified": {
+                          "type": "boolean",
+                          "const": true
+                        },
+                        "price": {
+                          "type": "null"
+                        },
+                        "vacancy": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "const": "UNKNOWN"
+                            },
+                            "confirmedAt": {
+                              "type": "null"
+                            },
+                            "expiresAt": {
+                              "type": "null"
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "confirmedAt",
+                            "expiresAt"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "visibility": {
+                          "type": "string",
+                          "const": "HIDDEN"
+                        },
+                        "entrance": {
+                          "type": "null"
+                        },
+                        "locationLabel": {
+                          "type": "null"
+                        },
+                        "distanceMeters": {
+                          "type": "null"
+                        },
+                        "route": {
+                          "type": "null"
+                        },
+                        "kind": {
+                          "type": "string",
+                          "const": "BOARDING"
+                        },
+                        "listingId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "provenance": {
+                          "type": "object",
+                          "properties": {
+                            "dataKind": {
+                              "type": "string",
+                              "const": "SYNTHETIC"
+                            },
+                            "sourceLabel": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 160
+                            },
+                            "verifiedAt": {
+                              "type": "null"
+                            }
+                          },
+                          "required": [
+                            "dataKind",
+                            "sourceLabel",
+                            "verifiedAt"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "publisherKind",
+                        "ownerVerified",
+                        "price",
+                        "vacancy",
+                        "visibility",
+                        "entrance",
+                        "locationLabel",
+                        "distanceMeters",
+                        "route",
+                        "kind",
+                        "listingId",
+                        "provenance"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "title": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 160
+                        },
+                        "publisherKind": {
+                          "type": "string",
+                          "const": "COMMUNITY_RECOMMENDATION"
+                        },
+                        "price": {
+                          "type": "null"
+                        },
+                        "vacancy": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "const": "UNKNOWN"
+                            },
+                            "confirmedAt": {
+                              "type": "null"
+                            },
+                            "expiresAt": {
+                              "type": "null"
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "confirmedAt",
+                            "expiresAt"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "disclaimer": {
+                          "type": "string",
+                          "const": "Community-submitted, not owner-verified"
+                        },
+                        "entrance": {
+                          "type": "null"
+                        },
+                        "distanceMeters": {
+                          "type": "null"
+                        },
+                        "route": {
+                          "type": "null"
+                        },
+                        "visibility": {
+                          "type": "string",
+                          "const": "AREA_ONLY"
+                        },
+                        "locationLabel": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 160
+                        },
+                        "kind": {
+                          "type": "string",
+                          "const": "BOARDING"
+                        },
+                        "listingId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "provenance": {
+                          "type": "object",
+                          "properties": {
+                            "dataKind": {
+                              "type": "string",
+                              "const": "SYNTHETIC"
+                            },
+                            "sourceLabel": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 160
+                            },
+                            "verifiedAt": {
+                              "type": "null"
+                            }
+                          },
+                          "required": [
+                            "dataKind",
+                            "sourceLabel",
+                            "verifiedAt"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "publisherKind",
+                        "price",
+                        "vacancy",
+                        "disclaimer",
+                        "entrance",
+                        "distanceMeters",
+                        "route",
+                        "visibility",
+                        "locationLabel",
+                        "kind",
+                        "listingId",
+                        "provenance"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "title": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 160
+                        },
+                        "publisherKind": {
+                          "type": "string",
+                          "const": "COMMUNITY_RECOMMENDATION"
+                        },
+                        "price": {
+                          "type": "null"
+                        },
+                        "vacancy": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "const": "UNKNOWN"
+                            },
+                            "confirmedAt": {
+                              "type": "null"
+                            },
+                            "expiresAt": {
+                              "type": "null"
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "confirmedAt",
+                            "expiresAt"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "disclaimer": {
+                          "type": "string",
+                          "const": "Community-submitted, not owner-verified"
+                        },
+                        "entrance": {
+                          "type": "null"
+                        },
+                        "distanceMeters": {
+                          "type": "null"
+                        },
+                        "route": {
+                          "type": "null"
+                        },
+                        "visibility": {
+                          "type": "string",
+                          "const": "HIDDEN"
+                        },
+                        "locationLabel": {
+                          "type": "null"
+                        },
+                        "kind": {
+                          "type": "string",
+                          "const": "BOARDING"
+                        },
+                        "listingId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "provenance": {
+                          "type": "object",
+                          "properties": {
+                            "dataKind": {
+                              "type": "string",
+                              "const": "SYNTHETIC"
+                            },
+                            "sourceLabel": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 160
+                            },
+                            "verifiedAt": {
+                              "type": "null"
+                            }
+                          },
+                          "required": [
+                            "dataKind",
+                            "sourceLabel",
+                            "verifiedAt"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "title",
+                        "publisherKind",
+                        "price",
+                        "vacancy",
+                        "disclaimer",
+                        "entrance",
+                        "distanceMeters",
+                        "route",
+                        "visibility",
+                        "locationLabel",
+                        "kind",
+                        "listingId",
+                        "provenance"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "summary": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 800
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                }
+              },
+              "required": [
+                "listing",
+                "summary",
+                "updatedAt"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "page": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9999999
+              },
+              "pageSize": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              },
+              "hasNextPage": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "page",
+              "pageSize",
+              "hasNextPage"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "items",
+          "page"
+        ],
+        "additionalProperties": false
+      },
       "PublicBoardingListing": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "anyOf": [

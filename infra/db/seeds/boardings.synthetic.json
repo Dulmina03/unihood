@@ -1,0 +1,38 @@
+[
+  {
+    "id": "71000000-0000-4000-8000-000000000001",
+    "listingId": "72000000-0000-4000-8000-000000000001",
+    "title": "Synthetic Courtyard study home",
+    "publisherKind": "OWNER_OFFICIAL",
+    "visibility": "AREA_ONLY",
+    "locality": "Synthetic broad locality",
+    "summary": "A curated fictional advertisement for testing privacy-aware browsing. No real accommodation, owner, availability, price or destination is represented."
+  },
+  {
+    "id": "71000000-0000-4000-8000-000000000002",
+    "listingId": "72000000-0000-4000-8000-000000000002",
+    "title": "Synthetic Quiet nook",
+    "publisherKind": "OWNER_OFFICIAL",
+    "visibility": "HIDDEN",
+    "locality": null,
+    "summary": "A curated fictional advertisement for testing privacy-aware browsing. No real accommodation, owner, availability, price or destination is represented."
+  },
+  {
+    "id": "71000000-0000-4000-8000-000000000003",
+    "listingId": "72000000-0000-4000-8000-000000000003",
+    "title": "Synthetic Shared chapter",
+    "publisherKind": "COMMUNITY_RECOMMENDATION",
+    "visibility": "AREA_ONLY",
+    "locality": "Synthetic broad locality",
+    "summary": "A curated fictional advertisement for testing privacy-aware browsing. No real accommodation, owner, availability, price or destination is represented."
+  },
+  {
+    "id": "71000000-0000-4000-8000-000000000004",
+    "listingId": "72000000-0000-4000-8000-000000000004",
+    "title": "Synthetic Room for a fresh start",
+    "publisherKind": "COMMUNITY_RECOMMENDATION",
+    "visibility": "HIDDEN",
+    "locality": null,
+    "summary": "A curated fictional advertisement for testing privacy-aware browsing. No real accommodation, owner, availability, price or destination is represented."
+  }
+]

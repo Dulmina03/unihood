@@ -19,7 +19,6 @@ describe('Editorial Explorer landing', () => {
     vi.stubGlobal('fetch', vi.fn(() => new Promise(() => {}))); render(<Home />);
     fireEvent.click(screen.getByRole('button', {name: 'Explore Map'}));
     expect(push).toHaveBeenCalledWith('/explore');
-    fireEvent.click(screen.getByRole('button', {name: 'Browse Advertisements'}));
-    expect(screen.getByText(/There are no live boarding advertisements here yet/)).toBeInTheDocument();
+    expect(screen.getByRole('link', {name: 'Browse Advertisements'})).toHaveAttribute('href', '/advertisements');
   });
 });

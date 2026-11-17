@@ -13,6 +13,7 @@ import { readFile } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import { fileURLToPath } from 'node:url';
 import { assertSeedEnvironment, createClient, loadMigrations, runMigrations, seedDatabase } from './lib/database.mjs';
+import { testBoardingAdvertisements } from './lib/test-boarding-advertisements.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const compose = ['compose', '--env-file', '.env', '-f', 'infra/compose.yaml', '--profile', 'test'];
@@ -114,6 +115,7 @@ try {
   assert.deepEqual(await runMigrations(client, ordered, 'rollback'), ['900_order_probe']);
   console.log('PASS: ordered migration/reverse order; failing batch rolls back DDL/history; checksum drift rejected');
 
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['008_boarding_advertisement_previews']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['007_boarding_property_foundation']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['006_poi_proposal_review']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['005_poi_submission_transactions']);
@@ -139,7 +141,9 @@ try {
   console.log('PASS: repeatable synthetic seeds; production/remote refusal; local edits preserved on conflict');
 
   await testPublicPois({client,url,get,endpoint});
-  await testBoardingFoundation({client,migrations,url,get});
+  await testBoardingAdvertisements({client,migrations,url,get});
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['008_boarding_advertisement_previews']);
+  await testBoardingFoundation({client,migrations:migrations.slice(0,7),url,get});
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['007_boarding_property_foundation']);
   await testPoiProposalApi({client,migrations:migrations.slice(0,6),url,endpoint});
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['006_poi_proposal_review']);

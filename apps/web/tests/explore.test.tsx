@@ -67,7 +67,7 @@ describe('Urban Map public shell', () => {
   it('provides a keyboard-operable sheet and a truthful future feed empty state', async () => {
     query.value = `university=synthetic-demo&campus=${cid}&category=boardings`;
     vi.stubGlobal('fetch', mockFetch()); render(<Explore />);
-    expect(await screen.findByText('No boarding feed connected')).toBeVisible();
+    expect(await screen.findByText('Boarding advertisements respect privacy')).toBeVisible();
     const handle = screen.getByRole('button', {name: 'Collapse results'});
     fireEvent.click(handle); expect(handle).toHaveAttribute('aria-expanded', 'false');
     fireEvent.click(handle); expect(handle).toHaveAttribute('aria-expanded', 'true');

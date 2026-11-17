@@ -20,6 +20,7 @@
     "db:test": "node --env-file-if-exists=.env scripts/test-database.mjs",
     "db:test:up": "docker compose --env-file .env -f infra/compose.yaml --profile test up -d --wait db-test",
     "db:test:down": "docker compose --env-file .env -f infra/compose.yaml --profile test rm --stop --force db-test",
+    "db:seed:boardings": "node --env-file-if-exists=.env scripts/seed-boardings.mjs",
     "db:seed": "node --env-file-if-exists=.env scripts/db.mjs seed",
     "db:test:extensions": "node scripts/test-db-extensions.mjs",
     "test:ui": "pnpm --filter @unihood/web test:ui",

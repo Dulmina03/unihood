@@ -9,6 +9,8 @@ const provenance = (row) => ({dataKind: row.data_kind, sourceLabel: row.source_l
 const universities = graph.universities.map((row) => ({id: row.id, slug: row.slug, name: row.name, city: row.city, country: row.country, provenance: provenance(row)}));
 const campuses = graph.campuses.map((row) => ({id: row.id, universityId: row.university_id, name: row.name, publicArea: row.public_area, provenance: provenance(row)}));
 const entrances = graph.entrances.map((row) => ({id: row.id, campusId: row.campus_id, name: row.name, location: {lat: row.lat, lng: row.lng}, isPrimary: row.is_primary, provenance: provenance(row)}));
+const boardingFixtures=JSON.parse(await readFile(new URL('../../../infra/db/seeds/boardings.synthetic.json',import.meta.url),'utf8'));
+const boardingRows=boardingFixtures.map(r=>({listing:{id:r.id,listingId:r.listingId,kind:'BOARDING',title:r.title,publisherKind:r.publisherKind,visibility:r.visibility,locationLabel:r.locality,entrance:null,distanceMeters:null,route:null,price:null,vacancy:{status:'UNKNOWN',confirmedAt:null,expiresAt:null},provenance:{dataKind:'SYNTHETIC',sourceLabel:'UNI-031 curated synthetic demonstration; no real property or owner',verifiedAt:null},...(r.publisherKind==='OWNER_OFFICIAL'?{ownerVerified:true}:{disclaimer:'Community-submitted, not owner-verified'})},summary:r.summary,updatedAt:'2026-11-17T00:00:00Z'}));
 const proposalReceipts=new Map(); // Bounded synthetic test storage; not app runtime.
 const server = createServer(async (request, response) => {
   const url = new URL(request.url, 'http://127.0.0.1');
@@ -33,6 +35,14 @@ const server = createServer(async (request, response) => {
     response.end(JSON.stringify({checkOnly:true,policyVersion:'public-poi-v1',scope:'PUBLIC_POI_ONLY',candidates:[{id:poiRows[0].id,name:poiRows[0].name,category:'pharmacy',score:79,classification:'REVIEW_REQUIRED',signals:{nameSimilarity:1,normalizedNameExact:true,categoryMatch:true,withinRadius:true,sameBuilding:true,sourceMatch:false},requiresReview:true}],hasMore:false,incomplete:false,requiresReview:true}));return;
   }
   let rows;
+  if(url.pathname==='/api/v1/boardings'||url.pathname.startsWith('/api/v1/boardings/')){
+    if(url.searchParams.get('q')==='synthetic-unavailable'){response.statusCode=503;response.end('{}');return;}
+    const id=url.pathname.split('/')[4];
+    if(id){if(id==='71000000-0000-4000-8000-000000000098'){response.statusCode=503;response.end('{}');return;}const row=boardingRows.find(r=>r.listing.id===id);if(!row){response.statusCode=404;response.end('{}');return;}response.end(JSON.stringify(row));return;}
+    rows=boardingRows.filter(r=>(!url.searchParams.get('publisherKind')||r.listing.publisherKind===url.searchParams.get('publisherKind'))&&(!url.searchParams.get('visibility')||r.listing.visibility===url.searchParams.get('visibility'))&&(!url.searchParams.get('q')||(r.listing.title+' '+(r.listing.locationLabel??'')).toLowerCase().includes(url.searchParams.get('q').toLowerCase())));
+    if(url.searchParams.get('sort')==='title')rows.sort((a,b)=>a.listing.title.localeCompare(b.listing.title));
+    const page=Number(url.searchParams.get('page')??1),pageSize=Number(url.searchParams.get('pageSize')??12);response.end(JSON.stringify({items:rows.slice((page-1)*pageSize,page*pageSize),page:{page,pageSize,hasNextPage:rows.length>page*pageSize}}));return;
+  }
   if(/^\/api\/v1\/places\/[^/]+$/.test(url.pathname)) {
     if(url.pathname.endsWith('/40000000-0000-4000-8000-000000000098')){response.statusCode=503;response.end(JSON.stringify({error:'PRIVATE_CANARY synthetic upstream failure'}));return;}
     const row=poiRows.find(row=>row.id===url.pathname.split('/').at(-1));
