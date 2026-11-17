@@ -1,3 +1,4 @@
+import { OwnerVisibilityPreviewInputSchema } from '@unihood/contracts';
 // Test-only HTTP upstream. Never imported by runtime code or bundled in the app.
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
@@ -16,10 +17,12 @@ const server = createServer(async (request, response) => {
   const url = new URL(request.url, 'http://127.0.0.1');
   response.setHeader('Content-Type', 'application/json'); response.setHeader('Cache-Control', 'no-store');
   // Explicit synthetic owner-check mock: no authorization/database evidence.
-  if(/^\/api\/v1\/owner\/boardings\/00000000-0000-4000-8000-000000000001\/draft-check$/.test(url.pathname)){
+  if(/^\/api\/v1\/owner\/boardings\/00000000-0000-4000-8000-000000000001\/(?:draft-check|visibility-preview)$/.test(url.pathname)){
     const origin=request.headers.origin;if(['http://127.0.0.1:3180','http://127.0.0.1:3181'].includes(origin)){response.setHeader('Access-Control-Allow-Origin',origin);response.setHeader('Access-Control-Allow-Headers','Content-Type');response.setHeader('Access-Control-Allow-Methods','POST');}
     if(request.method==='OPTIONS'){response.statusCode=204;response.end();return;}
-    try{let body='';for await(const chunk of request){body+=chunk;if(body.length>4000)throw new Error();}response.end(JSON.stringify({outcome:'DRAFT_ONLY',published:false,draft:JSON.parse(body)}));return;}catch{response.statusCode=400;response.end('{}');return;}
+    try{let body='';for await(const chunk of request){body+=chunk;if(body.length>4000)throw new Error();}const input=JSON.parse(body);
+      if(url.pathname.endsWith('/visibility-preview')){const value=OwnerVisibilityPreviewInputSchema.parse(input);const common={id:'00000000-0000-4000-8000-000000000001',title:'Synthetic owner visibility preview',publisherKind:'OWNER_OFFICIAL',ownerVerified:true,price:null,vacancy:{status:'UNKNOWN',confirmedAt:null,expiresAt:null},visibility:value.visibility};const preview=value.visibility==='PUBLIC_MAP'?{...common,publicMapConsent:true,entrance:{lat:0,lng:0},locationLabel:null}:{...common,entrance:null,distanceMeters:null,route:null,locationLabel:value.visibility==='AREA_ONLY'?value.locality:null};response.end(JSON.stringify({outcome:'PREVIEW_ONLY',published:false,provenance:{dataKind:'SYNTHETIC',sourceLabel:'Synthetic browser preview fixture; not real data or authority',verifiedAt:null},preview}));return;}
+      response.end(JSON.stringify({outcome:'DRAFT_ONLY',published:false,draft:input}));return;}catch{response.statusCode=400;response.end('{}');return;}
   }
   if (url.searchParams.get('slug') === 'synthetic-unavailable') {response.statusCode = 503; response.end('{}'); return;}
   if(url.pathname==='/api/v1/places/proposals'){

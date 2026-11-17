@@ -130,6 +130,130 @@
         }
       }
     },
+    "/api/v1/owner/boardings/{boardingId}/visibility-preview": {
+      "post": {
+        "operationId": "OwnerDraftController_preview__api_v1_owner_boardings__boardingId__visibility_preview",
+        "summary": "Synthetic server-derived visibility preview only; no publication, persistence or real data",
+        "x-unihood-authorization": "Issued local/test actor with property-specific management; PUBLIC_MAP additionally requires exact-location capability and explicit acknowledgement. No identity-header authority.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OwnerVisibilityPreviewInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "boardingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PublicId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Unpublished synthetic template, with server-filtered visibility fields",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnerVisibilityPreview"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid mode-specific input or missing explicit acknowledgement",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No local/test actor; deployed access denied",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "No property management or public-map capability",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/boardings": {
       "get": {
         "operationId": "BoardingController_list__api_v1_boardings",
@@ -1702,6 +1826,374 @@
   },
   "components": {
     "schemas": {
+      "OwnerVisibilityPreviewInput": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "visibility": {
+                "type": "string",
+                "const": "HIDDEN"
+              }
+            },
+            "required": [
+              "visibility"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "visibility": {
+                "type": "string",
+                "const": "AREA_ONLY"
+              },
+              "locality": {
+                "type": "string",
+                "enum": [
+                  "Synthetic North Quarter",
+                  "Synthetic Garden District"
+                ]
+              }
+            },
+            "required": [
+              "visibility",
+              "locality"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "visibility": {
+                "type": "string",
+                "const": "PUBLIC_MAP"
+              },
+              "entranceFixture": {
+                "type": "string",
+                "const": "synthetic-courtyard-entrance"
+              },
+              "publicMapConsent": {
+                "type": "boolean",
+                "const": true
+              },
+              "externalCopiesAcknowledged": {
+                "type": "boolean",
+                "const": true
+              }
+            },
+            "required": [
+              "visibility",
+              "entranceFixture",
+              "publicMapConsent",
+              "externalCopiesAcknowledged"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "OwnerVisibilityPreview": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "outcome": {
+            "type": "string",
+            "const": "PREVIEW_ONLY"
+          },
+          "published": {
+            "type": "boolean",
+            "const": false
+          },
+          "provenance": {
+            "type": "object",
+            "properties": {
+              "dataKind": {
+                "type": "string",
+                "const": "SYNTHETIC"
+              },
+              "sourceLabel": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "verifiedAt": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "dataKind",
+              "sourceLabel",
+              "verifiedAt"
+            ],
+            "additionalProperties": false
+          },
+          "preview": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "const": "Synthetic owner visibility preview"
+                  },
+                  "publisherKind": {
+                    "type": "string",
+                    "const": "OWNER_OFFICIAL"
+                  },
+                  "ownerVerified": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "price": {
+                    "type": "null"
+                  },
+                  "vacancy": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "const": "UNKNOWN"
+                      },
+                      "confirmedAt": {
+                        "type": "null"
+                      },
+                      "expiresAt": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "status",
+                      "confirmedAt",
+                      "expiresAt"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "visibility": {
+                    "type": "string",
+                    "const": "PUBLIC_MAP"
+                  },
+                  "publicMapConsent": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "entrance": {
+                    "type": "object",
+                    "properties": {
+                      "lat": {
+                        "type": "number",
+                        "minimum": -90,
+                        "maximum": 90
+                      },
+                      "lng": {
+                        "type": "number",
+                        "minimum": -180,
+                        "maximum": 180
+                      }
+                    },
+                    "required": [
+                      "lat",
+                      "lng"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "locationLabel": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 160
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "publisherKind",
+                  "ownerVerified",
+                  "price",
+                  "vacancy",
+                  "visibility",
+                  "publicMapConsent",
+                  "entrance",
+                  "locationLabel"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "const": "Synthetic owner visibility preview"
+                  },
+                  "publisherKind": {
+                    "type": "string",
+                    "const": "OWNER_OFFICIAL"
+                  },
+                  "ownerVerified": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "price": {
+                    "type": "null"
+                  },
+                  "vacancy": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "const": "UNKNOWN"
+                      },
+                      "confirmedAt": {
+                        "type": "null"
+                      },
+                      "expiresAt": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "status",
+                      "confirmedAt",
+                      "expiresAt"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "visibility": {
+                    "type": "string",
+                    "const": "AREA_ONLY"
+                  },
+                  "entrance": {
+                    "type": "null"
+                  },
+                  "locationLabel": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 160
+                  },
+                  "distanceMeters": {
+                    "type": "null"
+                  },
+                  "route": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "publisherKind",
+                  "ownerVerified",
+                  "price",
+                  "vacancy",
+                  "visibility",
+                  "entrance",
+                  "locationLabel",
+                  "distanceMeters",
+                  "route"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "const": "Synthetic owner visibility preview"
+                  },
+                  "publisherKind": {
+                    "type": "string",
+                    "const": "OWNER_OFFICIAL"
+                  },
+                  "ownerVerified": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "price": {
+                    "type": "null"
+                  },
+                  "vacancy": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string",
+                        "const": "UNKNOWN"
+                      },
+                      "confirmedAt": {
+                        "type": "null"
+                      },
+                      "expiresAt": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "status",
+                      "confirmedAt",
+                      "expiresAt"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "visibility": {
+                    "type": "string",
+                    "const": "HIDDEN"
+                  },
+                  "entrance": {
+                    "type": "null"
+                  },
+                  "locationLabel": {
+                    "type": "null"
+                  },
+                  "distanceMeters": {
+                    "type": "null"
+                  },
+                  "route": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "publisherKind",
+                  "ownerVerified",
+                  "price",
+                  "vacancy",
+                  "visibility",
+                  "entrance",
+                  "locationLabel",
+                  "distanceMeters",
+                  "route"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "required": [
+          "outcome",
+          "published",
+          "provenance",
+          "preview"
+        ],
+        "additionalProperties": false
+      },
       "OwnerWizardDraft": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",

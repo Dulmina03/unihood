@@ -13,3 +13,4 @@ export * from './poi-proposal';
 export * from './boarding-model';
 export * from './boarding-advertisement';
 export * from './owner-draft';
+export * from './owner-visibility-preview';

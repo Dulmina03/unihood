@@ -65,3 +65,7 @@ UNI-021 extends `/explore` Essentials with bounded public POI/category reads, di
 ## UNI-032 owner draft (UI-20/UI-21/UI-22 foundation)
 
 `/owner` and `/owner/new` provide task-focused synthetic draft planning, existing public-ad search, basic fields, three planned visibility choices, media acknowledgement and guarded session save/restore. No publish, claim, uploads, coordinates, prices or vacancy workflows. [Scope/setup](owner-wizard.md), [actual verification](../verification/UNI-032/README.md).
+
+## UNI-033 owner visibility preview (UI-22)
+
+The owner wizard's privacy step requests a strict server-derived, unpublished synthetic template. Hidden/Area only never include geometry; Public map needs a deliberately selected fictional entrance and both consent/copy acknowledgements. Mode/locality changes clear old preview state and abort stale responses; points/consent are never saved or shared. Public map publication/revocation remain UNI-034. [Rules and local demo](../api/boarding-visibility.md), [actual results/screenshots](../verification/UNI-033/README.md). No new human visual/AT approval is inferred.

@@ -1,0 +1,17 @@
+import { cleanup,render,screen,fireEvent,waitFor } from '@testing-library/react';
+import { afterEach,describe,it,expect,vi } from 'vitest';
+import { OwnerVisibilityPreview } from '../src/components/owner/visibility-preview';
+const id='00000000-0000-4000-8000-000000000001',endpoint='http://127.0.0.1:3001/owner/boardings/'+id+'/draft-check';
+const result={outcome:'PREVIEW_ONLY',published:false,provenance:{dataKind:'SYNTHETIC',sourceLabel:'Synthetic fixture',verifiedAt:null},preview:{id,title:'Synthetic owner visibility preview',publisherKind:'OWNER_OFFICIAL',ownerVerified:true,visibility:'HIDDEN',locationLabel:null,entrance:null,distanceMeters:null,route:null,price:null,vacancy:{status:'UNKNOWN',confirmedAt:null,expiresAt:null}}};
+afterEach(()=>{cleanup();vi.unstubAllGlobals();});
+describe('owner preview consumes server mode-specific DTOs',()=>{
+ it('requests only selected mode fields, focuses after commit and rejects unexpected geometry',async()=>{
+  const fetcher=vi.fn<typeof fetch>(async()=>Response.json(result));vi.stubGlobal('fetch',fetcher);render(<OwnerVisibilityPreview endpoint={endpoint} draft={{requestedVisibility:'HIDDEN',locality:null}}/>);fireEvent.click(screen.getByRole('button',{name:'Preview selected visibility'}));await waitFor(()=>expect(screen.getByRole('heading',{name:'Student-facing preview · synthetic template'})).toHaveFocus());expect(JSON.parse(fetcher.mock.calls[0][1]!.body as string)).toEqual({visibility:'HIDDEN'});expect(screen.getByText(/Location hidden. No locality/)).toBeVisible();
+  fetcher.mockImplementation(async()=>Response.json({...result,preview:{...result.preview,entrance:{lat:42.123456,lng:43.654321}}}));fireEvent.click(screen.getByRole('button',{name:'Preview selected visibility'}));await screen.findByRole('alert');expect(screen.queryByText(/42\.123456/)).not.toBeInTheDocument();expect(screen.queryByRole('heading',{name:'Student-facing preview · synthetic template'})).not.toBeInTheDocument();
+ });
+ it('clears and ignores late public-mode responses when the private picker replaces it',async()=>{
+  let release!:(value:Response)=>void;const response=new Promise<Response>(r=>release=r);const fetcher=vi.fn<typeof fetch>(()=>response);vi.stubGlobal('fetch',fetcher);
+  const view=render(<OwnerVisibilityPreview key="public" endpoint={endpoint} draft={{requestedVisibility:'PUBLIC_MAP',locality:null}}/>);fireEvent.click(screen.getByRole('button',{name:'Preview selected visibility'}));expect(fetcher).not.toHaveBeenCalled();fireEvent.change(screen.getByRole('combobox',{name:'Fictional entrance'}),{target:{value:'synthetic-courtyard-entrance'}});for(const input of screen.getAllByRole('checkbox'))fireEvent.click(input);fireEvent.click(screen.getByRole('button',{name:'Preview selected visibility'}));const signal=fetcher.mock.calls[0][1]!.signal as AbortSignal;
+  view.rerender(<OwnerVisibilityPreview key="hidden" endpoint={endpoint} draft={{requestedVisibility:'HIDDEN',locality:null}}/>);expect(signal.aborted).toBe(true);release(Response.json({...result,preview:{id,title:'Synthetic owner visibility preview',publisherKind:'OWNER_OFFICIAL',ownerVerified:true,price:null,vacancy:result.preview.vacancy,visibility:'PUBLIC_MAP',publicMapConsent:true,entrance:{lat:0,lng:0},locationLabel:null}}));await response;await new Promise(r=>setTimeout(r,0));expect(screen.queryByText(/latitude/)).not.toBeInTheDocument();expect(screen.queryByRole('heading',{name:'Student-facing preview · synthetic template'})).not.toBeInTheDocument();
+ });
+});

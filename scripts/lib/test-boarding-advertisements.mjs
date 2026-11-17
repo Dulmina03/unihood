@@ -20,6 +20,10 @@ export async function testBoardingAdvertisements({client,url,migrations,get}){
   assert.equal((await read('/api/v1/boardings?q=%25')).body.items.length,0);
   await client.query("UPDATE public.listings SET title='PRIVATE_CANARY 1 Secret Road',description='PRIVATE_CANARY phone and location' WHERE id=$1",[listingIds[0]]);
   await client.query("UPDATE public.boarding_properties SET description='PRIVATE_CANARY private evidence' WHERE place_id=$1",[ids[0]]);
+  // Fictional negative canaries only, never a real residence or API fixture.
+  await client.query("INSERT INTO unihood_private.boarding_locations(boarding_id,exact_geo,address_enc,retention_policy) SELECT id,ST_SetSRID(ST_MakePoint(43.654321,42.123456),4326),decode('53594e544845544943','hex'),'synthetic-test-only' FROM unnest($1::uuid[]) AS selected(id)",[ids.slice(0,2)]);
+  for(const id of ids.slice(0,2)){const r=await read('/api/v1/boardings/'+id);assert.equal(r.status,200);assert.equal(r.body.listing.entrance,null);assert.ok(!/42\.123456|43\.654321|exact_geo|address_enc|authorizationStatus|localityConsent|publicMapConsent/.test(JSON.stringify(r.body)));}
+  const privateList=await read('/api/v1/boardings');assert.equal(privateList.status,200);assert.ok(!/42\.123456|43\.654321|exact_geo|address_enc|authorizationStatus|localityConsent|publicMapConsent/.test(JSON.stringify(privateList.body)));assert.equal((await read('/api/v1/boardings?q=42.123456')).body.items.length,0);
   const detail=await read('/api/v1/boardings/'+ids[0]);assert.equal(detail.status,200);assert.equal(detail.body.listing.title,fixtures[0].title);assert.equal(detail.body.listing.entrance,null);assert.equal(detail.body.listing.price,null);assert.equal(detail.body.listing.vacancy.status,'UNKNOWN');assert.ok(!JSON.stringify(detail.body).includes('PRIVATE_CANARY'));
   await assert.rejects(seedBoardingAdvertisements(client,url,env),/existing data preserved/);
   await client.query("UPDATE public.boarding_properties SET visibility='HIDDEN',general_locality=NULL,locality_consent=false WHERE place_id=$1",[ids[0]]);
@@ -30,11 +34,12 @@ export async function testBoardingAdvertisements({client,url,migrations,get}){
   await client.query("UPDATE public.places SET status='ARCHIVED' WHERE id=$1",[ids[2]]);assert.equal((await read('/api/v1/boardings/'+ids[2])).status,404);
   await assert.rejects(runMigrations(client,migrations,'rollback'),/populated table/);
   assert.equal((await client.query('SELECT count(*)::int AS n FROM public.boarding_advertisement_previews')).rows[0].n,4);
-  console.log('PASS: curated synthetic boarding seeds repeat safely and preserve conflicts; real public feed/detail/source/visibility/search/paging exclude unreviewed private text and suppress revoked/disputed/archived records; populated preview rollback refuses');
+  console.log('PASS: curated synthetic boarding seeds repeat safely and preserve conflicts; real public feed/detail/source/visibility/search/paging exclude unreviewed private text, actual private geometry/ciphertext and internal policy facts and suppress revoked/disputed/archived records; populated preview rollback refuses');
  }finally{
   // Only fixture IDs in the already-proven owned disposable target; no production reset.
   await client.query('DELETE FROM public.boarding_advertisement_previews WHERE boarding_id=ANY($1::uuid[])',[ids]);
   await client.query('DELETE FROM public.listings WHERE id=ANY($1::uuid[])',[listingIds]);
+  await client.query('DELETE FROM unihood_private.boarding_locations WHERE boarding_id=ANY($1::uuid[])',[ids]);
   await client.query('DELETE FROM public.boarding_properties WHERE place_id=ANY($1::uuid[])',[ids]);
   await client.query('DELETE FROM public.places WHERE id=ANY($1::uuid[])',[ids]);
  }

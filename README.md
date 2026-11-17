@@ -192,3 +192,5 @@ UNI-030 establishes the [boarding/property privacy foundation](docs/architecture
 UNI-031 adds the [synthetic boarding advertisement feed/detail preview](docs/api/boarding-advertisements.md). After normal local setup/migrations, optionally run `APP_ENV=local pnpm db:seed:boardings` and open `/advertisements`; this is fictional data, with no real owner, inventory or destination. It does not enable production publication or expose private boarding data.
 
 UNI-032 adds the [synthetic local owner draft wizard](docs/ui/owner-wizard.md) at `/owner`: existing-ad search, basic details, privacy choices, media acknowledgement and property-scoped checked browser-session drafts. Nothing is published or written to the database; final authorization, uploads, fees/vacancy and public map publication remain deferred.
+
+UNI-033 adds [server-enforced visibility projections and an unpublished synthetic owner preview](docs/api/boarding-visibility.md). Private modes never include a point; public preview requires the existing property-scoped map capability and explicit fictional-entrance/copy acknowledgements. No real residence or map publication is enabled.
