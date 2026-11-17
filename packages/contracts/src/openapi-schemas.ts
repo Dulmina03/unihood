@@ -1,3 +1,4 @@
+import { OwnerWizardDraftSchema,OwnerDraftCheckSchema } from './owner-draft';
 import { PublicBoardingListingSchema, PublicBoardingListingPageSchema } from './boarding-model';
 import { PublicPoiProposalInputSchema, PublicPoiProposalResultSchema } from './poi-proposal';
 import { DuplicateCheckInputSchema, DuplicateCheckResultSchema } from './duplicate-check';
@@ -10,8 +11,9 @@ import * as enums from './enums';
 import { ErrorResponseSchema, PaginationQuerySchema, PageMetaSchema } from './rest';
 import { PublicBoardingResponseSchema, PublicBoardingPageSchema, OwnerPublicMapSchema } from './boarding-public';
 import { BoardingAdvertisementQuerySchema,PublicBoardingAdvertisementSchema,BoardingAdvertisementPageSchema } from './boarding-advertisement';
-// No actor identities/memberships or private schemas belong in public OpenAPI components.
+// No actor identities/memberships, private location/media or persistence entities belong in OpenAPI components.
 export const PublicSchemaRegistry = {
+  OwnerWizardDraft:OwnerWizardDraftSchema,OwnerDraftCheck:OwnerDraftCheckSchema,
   BoardingAdvertisementQuery:BoardingAdvertisementQuerySchema, PublicBoardingAdvertisement:PublicBoardingAdvertisementSchema, BoardingAdvertisementPage:BoardingAdvertisementPageSchema,
   PublicBoardingListing:PublicBoardingListingSchema, PublicBoardingListingPage:PublicBoardingListingPageSchema,
   PublicPoiProposalInput:PublicPoiProposalInputSchema, PublicPoiProposalResult:PublicPoiProposalResultSchema,

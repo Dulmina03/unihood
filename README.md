@@ -190,3 +190,5 @@ UNI-027 documents the [provider/license register and controlled public-POI impor
 UNI-030 establishes the [boarding/property privacy foundation](docs/architecture/boarding-privacy.md): distinct canonical property, unit, listing revision and private media/location storage, plus strict public response contracts. Boarding feed, publication and upload APIs remain later issues; no real residences or owner claims are seeded.
 
 UNI-031 adds the [synthetic boarding advertisement feed/detail preview](docs/api/boarding-advertisements.md). After normal local setup/migrations, optionally run `APP_ENV=local pnpm db:seed:boardings` and open `/advertisements`; this is fictional data, with no real owner, inventory or destination. It does not enable production publication or expose private boarding data.
+
+UNI-032 adds the [synthetic local owner draft wizard](docs/ui/owner-wizard.md) at `/owner`: existing-ad search, basic details, privacy choices, media acknowledgement and property-scoped checked browser-session drafts. Nothing is published or written to the database; final authorization, uploads, fees/vacancy and public map publication remain deferred.

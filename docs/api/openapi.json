@@ -6,6 +6,130 @@
     "description": "Only implemented routes are listed. Shared boarding schemas are contract foundations, not live workflows. Identity/owner verification remains deferred."
   },
   "paths": {
+    "/api/v1/owner/boardings/{boardingId}/draft-check": {
+      "post": {
+        "operationId": "OwnerDraftController_check__api_v1_owner_boardings__boardingId__draft_check",
+        "summary": "Local/test owner draft validation only; never persists, publishes, claims or changes a property",
+        "x-unihood-authorization": "Issued local/test owner actor with MANAGE_PROPERTY for the exact boarding; PUBLIC_MAP draft also requires PUBLISH_EXACT_LOCATION. No production publication or identity-header authority.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OwnerWizardDraft"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "boardingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PublicId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Synthetic draft checked; browser-session save remains optional; nothing published",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnerDraftCheck"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid synthetic draft",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No local/test actor; deployed access denied",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "No property-specific management or requested map capability",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/boardings": {
       "get": {
         "operationId": "BoardingController_list__api_v1_boardings",
@@ -1578,6 +1702,165 @@
   },
   "components": {
     "schemas": {
+      "OwnerWizardDraft": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "number",
+            "const": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 120,
+            "format": "starts_with",
+            "pattern": "^Synthetic .*"
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 15,
+            "maxLength": 400
+          },
+          "facilities": {
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Study space",
+                "Shared kitchen",
+                "Laundry area",
+                "Wi-Fi"
+              ]
+            }
+          },
+          "requestedVisibility": {
+            "type": "string",
+            "enum": [
+              "PUBLIC_MAP",
+              "AREA_ONLY",
+              "HIDDEN"
+            ]
+          },
+          "locality": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Synthetic North Quarter",
+                  "Synthetic Garden District"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "mediaConsent": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "version",
+          "title",
+          "summary",
+          "facilities",
+          "requestedVisibility",
+          "locality",
+          "mediaConsent"
+        ],
+        "additionalProperties": false
+      },
+      "OwnerDraftCheck": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "outcome": {
+            "type": "string",
+            "const": "DRAFT_ONLY"
+          },
+          "published": {
+            "type": "boolean",
+            "const": false
+          },
+          "draft": {
+            "type": "object",
+            "properties": {
+              "version": {
+                "type": "number",
+                "const": 1
+              },
+              "title": {
+                "type": "string",
+                "minLength": 10,
+                "maxLength": 120,
+                "format": "starts_with",
+                "pattern": "^Synthetic .*"
+              },
+              "summary": {
+                "type": "string",
+                "minLength": 15,
+                "maxLength": 400
+              },
+              "facilities": {
+                "maxItems": 4,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "Study space",
+                    "Shared kitchen",
+                    "Laundry area",
+                    "Wi-Fi"
+                  ]
+                }
+              },
+              "requestedVisibility": {
+                "type": "string",
+                "enum": [
+                  "PUBLIC_MAP",
+                  "AREA_ONLY",
+                  "HIDDEN"
+                ]
+              },
+              "locality": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "Synthetic North Quarter",
+                      "Synthetic Garden District"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "mediaConsent": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "version",
+              "title",
+              "summary",
+              "facilities",
+              "requestedVisibility",
+              "locality",
+              "mediaConsent"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "outcome",
+          "published",
+          "draft"
+        ],
+        "additionalProperties": false
+      },
       "BoardingAdvertisementQuery": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",

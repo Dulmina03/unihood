@@ -15,6 +15,12 @@ const proposalReceipts=new Map(); // Bounded synthetic test storage; not app run
 const server = createServer(async (request, response) => {
   const url = new URL(request.url, 'http://127.0.0.1');
   response.setHeader('Content-Type', 'application/json'); response.setHeader('Cache-Control', 'no-store');
+  // Explicit synthetic owner-check mock: no authorization/database evidence.
+  if(/^\/api\/v1\/owner\/boardings\/00000000-0000-4000-8000-000000000001\/draft-check$/.test(url.pathname)){
+    const origin=request.headers.origin;if(['http://127.0.0.1:3180','http://127.0.0.1:3181'].includes(origin)){response.setHeader('Access-Control-Allow-Origin',origin);response.setHeader('Access-Control-Allow-Headers','Content-Type');response.setHeader('Access-Control-Allow-Methods','POST');}
+    if(request.method==='OPTIONS'){response.statusCode=204;response.end();return;}
+    try{let body='';for await(const chunk of request){body+=chunk;if(body.length>4000)throw new Error();}response.end(JSON.stringify({outcome:'DRAFT_ONLY',published:false,draft:JSON.parse(body)}));return;}catch{response.statusCode=400;response.end('{}');return;}
+  }
   if (url.searchParams.get('slug') === 'synthetic-unavailable') {response.statusCode = 503; response.end('{}'); return;}
   if(url.pathname==='/api/v1/places/proposals'){
     const origin=request.headers.origin;if(['http://127.0.0.1:3180','http://127.0.0.1:3181'].includes(origin)){response.setHeader('Access-Control-Allow-Origin',origin);response.setHeader('Access-Control-Allow-Headers','Content-Type');response.setHeader('Access-Control-Allow-Methods','POST');}

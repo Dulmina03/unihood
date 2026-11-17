@@ -100,9 +100,9 @@ describe('live OpenAPI baseline', () => {
     const document = response.body;
     expect(document.openapi).toBe('3.1.0');
     expect(document).toEqual(JSON.parse(readFileSync(resolve(process.cwd(), '../../docs/api/openapi.json'), 'utf8')));
-    expect(Object.keys(document.paths).sort()).toEqual(['/api/v1/boardings', '/api/v1/boardings/{id}', '/health', '/health/ready', '/api/v1/duplicates/check', '/api/v1/health', '/api/v1/health/ready', '/api/v1/openapi.json', '/api/v1/places', '/api/v1/places/proposals', '/api/v1/places/{id}', '/api/v1/place-categories', '/api/v1/universities', '/api/v1/universities/{id}/campuses', '/api/v1/universities/{id}/entrances'].sort());
+    expect(Object.keys(document.paths).sort()).toEqual(['/api/v1/owner/boardings/{boardingId}/draft-check', '/api/v1/boardings', '/api/v1/boardings/{id}', '/health', '/health/ready', '/api/v1/duplicates/check', '/api/v1/health', '/api/v1/health/ready', '/api/v1/openapi.json', '/api/v1/places', '/api/v1/places/proposals', '/api/v1/places/{id}', '/api/v1/place-categories', '/api/v1/universities', '/api/v1/universities/{id}/campuses', '/api/v1/universities/{id}/entrances'].sort());
     for (const [path, methods] of Object.entries(document.paths)) {
-      if(path==='/api/v1/duplicates/check'||path==='/api/v1/places/proposals'){
+      if(path==='/api/v1/duplicates/check'||path==='/api/v1/places/proposals'||path==='/api/v1/owner/boardings/{boardingId}/draft-check'){
         const operation=(methods as {post:{requestBody:unknown}}).post;expect(operation.requestBody).toBeDefined();await request(app.getHttpServer()).post(path).send({}).expect(401);continue;
       }
       expect(Object.keys(methods as object)).toEqual(['get']);
