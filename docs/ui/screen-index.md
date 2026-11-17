@@ -53,3 +53,7 @@ UNI-021 extends `/explore` Essentials with bounded public POI/category reads, di
 ## UNI-024 duplicate review
 
 `/places/check-duplicates`, linked from public POI results, uses existing Campus Teal header, editorial heading, fields/buttons/badges/notices. Public business name/category/entrance input → guarded read-only preflight → candidate/context review → prepare update-existing or distinct-with-reason choice, or cancel. Choices are in-memory only; no actual update/proposal is sent. Loading/error/retry, rate/authorization/unavailable/empty/incomplete states preserve public browsing. [Behavior/local setup](../api/duplicates.md), [verification and screenshot review](../verification/UNI-024/README.md). No private boarding geometry/owner authority or future contribution wizard is added.
+
+## UNI-026 public-service draft (UI-17)
+
+`/contribute/place`, linked from Essentials and duplicate review, composes the existing Campus Teal fields/buttons/notices and editorial header into a public-entrance draft, matching review and private held receipt. Source/category/coordinates, explicit synthetic-public-business confirmation and optional consent-based map placement are functional. Keyboard coordinate adjustments remain usable without MapLibre. No localStorage/URL draft snapshots, publication/owner assertions, correction submissions or residential pins. [API/local demo](../api/poi-proposals.md), [verification](../verification/UNI-026/README.md). New human visual/AT approval is not claimed.

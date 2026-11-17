@@ -31,3 +31,8 @@ The pending similarity policy is illustrative; private boarding matching, identi
 ## Git and CI
 
 UNI-025 commit/push/issue CI/dev integration/dev CI are PENDING / NOT OBSERVED. No new SHA, run number, URL or result is invented. Stage only reviewed issue files; exclude local `.env`, credentials, real private data and temporary output. Conventional commit and exact-commit issue checks must succeed before fast-forward-only dev integration/push; exact dev checks must succeed before UNI-026. Remote evidence will be recorded after it is observed.
+
+
+### Observed integration follow-up
+
+Commit `a3f37965616f36c48557408ac7472176ba5af003` on `feat/uni-025-transactional-poi-submission`: [issue run #34](https://github.com/Dulmina03/unihood/actions/runs/44000772451) SUCCESS, then clean synchronized dev fast-forward merge/push and [dev run #35](https://github.com/Dulmina03/unihood/actions/runs/44001657978) SUCCESS. Workspace quality, Isolated PostGIS integration and Component browser acceptance completed successfully for that exact full commit in both runs, independently observed. [Issue evidence](issue-run-34.json), [dev evidence](dev-run-35.json). Earlier pending statements are historical and resolved; limitations above remain. No merge commit, history rewrite or main change.

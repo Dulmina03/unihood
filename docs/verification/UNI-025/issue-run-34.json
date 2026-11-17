@@ -1,0 +1,33 @@
+{
+  "id": 44000772451,
+  "run_number": 34,
+  "run_attempt": 1,
+  "head_sha": "a3f37965616f36c48557408ac7472176ba5af003",
+  "head_branch": "feat/uni-025-transactional-poi-submission",
+  "status": "completed",
+  "conclusion": "success",
+  "html_url": "https://github.com/Dulmina03/unihood/actions/runs/44000772451",
+  "jobs": [
+    {
+      "id": 133763960078,
+      "name": "Component browser acceptance",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/44000772451/job/133763960078"
+    },
+    {
+      "id": 133763960403,
+      "name": "Isolated PostGIS integration",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/44000772451/job/133763960403"
+    },
+    {
+      "id": 133763960832,
+      "name": "Workspace quality",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/44000772451/job/133763960832"
+    }
+  ]
+}

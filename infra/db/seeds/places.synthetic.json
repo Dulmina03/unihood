@@ -3,7 +3,14 @@
     {"code":"pharmacy","label":"Pharmacy"},
     {"code":"restaurant","label":"Restaurant"},
     {"code":"clinic","label":"Clinic"},
-    {"code":"hardware","label":"Hardware"}
+    {"code":"hardware","label":"Hardware"},
+    {"code":"grocery","label":"Grocery"},
+    {"code":"laundry","label":"Laundry"},
+    {"code":"printing","label":"Printing"},
+    {"code":"repair","label":"Repair"},
+    {"code":"transport","label":"Transport"},
+    {"code":"atm","label":"ATM"},
+    {"code":"other","label":"Other public service"}
   ],
   "places": [
     {"id":"40000000-0000-4000-8000-000000000001","name":"Synthetic Demo Pharmacy","category":"pharmacy","lng":0.0005,"lat":0.0003},

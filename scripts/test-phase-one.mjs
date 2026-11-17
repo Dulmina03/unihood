@@ -22,8 +22,8 @@ async function freePort() {
   const port = server.address().port; await new Promise((resolve) => server.close(resolve)); return port;
 }
 let stage = 'artifact preflight';
-let owned = false, api, browser, client, map, list, interrupted = false;
-const interrupt = () => {interrupted = true; browser?.kill('SIGTERM'); api?.kill('SIGTERM');};
+let owned = false, api, contributorApi, proposal, browser, client, map, list, interrupted = false;
+const interrupt = () => {interrupted = true; browser?.kill('SIGTERM'); api?.kill('SIGTERM'); contributorApi?.kill('SIGTERM');};
 process.once('SIGTERM', interrupt); process.once('SIGINT', interrupt);
 async function stop(child) {
   if (!child || child.exitCode !== null || child.signalCode !== null) return;
@@ -79,7 +79,18 @@ try {
   list = await startLandingIntegration(endpoint, {provider: 'disabled'});
   if (interrupted) throw new Error('Interrupted');
   console.log('PASS: Phase 1 browser services use real Next → Nest → migrated/seeded isolated tmpfs PostGIS; actors disabled');
-  const env = {...process.env, APP_ENV: 'test', ENABLE_SYNTHETIC_ACTORS: 'false', SYNTHETIC_ACTOR: '', NEXT_TELEMETRY_DISABLED: '1', PHASE1_ISOLATED: '1', PHASE1_BASE_URL: map.base, PHASE1_LIST_BASE_URL: list.base};
+  // UNI-026: separate explicit contributor simulator, never enable the guest API.
+  const contributorPort=await freePort();let proposalPort=await freePort();while(proposalPort===contributorPort)proposalPort=await freePort();
+  contributorApi=spawn(process.execPath,['apps/api/dist/main.js'],{cwd:root,stdio:'ignore',env:{...process.env,API_HOST:'127.0.0.1',API_PORT:String(contributorPort),WEB_PORT:String(proposalPort),DATABASE_URL:url,APP_ENV:'test',NODE_ENV:'test',ENABLE_SYNTHETIC_ACTORS:'true',SYNTHETIC_ACTOR:'contributor'}});
+  const contributorEndpoint=`http://127.0.0.1:${contributorPort}`;
+  for(let attempt=0;attempt<60;attempt++){
+    if(interrupted||contributorApi.exitCode!==null)throw new Error('Owned contributor simulator unavailable');
+    try{if((await fetch(contributorEndpoint+'/health/ready',{signal:AbortSignal.timeout(3000)})).ok)break;}catch{}
+    if(attempt===59)throw new Error('Owned contributor simulator readiness timeout');await delay(250);
+  }
+  proposal=await startLandingIntegration(contributorEndpoint,{provider:'disabled',port:proposalPort});
+  console.log('PASS: separate owned loopback UNI-026 contributor simulator; existing guest services remain actor-disabled');
+  const env = {...process.env, APP_ENV: 'test', ENABLE_SYNTHETIC_ACTORS: 'false', SYNTHETIC_ACTOR: '', NEXT_TELEMETRY_DISABLED: '1', PHASE1_ISOLATED: '1', PHASE1_BASE_URL: map.base, PHASE1_LIST_BASE_URL: list.base, PHASE1_PROPOSAL_BASE_URL: proposal.base};
   delete env.DATABASE_URL; // The browser runner does not need even the disposable DB credential.
   stage = 'Playwright guest acceptance';
   browser = spawn(process.execPath, [playwrightCli, 'test', '--config=playwright.phase1.config.ts'], {cwd: `${root}apps/web`, stdio: 'inherit', env});
@@ -93,7 +104,7 @@ try {
   console.error('FAIL: Phase 1 acceptance. Build contracts/API/web, check Docker/Chromium availability and inspect the browser failure above; raw server/DB errors are not printed.');
   process.exitCode = 1;
 } finally {
-  const cleanup = await Promise.allSettled([stop(browser), list?.close(), map?.close(), stop(api), client?.end()]);
+  const cleanup = await Promise.allSettled([stop(browser), proposal?.close(), list?.close(), map?.close(), stop(contributorApi), stop(api), client?.end()]);
   let clean = cleanup.every((result) => result.status === 'fulfilled');
   try {if (owned) docker(['rm', '--force', name]);} catch {clean = false;}
   process.removeListener('SIGTERM', interrupt); process.removeListener('SIGINT', interrupt);

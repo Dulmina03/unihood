@@ -8,6 +8,7 @@ function ownedOrigin(value: string | undefined) {
 }
 const baseURL = ownedOrigin(process.env.PHASE1_BASE_URL);
 ownedOrigin(process.env.PHASE1_LIST_BASE_URL);
+ownedOrigin(process.env.PHASE1_PROPOSAL_BASE_URL);
 export default defineConfig({
   testDir: './phase1-tests', fullyParallel: false, workers: 1, retries: 0,
   timeout: 60000, reporter: 'list', outputDir: '/tmp/unihood-phase1-results',

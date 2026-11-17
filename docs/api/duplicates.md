@@ -33,3 +33,5 @@ The browser calls the loopback API **directly** with credentials omitted. A Next
 ## Verification and limits
 
 [Actual results and screenshots](../verification/UNI-024/README.md). Browser tests use an explicitly synthetic upstream and cannot prove authorization or PostgreSQL scoring. Separate HTTP tests exercise permission/rate/concurrency/failure boundaries; the owning tmpfs Docker harness starts a real configured loopback contributor API against actual PostGIS fixtures. Guest E2E remains actor-disabled. No persistent development writes, provider/license change, private boarding matching or automatic merge is introduced. Manual AT/visual approval and real-world candidate calibration are not inferred from axe or synthetic tests; Phase 6 carry-over remains visible.
+
+UNI-026 adds a separate [held proposal flow](poi-proposals.md). This standalone duplicate check still does not submit. Local CORS now also covers the exact proposal POST path; it does not cover arbitrary API writes.

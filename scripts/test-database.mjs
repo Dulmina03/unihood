@@ -1,3 +1,4 @@
+import { testPoiProposalApi } from './lib/test-poi-proposal-api.mjs';
 import { testPoiSubmissions } from './lib/test-poi-submissions.mjs';
 import { testPoiMatching } from './lib/test-poi-matching.mjs';
 import { testPublicPois } from './lib/test-public-pois.mjs';
@@ -112,6 +113,7 @@ try {
   assert.deepEqual(await runMigrations(client, ordered, 'rollback'), ['900_order_probe']);
   console.log('PASS: ordered migration/reverse order; failing batch rolls back DDL/history; checksum drift rejected');
 
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['006_poi_proposal_review']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['005_poi_submission_transactions']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['004_public_poi_geography_index']);
   await testPlaces({client, url, migrations:migrations.slice(0,3)});
@@ -135,7 +137,9 @@ try {
   console.log('PASS: repeatable synthetic seeds; production/remote refusal; local edits preserved on conflict');
 
   await testPublicPois({client,url,get,endpoint});
-  await testPoiSubmissions({client,migrations,url,endpoint});
+  await testPoiProposalApi({client,migrations,url,endpoint});
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['006_poi_proposal_review']);
+  await testPoiSubmissions({client,migrations:migrations.slice(0,5),url,endpoint});
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['005_poi_submission_transactions']);
   await testPoiMatching({client,migrations:migrations.slice(0,4),url});
   await runMigrations(client,migrations,'migrate');

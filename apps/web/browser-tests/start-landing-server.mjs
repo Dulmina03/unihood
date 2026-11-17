@@ -9,10 +9,22 @@ const provenance = (row) => ({dataKind: row.data_kind, sourceLabel: row.source_l
 const universities = graph.universities.map((row) => ({id: row.id, slug: row.slug, name: row.name, city: row.city, country: row.country, provenance: provenance(row)}));
 const campuses = graph.campuses.map((row) => ({id: row.id, universityId: row.university_id, name: row.name, publicArea: row.public_area, provenance: provenance(row)}));
 const entrances = graph.entrances.map((row) => ({id: row.id, campusId: row.campus_id, name: row.name, location: {lat: row.lat, lng: row.lng}, isPrimary: row.is_primary, provenance: provenance(row)}));
-const server = createServer((request, response) => {
+const proposalReceipts=new Map(); // Bounded synthetic test storage; not app runtime.
+const server = createServer(async (request, response) => {
   const url = new URL(request.url, 'http://127.0.0.1');
   response.setHeader('Content-Type', 'application/json'); response.setHeader('Cache-Control', 'no-store');
   if (url.searchParams.get('slug') === 'synthetic-unavailable') {response.statusCode = 503; response.end('{}'); return;}
+  if(url.pathname==='/api/v1/places/proposals'){
+    const origin=request.headers.origin;if(['http://127.0.0.1:3180','http://127.0.0.1:3181'].includes(origin)){response.setHeader('Access-Control-Allow-Origin',origin);response.setHeader('Access-Control-Allow-Headers','Content-Type');response.setHeader('Access-Control-Allow-Methods','POST');}
+    if(request.method==='OPTIONS'){response.statusCode=204;response.end();return;}
+    try{
+      let body='';for await(const chunk of request){body+=chunk;if(body.length>10000)throw new Error();}const input=JSON.parse(body);
+      if(proposalReceipts.size>=100&&!proposalReceipts.has(input.key)){response.statusCode=429;response.end('{}');return;}
+      const prior=proposalReceipts.get(input.key);if(prior&&prior.body!==body){response.statusCode=409;response.end('{}');return;}
+      const result=prior?.result??{outcome:'PENDING_REVIEW',proposalId:crypto.randomUUID(),requiresReview:true,reviewState:'PENDING'};
+      proposalReceipts.set(input.key,{body,result});response.end(JSON.stringify(result));return;
+    }catch{response.statusCode=400;response.end('{}');return;}
+  }
   // Explicit synthetic browser upstream, not an authorization/matcher test.
   if(url.pathname==='/api/v1/duplicates/check'){
     const origin=request.headers.origin;

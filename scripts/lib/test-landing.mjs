@@ -3,11 +3,11 @@ import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
 import { fileURLToPath } from 'node:url';
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-export async function startLandingIntegration(apiEndpoint, {provider = 'disabled'} = {}) {
+export async function startLandingIntegration(apiEndpoint, {provider = 'disabled', port: requestedPort} = {}) {
   const root = fileURLToPath(new URL('../../', import.meta.url));
-  const probe = createServer();
-  await new Promise((resolve, reject) => {probe.once('error', reject); probe.listen(0, '127.0.0.1', resolve);});
-  const port = probe.address().port; await new Promise((resolve) => probe.close(resolve));
+  let port=requestedPort;
+  if(port===undefined){const probe=createServer();await new Promise((resolve,reject)=>{probe.once('error',reject);probe.listen(0,'127.0.0.1',resolve);});port=probe.address().port;await new Promise(resolve=>probe.close(resolve));}
+  assert.ok(Number.isInteger(port)&&port>0&&port<=65535);
   const child = spawn(process.execPath, ['scripts/next.mjs', 'start'], {cwd: `${root}apps/web`, stdio: 'ignore',
     env: {...process.env, MAP_PROVIDER: provider, MAP_STYLE: 'liberty', APP_ENV: 'test', WEB_PORT: String(port), API_BASE_URL: `${apiEndpoint}/api/v1`, ENABLE_SYNTHETIC_ACTORS: 'false', SYNTHETIC_ACTOR: '', NEXT_TELEMETRY_DISABLED: '1'}});
   const base = `http://127.0.0.1:${port}`;

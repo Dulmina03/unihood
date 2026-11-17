@@ -1,3 +1,4 @@
+import { poiReviewPolicy } from './poi-review-policy';
 import { randomUUID,createHash } from 'node:crypto';
 import { Inject,Injectable,ForbiddenException,ConflictException,ServiceUnavailableException } from '@nestjs/common';
 import { normalizePoiName,PoiSubmissionInputSchema,PoiSubmissionResultSchema,type PoiSubmissionResult,type ActorContext,type PermissionService } from '@unihood/contracts';
@@ -15,6 +16,7 @@ export class PoiSubmissionService {
   if(!this.repository.includeSynthetic||actor.authStatus!=='LOCAL_TEST_ACTOR'||!actor.actorId?.startsWith('synthetic:')||actor.actorId.length>160||!await this.permissions.canSuggestPlace(actor))throw new ForbiddenException();
   if(actor.actorId!==actorId)throw new ForbiddenException();
   const parsed=PoiSubmissionInputSchema.parse(input),{key,...payload}=parsed;
+  if(parsed.sourceNote!==undefined&&parsed.publicBusinessConfirmed!==true)throw new ForbiddenException();
   const hash=createHash('sha256').update('poi-intent-v1:'+JSON.stringify(payload)).digest('hex');
   return this.repository.transaction(async query=>{
    // One transaction-level global scope is conservative across radius/cell and
@@ -66,8 +68,13 @@ export class PoiSubmissionService {
    const id=randomUUID();
    await query(`INSERT INTO public.poi_pending_proposals(id,actor_ref,name,normalized_name,category,public_entrance,distinct_reason)
      VALUES($1,$2,$3,$4,$5,ST_SetSRID(ST_Point($6,$7),4326),$8)`,[id,actorId,parsed.draft.name,normalized,parsed.draft.category,parsed.draft.location.lng,parsed.draft.location.lat,parsed.resolution.reason]);
+   let reviewState:'PENDING'|'NEEDS_EVIDENCE'|undefined;
+   if(parsed.sourceNote!==undefined){
+    const review=poiReviewPolicy([parsed.draft.name,parsed.resolution.reason,parsed.sourceNote].join(' '));reviewState=review.reviewState;
+    await query('UPDATE public.poi_pending_proposals SET source_note=$2,review_state=$3,risk_flags=$4::text[] WHERE id=$1',[id,parsed.sourceNote,reviewState,review.flags]);
+   }
    if(parsed.source)await query('INSERT INTO public.poi_pending_source_refs(proposal_id,provider,external_id,license_tag) VALUES($1,$2,$3,$4)',[id,parsed.source.provider,parsed.source.externalId,parsed.source.licenseTag]);
-   return save({outcome:'PENDING_REVIEW',proposalId:id,requiresReview:true});
+   return save({outcome:'PENDING_REVIEW',proposalId:id,requiresReview:true,...(reviewState?{reviewState}:{})});
   }).catch(error=>{if(error instanceof ConflictException)throw error;throw new ServiceUnavailableException();});
  }
 }
