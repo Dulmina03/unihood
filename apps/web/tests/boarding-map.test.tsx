@@ -8,6 +8,16 @@ const pin={id,kind:'BOARDING',title:'Synthetic Owner Courtyard',visibility:'PUBL
 const page=(items:unknown[])=>({items,page:{page:1,pageSize:20,hasNextPage:false}});
 afterEach(()=>{cleanup();vi.unstubAllGlobals();vi.restoreAllMocks();});
 describe('live consented map client',()=>{
+ it('never revives a cached public pin when returning to the same layer and URL after revocation',async()=>{
+  let resolve!:(r:Response)=>void;
+  vi.stubGlobal('fetch',vi.fn<typeof fetch>().mockResolvedValueOnce(Response.json(page([pin]))).mockImplementationOnce(()=>new Promise(r=>{resolve=r;})));
+  const view=renderHook(({active})=>useBoardingMap(active,'','1'),{initialProps:{active:true}});
+  await waitFor(()=>expect(view.result.current.data?.items).toHaveLength(1));
+  view.rerender({active:false});expect(view.result.current.data).toBeUndefined();
+  view.rerender({active:true});expect(view.result.current.data).toBeUndefined();expect(view.result.current.loading).toBe(true);
+  await waitFor(()=>expect(resolve).toBeDefined());await act(async()=>resolve(Response.json(page([]))));
+  expect(view.result.current.data?.items).toHaveLength(0);
+ });
  it('validates map points and URL selection without accepting private modes, geometry parameters or duplicate identities',()=>{expect(publicBoardings([pin,pin,{...pin,visibility:'HIDDEN'},{...pin,publicMapConsent:false}])).toHaveLength(1);const href=exploreHref({university:'synthetic-demo',campus:'20000000-0000-4000-8000-000000000001',category:'boardings',boarding:id});expect(parseExploreQuery(new URLSearchParams(href.split('?')[1])).valid).toBe(true);for(const query of ['boarding='+id,'category=essentials&boarding='+id,'lat=42&boarding='+id])expect(parseExploreQuery(new URLSearchParams(query)).valid).toBe(false);});
  it('clears old points while focus revalidates and after revocation or network failure, ignoring late responses',async()=>{
   let resolve!: (r:Response)=>void;const fetcher=vi.fn<typeof fetch>().mockResolvedValueOnce(Response.json(page([pin]))).mockImplementationOnce(()=>new Promise(r=>{resolve=r;})).mockResolvedValueOnce(Response.json(page([]))).mockRejectedValueOnce(new Error('PRIVATE_CANARY'));vi.stubGlobal('fetch',fetcher);
