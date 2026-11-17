@@ -68,6 +68,10 @@ export const BoardingComparisonItemSchema = z.strictObject({
   updatedAt: z.iso.datetime({offset: true}),
   provenance: PublicProvenanceSchema.options[0],
 }).refine((v) => {
+  if (v.visibility === 'HIDDEN' && v.locationLabel !== null) return false;
+  if (v.publisherKind === 'COMMUNITY_RECOMMENDATION' && (
+    v.visibility === 'PUBLIC_MAP' || v.price !== null || v.vacancy.status !== 'UNKNOWN' || v.unitsSummary.length !== 0
+  )) return false;
   if (v.visibility !== 'PUBLIC_MAP') {
     return v.entrance === null && v.hasExactEntrance === false && v.nearbyEssentials === null;
   }

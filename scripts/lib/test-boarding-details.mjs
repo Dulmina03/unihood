@@ -60,9 +60,11 @@ export async function testBoardingDetails({ client, url, get }) {
       WHERE place_id = $1
     `, [publicId]);
 
+    await client.query(`UPDATE public.listings SET visibility_snapshot='PUBLIC_MAP' WHERE id=$1`, [listing1]);
+    await client.query(`UPDATE public.boarding_advertisement_previews SET visibility='PUBLIC_MAP',locality=NULL WHERE listing_id=$1`, [listing1]);
     await client.query(`
       INSERT INTO public.boarding_public_entrances (boarding_id, listing_id, purpose, entrance_geo, consent_at)
-      VALUES ($1, $2, 'OWNER_SELECTED_PUBLIC_ENTRANCE', ST_SetSRID(ST_MakePoint(0, 0), 4326), CURRENT_TIMESTAMP)
+      VALUES ($1, $2, 'OWNER_SELECTED_PUBLIC_ENTRANCE', ST_SetSRID(ST_MakePoint(0, 0), 4326), (SELECT map_consent_at FROM public.boarding_properties WHERE place_id=$1))
       ON CONFLICT (boarding_id) DO UPDATE
       SET entrance_geo = ST_SetSRID(ST_MakePoint(0, 0), 4326), consent_at = CURRENT_TIMESTAMP
     `, [publicId, listing1]);

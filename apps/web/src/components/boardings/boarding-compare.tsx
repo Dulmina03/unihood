@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { parseBoardingComparisonResponse, type BoardingComparisonResponse } from '@unihood/contracts';
+import { usePublicRevalidation } from '../../lib/boardings/use-public-revalidation';
 import { Badge, Button, EmptyState, Icon, Notice, SiteHeader, Skeleton } from '@unihood/ui';
 
 export function BoardingCompare({ initialIds }: { initialIds: string[] }) {
@@ -11,6 +12,9 @@ export function BoardingCompare({ initialIds }: { initialIds: string[] }) {
   const key = `${ids.join(',')}:${attempt}`;
   const [result, setResult] = useState<{ key: string; data?: BoardingComparisonResponse; failed?: boolean }>({ key: '' });
   const heading = useRef<HTMLHeadingElement>(null);
+
+  const refresh = useCallback(() => setAttempt(value => value + 1), []);
+  usePublicRevalidation(ids.length > 0, refresh);
 
   useEffect(() => {
     if (ids.length === 0) return;
@@ -38,6 +42,7 @@ export function BoardingCompare({ initialIds }: { initialIds: string[] }) {
       live = false;
       controller.abort();
       clearTimeout(timer);
+      setResult({ key: '' });
     };
   }, [ids, key]);
 

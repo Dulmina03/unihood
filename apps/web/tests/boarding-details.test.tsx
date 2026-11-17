@@ -143,3 +143,33 @@ describe('BoardingCompare Component', () => {
     fireEvent.click(removeButtons[1]);
   });
 });
+
+describe('UNI-039 open-page consent revocation', () => {
+  it('clears comparison geometry and proximity after focus revalidation returns private mode', async () => {
+    const hidden = { ...sampleComparison.items[0], visibility: 'HIDDEN', hasExactEntrance: false,
+      entrance: null, nearbyEssentials: null, locationLabel: null };
+    const fetch = vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ ...sampleComparison, items: [sampleComparison.items[0]] }) } as Response)
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ ...sampleComparison, items: [hidden] }) } as Response);
+    render(<BoardingCompare initialIds={[publicId]} />);
+    await screen.findByText('Consented public entrance');
+    fireEvent.focus(window);
+    await screen.findByText('Location hidden');
+    expect(screen.queryByText('Consented public entrance')).toBeNull();
+    expect(screen.queryByText(/140 m/)).toBeNull();
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(fetch.mock.calls[1][1]).toMatchObject({ cache: 'no-store', credentials: 'omit' });
+  });
+  it('removes public essentials on visibility switches and rejects unavailable revalidation', async () => {
+    vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce({ ok: true, json: async () => sampleEssentials } as Response)
+      .mockResolvedValue({ ok: false } as Response);
+    const { rerender } = render(<NearbyEssentials id={publicId} visibility="PUBLIC_MAP" />);
+    await screen.findByText('Synthetic Demo Pharmacy');
+    rerender(<NearbyEssentials id={publicId} visibility="HIDDEN" />);
+    expect(screen.queryByText('Synthetic Demo Pharmacy')).toBeNull();
+    rerender(<NearbyEssentials id={publicId} visibility="PUBLIC_MAP" />);
+    await screen.findByText('Nearby essentials unavailable');
+    expect(screen.queryByText('Synthetic Demo Pharmacy')).toBeNull();
+  });
+});

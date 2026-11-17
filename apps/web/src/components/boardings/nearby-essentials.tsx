@@ -1,13 +1,17 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { parseBoardingNearbyEssentials, type BoardingNearbyEssentialsResponse } from '@unihood/contracts';
+import { usePublicRevalidation } from '../../lib/boardings/use-public-revalidation';
 import { Badge, Button, EmptyState, Icon, Notice, Skeleton } from '@unihood/ui';
 
 export function NearbyEssentials({ id, visibility }: { id: string; visibility: string }) {
   const [attempt, setAttempt] = useState(0);
-  const key = `${id}:${attempt}`;
+  const key = `${id}:${visibility}:${attempt}`;
   const [result, setResult] = useState<{ key: string; data?: BoardingNearbyEssentialsResponse; failed?: boolean }>({ key: '' });
+
+  const refresh = useCallback(() => setAttempt(value => value + 1), []);
+  usePublicRevalidation(visibility === 'PUBLIC_MAP', refresh);
 
   useEffect(() => {
     if (visibility !== 'PUBLIC_MAP') return;
@@ -24,6 +28,7 @@ export function NearbyEssentials({ id, visibility }: { id: string; visibility: s
         if (!res.ok) throw new Error();
         const json = await res.json();
         const parsed = parseBoardingNearbyEssentials(json);
+        if (parsed.boardingId !== id) throw new Error();
         if (live) setResult({ key, data: parsed });
       })
       .catch(() => {
@@ -35,6 +40,7 @@ export function NearbyEssentials({ id, visibility }: { id: string; visibility: s
       live = false;
       controller.abort();
       clearTimeout(timer);
+      setResult({ key: '' });
     };
   }, [id, visibility, key]);
 

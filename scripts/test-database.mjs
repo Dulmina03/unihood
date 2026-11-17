@@ -1,3 +1,4 @@
+import {testBoardingPrivacyMatrix} from './lib/test-boarding-privacy-matrix.mjs';
 import {testBoardingPrivacy} from './lib/test-boarding-privacy.mjs';
 import {testBoardingDetails} from './lib/test-boarding-details.mjs';
 import {testBoardingVacancy} from './lib/test-boarding-vacancy.mjs';
@@ -151,6 +152,7 @@ try {
   console.log('PASS: repeatable synthetic seeds; production/remote refusal; local edits preserved on conflict');
 
   await testPublicPois({client,url,get,endpoint});
+  await testBoardingPrivacyMatrix({client,url,get,endpoint});
   await testBoardingDetails({client,url,get,endpoint});
   await testBoardingPrivacy({client,url,migrations,get,endpoint});
   await testBoardingVacancy({client,url,migrations,get,endpoint});

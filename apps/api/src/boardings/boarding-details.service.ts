@@ -25,6 +25,8 @@ export class BoardingDetailsService {
          AND p.data_kind = 'SYNTHETIC' AND b.data_kind = 'SYNTHETIC'
          AND b.visibility = 'PUBLIC_MAP' AND b.public_map_consent = true
          AND b.authorization_status = 'LOCAL_TEST_AUTHORIZED'
+         AND l.publisher_kind = 'OWNER_OFFICIAL' AND l.visibility_snapshot = b.visibility
+         AND e.consent_at = b.map_consent_at
        LIMIT 1`,
       [this.repository.includeSynthetic, id],
     );
@@ -73,29 +75,32 @@ export class BoardingDetailsService {
 
     for (const id of ids) {
       const propRows = await this.repository.query(
-        `SELECT b.place_id AS id, p.canonical_name AS title, l.publisher_kind, b.visibility,
+        `SELECT b.place_id AS id, a.title, l.publisher_kind, b.visibility,
                 b.general_locality, b.locality_consent, b.public_map_consent, b.authorization_status,
-                COALESCE(a.summary, l.description, p.canonical_name) AS summary,
-                COALESCE(to_char(a.updated_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"'), to_char(l.published_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"')) AS "updatedAt",
+                a.summary,
+                to_char(a.updated_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS "updatedAt",
                 ST_Y(e.entrance_geo) AS lat, ST_X(e.entrance_geo) AS lng
          FROM public.boarding_properties b
          JOIN public.places p ON p.id = b.place_id
          JOIN public.listings l ON l.boarding_id = b.place_id AND l.is_current = true AND l.publication_status = 'PUBLISHED'
-         LEFT JOIN public.boarding_advertisement_previews a ON a.listing_id = l.id AND a.boarding_id = b.place_id
-         LEFT JOIN public.boarding_public_entrances e ON e.boarding_id = b.place_id AND e.listing_id = l.id AND e.purpose = 'OWNER_SELECTED_PUBLIC_ENTRANCE'
+         JOIN public.boarding_advertisement_previews a ON a.listing_id = l.id AND a.boarding_id = b.place_id
+         LEFT JOIN public.boarding_public_entrances e ON e.boarding_id = b.place_id AND e.listing_id = l.id AND e.purpose = 'OWNER_SELECTED_PUBLIC_ENTRANCE' AND e.consent_at = b.map_consent_at
          WHERE $1::boolean AND b.place_id = $2
            AND p.kind = 'BOARDING' AND p.status = 'ACTIVE' AND p.merged_into IS NULL
            AND p.data_kind = 'SYNTHETIC' AND b.data_kind = 'SYNTHETIC'
+           AND l.visibility_snapshot = b.visibility AND a.visibility = b.visibility AND a.data_kind = 'SYNTHETIC'
+           AND (b.visibility <> 'AREA_ONLY' OR (b.locality_consent AND b.general_locality = a.locality))
+           AND (l.publisher_kind = 'COMMUNITY_RECOMMENDATION' OR b.authorization_status = 'LOCAL_TEST_AUTHORIZED')
          LIMIT 1`,
         [this.repository.includeSynthetic, id],
       );
 
       if (!propRows.length) continue;
       const r = propRows[0];
-      const isPublicMap = r.visibility === 'PUBLIC_MAP' && r.public_map_consent === true && r.authorization_status === 'LOCAL_TEST_AUTHORIZED' && r.lat !== null && r.lng !== null;
+      const isPublicMap = r.publisher_kind === 'OWNER_OFFICIAL' && r.visibility === 'PUBLIC_MAP' && r.public_map_consent === true && r.authorization_status === 'LOCAL_TEST_AUTHORIZED' && r.lat !== null && r.lng !== null;
 
-      const unitRows = await this.repository.query(
-        `SELECT u.id, u.label, u.room_type AS template, u.capacity,
+      const unitRows = r.publisher_kind === 'OWNER_OFFICIAL' ? await this.repository.query(
+        `SELECT u.id, CASE u.public_template WHEN 'STUDY_ROOM' THEN 'Synthetic Study Room' ELSE 'Synthetic Shared Room' END AS label, u.public_template AS template, u.capacity,
                 p.rent_minor AS "rentMinor", p.basis,
                 COALESCE(c.status, 'UNKNOWN') AS "vacancyStatus",
                 to_char(c.confirmed_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS "confirmedAt",
@@ -111,12 +116,13 @@ export class BoardingDetailsService {
            SELECT vc.status, vc.confirmed_at, vc.expires_at
            FROM public.boarding_vacancy_confirmations vc
            WHERE vc.unit_id = u.id AND vc.boarding_id = u.boarding_id AND vc.expires_at > CURRENT_TIMESTAMP
+             AND vc.confirmed_at <= CURRENT_TIMESTAMP AND vc.revision = u.vacancy_revision AND vc.unit_revision = u.revision
            ORDER BY vc.revision DESC LIMIT 1
          ) c ON true
          WHERE u.boarding_id = $1 AND u.public_template IS NOT NULL
          ORDER BY u.id LIMIT 20`,
         [id],
-      );
+      ) : [];
 
       let price: { currency: 'LKR'; rentMonthly: number; deposit?: number; verifiedSource: 'OWNER' } | null = null;
       const pricedUnits = unitRows.filter((u: Record<string, unknown>) => u.rentMinor !== null);

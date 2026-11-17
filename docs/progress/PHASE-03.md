@@ -1,8 +1,8 @@
 # Phase 3 — boardings, advertisements, privacy and vacancy
 
-Status: **UNI-030–038 complete and integrated; UNI-039 next**, after UNI-038 issue #63/dev #64 all-job SUCCESS. Authorized autonomous issue branches, exact-commit CI and fast-forward-only integration apply.
+Status: **UNI-030–038 complete and integrated; UNI-039 in progress**, after UNI-038 issue #63/dev #64 all-job SUCCESS. Authorized autonomous issue branches, exact-commit CI and fast-forward-only integration apply.
 
-Exact roadmap: UNI-030 canonical property/unit/listing/media schema and all public visibility DTO variants → UNI-031 ad feed/detail → UNI-032 local-only owner wizard → UNI-033 visibility/serialization → UNI-034 eligible public map pins/revocation → UNI-035 official pricing/inventory → UNI-036 vacancy freshness → UNI-037 media/phone/audit safety → UNI-038 details/comparison/essentials → UNI-039 comprehensive privacy acceptance. UNI-038 is complete; UNI-039 is next, UNI-040 onward remain unstarted.
+Exact roadmap: UNI-030 canonical property/unit/listing/media schema and all public visibility DTO variants → UNI-031 ad feed/detail → UNI-032 local-only owner wizard → UNI-033 visibility/serialization → UNI-034 eligible public map pins/revocation → UNI-035 official pricing/inventory → UNI-036 vacancy freshness → UNI-037 media/phone/audit safety → UNI-038 details/comparison/essentials → UNI-039 comprehensive privacy acceptance. UNI-038 is complete; UNI-039 is resumed on its existing branch; UNI-040 onward remain unstarted.
 
 ## UNI-030 — canonical boarding foundation
 
@@ -47,3 +47,7 @@ Complete and fast-forward integrated/pushed at `598b7c03b49de551a00cff1488d78101
 ## UNI-038 — details, comparison and essentials (only for eligible precise public locations)
 
 Complete and fast-forward integrated/pushed at `cbbd0af149d0a691aa7ced76ed986768b02e8ecf`; independently observed issue #63/dev #64 passed all three required jobs. Local 455 workspace tests, 98 browser cases, isolated PostGIS distance and refusal suites, lint/typecheck and supported builds PASS, with 13 screenshots and five zero-violation axe reports. Straight-line geodesic distance within 2000m strictly gated to `PUBLIC_MAP` with owner consent; private listings (`AREA_ONLY` and `HIDDEN`) refuse proximity with 404/null. Up to 4-boarding side-by-side comparison matrix (`/compare`) with honest distinction between public consented coordinates and private accommodations. [Verification](../verification/UNI-038/README.md).
+
+## UNI-039 — comprehensive boarding privacy acceptance
+
+Resumed existing Antigravity branch `feat/uni-039-comprehensive-privacy-contract-tests` from `1158b303b16105c8f0f1ca185daeb5c889a00ef0`, with all prior uncommitted changes preserved. Contract/API/component/browser/PostGIS matrix covers the current public surfaces and denied future route/search shortcuts, consent/canonical identity, property authorization, media/contact and SEO/cache boundaries. Regression-confirmed comparison contract gaps, community official-unit queries and stale open-page comparison/essentials state corrected without redesigning the UI or changing applied migrations. Local workspace487, browser102, real guest E2E16, isolated DB44 groups, lint/typecheck and supported production builds PASS; exact issue/dev CI pending; no completion/integration claimed. [Actual recovery, coverage, results and exclusions](../verification/UNI-039/README.md). Remaining detailed Phase 1 manual accessibility stays DEFERRED to Phase 6, not PASS.
