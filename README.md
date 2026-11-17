@@ -186,3 +186,5 @@ UNI-025 adds an internal [pending public POI transaction foundation](docs/archit
 UNI-026 adds the guarded synthetic [public-place proposal demonstration](docs/api/poi-proposals.md) at `/contribute/place`: category/name/source/entrance draft, duplicate review and a private held receipt. Nothing is published. Enable the explicit loopback local/test contributor simulator only; production and staging remain denied.
 
 UNI-027 documents the [provider/license register and controlled public-POI import strategy](docs/architecture/poi-provider-import-strategy.md). It adds no importer or real data; public Nominatim harvesting, tile scraping and unauthorized boarding geometry remain excluded.
+
+UNI-030 establishes the [boarding/property privacy foundation](docs/architecture/boarding-privacy.md): distinct canonical property, unit, listing revision and private media/location storage, plus strict public response contracts. Boarding feed, publication and upload APIs remain later issues; no real residences or owner claims are seeded.

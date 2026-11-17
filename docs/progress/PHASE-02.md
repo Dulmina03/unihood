@@ -1,6 +1,6 @@
 # Phase 2 — public POIs and canonical duplicate engine
 
-Status: **UNI-020–026 complete/integrated; UNI-027 in progress** on `docs/uni-027-provider-import-strategy` from clean verified dev acb98a5. Exact roadmap remains UNI-020 → UNI-021 → UNI-022 → UNI-023 → UNI-024 → UNI-025 → UNI-026 → UNI-027. No later issue implemented.
+Status: **UNI-020–027 scoped roadmap implementation complete and integrated**, latest dev `3fa3d0cb4bb88aa4c0b9c09f8a13e44c42e95830`; exact UNI-027 issue #38/dev #39 passed all three jobs. Exact roadmap remains UNI-020 → UNI-021 → UNI-022 → UNI-023 → UNI-024 → UNI-025 → UNI-026 → UNI-027. Phase 3 begins with [UNI-030](PHASE-03.md).
 
 The human has replaced routine human-only Git checkpoints with autonomous one-issue branches, local checks, relevant diff/staging review, conventional commits, issue push/exact-commit CI, fast-forward-only dev integration, dev push/exact-commit CI, then continuation. No force-push/shared-history rewrite/main/release/deployment/data deletion is authorized. Remote CI unavailable/unverified blocks integration/continuation. All five ADRs remain intact. Remaining Phase 1 manual accessibility is [deferred to Phase 6](PHASE-06.md), not PASS.
 
@@ -96,3 +96,8 @@ M2/M5 documentation; depends on UNI-013/020–026 and five ADRs. Rechecks primar
 
 
 UNI-027 local documentation validation PASS: primary policy/license pages reviewed, one live Liberty HEAD (200/public max-age=86400/CORS `*`), manifest unknowns remain null, links/JSON/diff/repository/checksum-verified actionlint, lint/typecheck and **320 existing tests**. No runtime changes or new mirror tests. Local browser/build/Docker checks are not rerun for the docs-only diff; predecessor UNI-026 results remain separately attributed and all three remote jobs remain required for the exact new commit. Real importer, legal/public-deployment approval, field data and full future §6.3 boarding/media/import acceptance are not claimed. New issue/dev CI and integration pending.
+
+
+## UNI-027 observed integration and Phase 2 scope closure
+
+Exact commit `3fa3d0cb4bb88aa4c0b9c09f8a13e44c42e95830`; [issue #38](https://github.com/Dulmina03/unihood/actions/runs/44011061756) and [dev #39](https://github.com/Dulmina03/unihood/actions/runs/44011833954) independently observed SUCCESS, all three required jobs each, after fast-forward-only integration/push. Earlier pending statuses are historical. Phase 2 scoped public-POI and synthetic duplicate/proposal checks pass; this is not full cross-phase M2 completion or a claim all §6.3 private-boarding/media/production-import scenarios ran. Those remain linked to later boarding, governance, privacy and release work. Real importer and human field/legal/public-launch gates remain outstanding. [Evidence](../verification/UNI-027/README.md), [next phase](PHASE-03.md).
