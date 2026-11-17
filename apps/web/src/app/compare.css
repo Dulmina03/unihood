@@ -1,0 +1,36 @@
+/* UNI-038: Editorial Boarding Comparison (UI-11) */
+.compare-page{background:var(--background);min-height:100dvh}
+.compare-main{width:min(1320px,calc(100% - 64px));margin-inline:auto;padding-block:32px 64px}
+.compare-main>nav{font-size:13px;color:var(--teal-600);font-weight:800;margin-bottom:20px}
+.compare-main>nav a{text-decoration:none;color:inherit}
+.compare-main>nav a:hover{text-decoration:underline}
+.compare-header{margin-bottom:32px}
+.compare-header h1{font-family:var(--font-display);font-size:clamp(32px,4vw,52px);line-height:1.15;max-width:700px;color:var(--navy-900);margin:10px 0 16px;font-weight:500;letter-spacing:-1px}
+.compare-header p{max-width:650px;color:var(--text-muted);font-size:14px;line-height:1.6}
+.compare-matrix-wrapper{overflow-x:auto;border:1px solid var(--divider);border-radius:18px;background:var(--surface);box-shadow:var(--shadow-card);margin-block:24px}
+.compare-table{width:100%;border-collapse:collapse;min-width:640px;font-size:14px;text-align:left}
+.compare-table th,.compare-table td{padding:18px 24px;border-bottom:1px solid var(--divider);vertical-align:top}
+.compare-table thead tr th{background:var(--mint-100);border-bottom:2px solid var(--divider)}
+.compare-feature-col{width:220px;font:700 13px/1.3 var(--font-body);color:var(--navy-900);text-transform:uppercase;letter-spacing:0.5px}
+.compare-item-header{min-width:240px}
+.compare-item-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.compare-item-header h3{font:500 22px/1.2 var(--font-display);color:var(--navy-900);margin:8px 0}
+.compare-detail-link{font-size:12px;font-weight:800;color:var(--navy-900);text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.compare-detail-link:hover{text-decoration:underline;color:var(--teal-600)}
+.compare-table tbody tr:last-child th,.compare-table tbody tr:last-child td{border-bottom:none}
+.compare-table tbody th{font-weight:700;color:var(--navy-900);background:var(--background);font-size:13px}
+.compare-price{font-size:18px;font-weight:800;color:var(--navy-900)}
+.compare-subtext{font-size:12px;color:var(--text-muted);margin:4px 0 0}
+.compare-unspecified{color:var(--text-muted);font-style:italic}
+.compare-not-shared{color:var(--navy-900);display:inline-flex;align-items:center;gap:6px;font-size:13px;background:var(--mint-100);padding:6px 12px;border-radius:8px}
+.compare-not-shared svg{width:16px;height:16px}
+.compare-vacancy-available{color:var(--teal-600);font-weight:800}
+.compare-vacancy-full{color:#b91c1c;font-weight:800}
+.compare-units-list,.compare-essentials-list{list-style:none;padding:0;margin:0;display:grid;gap:6px;font-size:13px}
+.compare-summary-cell p{font-size:13px;line-height:1.5;color:var(--foreground);margin:0}
+.compare-footer{margin-top:24px;font-size:12px;color:var(--text-muted);line-height:1.6}
+@media(max-width:768px){
+ .compare-main{width:calc(100% - 32px);padding-block:20px 48px}
+ .compare-table th,.compare-table td{padding:14px 16px}
+ .compare-feature-col{width:160px;font-size:12px}
+}

@@ -1,4 +1,5 @@
 import {testBoardingPrivacy} from './lib/test-boarding-privacy.mjs';
+import {testBoardingDetails} from './lib/test-boarding-details.mjs';
 import {testBoardingVacancy} from './lib/test-boarding-vacancy.mjs';
 import { testBoardingInventory } from './lib/test-boarding-inventory.mjs';
 import { testBoardingMap } from './lib/test-boarding-map.mjs';
@@ -150,6 +151,7 @@ try {
   console.log('PASS: repeatable synthetic seeds; production/remote refusal; local edits preserved on conflict');
 
   await testPublicPois({client,url,get,endpoint});
+  await testBoardingDetails({client,url,get,endpoint});
   await testBoardingPrivacy({client,url,migrations,get,endpoint});
   await testBoardingVacancy({client,url,migrations,get,endpoint});
   await testBoardingInventory({client,migrations,url,get,endpoint});

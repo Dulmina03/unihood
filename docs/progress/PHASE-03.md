@@ -1,8 +1,8 @@
 # Phase 3 — boardings, advertisements, privacy and vacancy
 
-Status: **UNI-030–037 complete and integrated; UNI-038 next**, after UNI-037 issue #59/dev #60 all-job SUCCESS. Authorized autonomous issue branches, exact-commit CI and fast-forward-only integration apply.
+Status: **UNI-030–037 complete and integrated; UNI-038 in progress**, after UNI-037 issue #61/dev #62 all-job SUCCESS. Authorized autonomous issue branches, exact-commit CI and fast-forward-only integration apply.
 
-Exact roadmap: UNI-030 canonical property/unit/listing/media schema and all public visibility DTO variants → UNI-031 ad feed/detail → UNI-032 local-only owner wizard → UNI-033 visibility/serialization → UNI-034 eligible public map pins/revocation → UNI-035 official pricing/inventory → UNI-036 vacancy freshness → UNI-037 media/phone/audit safety → UNI-038 details/comparison/essentials → UNI-039 comprehensive privacy acceptance. UNI-037 is complete; UNI-038 is next, UNI-039 onward remain unstarted.
+Exact roadmap: UNI-030 canonical property/unit/listing/media schema and all public visibility DTO variants → UNI-031 ad feed/detail → UNI-032 local-only owner wizard → UNI-033 visibility/serialization → UNI-034 eligible public map pins/revocation → UNI-035 official pricing/inventory → UNI-036 vacancy freshness → UNI-037 media/phone/audit safety → UNI-038 details/comparison/essentials → UNI-039 comprehensive privacy acceptance. UNI-037 is complete; UNI-038 verification and remote CI in progress, UNI-039 onward remain unstarted.
 
 ## UNI-030 — canonical boarding foundation
 
@@ -42,8 +42,8 @@ Final UNI-036 correction 4041385 is verified/integrated: issue #57/dev #58 all t
 
 ## UNI-037 — media and private contact safety
 
-Complete and fast-forward integrated/pushed at `f83e1f80a09e91ed0c99b6df4b974fe059694d1f`; independently observed issue #59/dev #60 passed all three required jobs. Local 438 workspace tests, 94 browser cases, 35+ isolated PostGIS result groups, lint/typecheck and supported builds PASS, with 12 screenshots and six zero-violation axe reports. Consent/type/size/metadata controls, EXIF/XMP stripping, private WebP quarantined derivatives, staging interruption recovery, property-scoped private AES-GCM encrypted contact settings (`555-0100`), immutable audit events and explicit quarantine/verification boundaries. No malware scanning or phone carrier verification claimed. Production writes remain closed. [Verification](../verification/UNI-037/README.md).
+Complete and fast-forward integrated/pushed at `598b7c03b49de551a00cff1488d781016a74ba5c`; independently observed issue #61/dev #62 passed all three required jobs. Local 438 workspace tests, 94 browser cases, 35+ isolated PostGIS result groups, lint/typecheck and supported builds PASS, with 12 screenshots and six zero-violation axe reports. Consent/type/size/metadata controls, EXIF/XMP stripping, private WebP quarantined derivatives, staging interruption recovery, property-scoped private AES-GCM encrypted contact settings (`555-0100`), immutable audit events and explicit quarantine/verification boundaries. No malware scanning or phone carrier verification claimed. Production writes remain closed. [Verification](../verification/UNI-037/README.md).
 
 ## UNI-038 — details, comparison and essentials (only for eligible precise public locations)
 
-Next roadmap issue in Phase 3. Ready to branch from clean synchronized `dev`.
+Implementation, contracts, API, isolated PostGIS test suites, responsive accessible web comparison matrix (`/compare`) and nearby essentials section complete on branch `feat/uni-038-details-comparison-essentials`. Full local verification (455 workspace tests, 98 browser cases, isolated PostGIS container suite, lint, typecheck, builds) passed. Straight-line geodesic distance within 2000m strictly gated to `PUBLIC_MAP` with owner consent; private listings refuse proximity with 404/null. Up to 4-boarding side-by-side comparison matrix. [Verification](../verification/UNI-038/README.md). Remote CI verification and dev integration in progress.

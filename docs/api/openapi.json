@@ -4452,6 +4452,234 @@
         }
       }
     },
+    "/api/v1/boardings/compare": {
+      "get": {
+        "operationId": "BoardingDetailsController_compare__api_v1_boardings_compare",
+        "summary": "Editorial comparison matrix for 1 to 4 boardings; public map listings show exact entrance & nearby essentials summary, while area/hidden boardings disclose no proximity or geometry",
+        "security": [],
+        "parameters": [
+          {
+            "name": "ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/BoardingComparisonQuery/properties/ids"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Structured comparison items with explicit unknown/not-shared values",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardingComparisonResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Boarding not found or not eligible for public location / essentials",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service temporarily unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/boardings/{id}/nearby-essentials": {
+      "get": {
+        "operationId": "BoardingDetailsController_nearbyEssentials__api_v1_boardings__id__nearby_essentials",
+        "summary": "Factual nearby essentials for eligible precise public map boardings; strictly refuses area-only and hidden boardings to prevent proximity inference",
+        "security": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PublicId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Nearby public POIs with straight-line distance from public entrance",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardingNearbyEssentialsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Boarding not found or not eligible for public location / essentials",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service temporarily unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/boardings": {
       "get": {
         "operationId": "BoardingController_list__api_v1_boardings",
@@ -8692,6 +8920,1055 @@
           "visibility",
           "locality",
           "synthetic"
+        ],
+        "additionalProperties": false
+      },
+      "NearbyEssentialItem": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "category": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              }
+            },
+            "required": [
+              "code",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          "location": {
+            "type": "object",
+            "properties": {
+              "lat": {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              },
+              "lng": {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              }
+            },
+            "required": [
+              "lat",
+              "lng"
+            ],
+            "additionalProperties": false
+          },
+          "distanceMeters": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000
+          },
+          "provenance": {
+            "type": "object",
+            "properties": {
+              "dataKind": {
+                "type": "string",
+                "const": "SYNTHETIC"
+              },
+              "sourceLabel": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "verifiedAt": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "dataKind",
+              "sourceLabel",
+              "verifiedAt"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "category",
+          "location",
+          "distanceMeters",
+          "provenance"
+        ],
+        "additionalProperties": false
+      },
+      "BoardingNearbyEssentialsResponse": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "boardingId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "visibility": {
+            "type": "string",
+            "const": "PUBLIC_MAP"
+          },
+          "entrance": {
+            "type": "object",
+            "properties": {
+              "lat": {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              },
+              "lng": {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              }
+            },
+            "required": [
+              "lat",
+              "lng"
+            ],
+            "additionalProperties": false
+          },
+          "items": {
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 160
+                },
+                "category": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 64
+                    },
+                    "label": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "label"
+                  ],
+                  "additionalProperties": false
+                },
+                "location": {
+                  "type": "object",
+                  "properties": {
+                    "lat": {
+                      "type": "number",
+                      "minimum": -90,
+                      "maximum": 90
+                    },
+                    "lng": {
+                      "type": "number",
+                      "minimum": -180,
+                      "maximum": 180
+                    }
+                  },
+                  "required": [
+                    "lat",
+                    "lng"
+                  ],
+                  "additionalProperties": false
+                },
+                "distanceMeters": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100000
+                },
+                "provenance": {
+                  "type": "object",
+                  "properties": {
+                    "dataKind": {
+                      "type": "string",
+                      "const": "SYNTHETIC"
+                    },
+                    "sourceLabel": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    },
+                    "verifiedAt": {
+                      "type": "null"
+                    }
+                  },
+                  "required": [
+                    "dataKind",
+                    "sourceLabel",
+                    "verifiedAt"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "category",
+                "location",
+                "distanceMeters",
+                "provenance"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "boardingId",
+          "visibility",
+          "entrance",
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "BoardingComparisonQuery": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "ids"
+        ],
+        "additionalProperties": false
+      },
+      "ComparisonEssentialSummary": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "nearestDistanceMeters": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "category",
+          "label",
+          "count",
+          "nearestDistanceMeters"
+        ],
+        "additionalProperties": false
+      },
+      "ComparisonUnitSummary": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "template": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "capacity": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "rentMinor": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "basis": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "ROOM",
+                  "BED"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "vacancyStatus": {
+            "type": "string",
+            "enum": [
+              "AVAILABLE",
+              "FULL",
+              "UNKNOWN"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "template",
+          "capacity",
+          "rentMinor",
+          "basis",
+          "vacancyStatus"
+        ],
+        "additionalProperties": false
+      },
+      "BoardingComparisonItem": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "publisherKind": {
+            "type": "string",
+            "enum": [
+              "OWNER_OFFICIAL",
+              "COMMUNITY_RECOMMENDATION"
+            ]
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "PUBLIC_MAP",
+              "AREA_ONLY",
+              "HIDDEN"
+            ]
+          },
+          "locationLabel": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "hasExactEntrance": {
+            "type": "boolean"
+          },
+          "entrance": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "lat": {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90
+                  },
+                  "lng": {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180
+                  }
+                },
+                "required": [
+                  "lat",
+                  "lng"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "price": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "currency": {
+                    "type": "string",
+                    "const": "LKR"
+                  },
+                  "rentMonthly": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1000000000
+                  },
+                  "deposit": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1000000000
+                  },
+                  "verifiedSource": {
+                    "type": "string",
+                    "const": "OWNER"
+                  }
+                },
+                "required": [
+                  "currency",
+                  "rentMonthly",
+                  "verifiedSource"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "vacancy": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "const": "UNKNOWN"
+                  },
+                  "confirmedAt": {
+                    "type": "null"
+                  },
+                  "expiresAt": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "status",
+                  "confirmedAt",
+                  "expiresAt"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "AVAILABLE",
+                      "FULL"
+                    ]
+                  },
+                  "confirmedAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                  },
+                  "expiresAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                  }
+                },
+                "required": [
+                  "status",
+                  "confirmedAt",
+                  "expiresAt"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "unitsSummary": {
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 160
+                },
+                "template": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "capacity": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "rentMinor": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "basis": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "ROOM",
+                        "BED"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "vacancyStatus": {
+                  "type": "string",
+                  "enum": [
+                    "AVAILABLE",
+                    "FULL",
+                    "UNKNOWN"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "label",
+                "template",
+                "capacity",
+                "rentMinor",
+                "basis",
+                "vacancyStatus"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "nearbyEssentials": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "category": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 64
+                    },
+                    "label": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    },
+                    "count": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "nearestDistanceMeters": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "category",
+                    "label",
+                    "count",
+                    "nearestDistanceMeters"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 800
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          },
+          "provenance": {
+            "type": "object",
+            "properties": {
+              "dataKind": {
+                "type": "string",
+                "const": "SYNTHETIC"
+              },
+              "sourceLabel": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "verifiedAt": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "dataKind",
+              "sourceLabel",
+              "verifiedAt"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "publisherKind",
+          "visibility",
+          "locationLabel",
+          "hasExactEntrance",
+          "entrance",
+          "price",
+          "vacancy",
+          "unitsSummary",
+          "nearbyEssentials",
+          "summary",
+          "updatedAt",
+          "provenance"
+        ],
+        "additionalProperties": false
+      },
+      "BoardingComparisonResponse": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "items": {
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 160
+                },
+                "publisherKind": {
+                  "type": "string",
+                  "enum": [
+                    "OWNER_OFFICIAL",
+                    "COMMUNITY_RECOMMENDATION"
+                  ]
+                },
+                "visibility": {
+                  "type": "string",
+                  "enum": [
+                    "PUBLIC_MAP",
+                    "AREA_ONLY",
+                    "HIDDEN"
+                  ]
+                },
+                "locationLabel": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "hasExactEntrance": {
+                  "type": "boolean"
+                },
+                "entrance": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "lat": {
+                          "type": "number",
+                          "minimum": -90,
+                          "maximum": 90
+                        },
+                        "lng": {
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180
+                        }
+                      },
+                      "required": [
+                        "lat",
+                        "lng"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "price": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "currency": {
+                          "type": "string",
+                          "const": "LKR"
+                        },
+                        "rentMonthly": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "deposit": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1000000000
+                        },
+                        "verifiedSource": {
+                          "type": "string",
+                          "const": "OWNER"
+                        }
+                      },
+                      "required": [
+                        "currency",
+                        "rentMonthly",
+                        "verifiedSource"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "vacancy": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "const": "UNKNOWN"
+                        },
+                        "confirmedAt": {
+                          "type": "null"
+                        },
+                        "expiresAt": {
+                          "type": "null"
+                        }
+                      },
+                      "required": [
+                        "status",
+                        "confirmedAt",
+                        "expiresAt"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "AVAILABLE",
+                            "FULL"
+                          ]
+                        },
+                        "confirmedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                        },
+                        "expiresAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                        }
+                      },
+                      "required": [
+                        "status",
+                        "confirmedAt",
+                        "expiresAt"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "unitsSummary": {
+                  "maxItems": 50,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      },
+                      "label": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 160
+                      },
+                      "template": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 64
+                      },
+                      "capacity": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "rentMinor": {
+                        "anyOf": [
+                          {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "basis": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "ROOM",
+                              "BED"
+                            ]
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "vacancyStatus": {
+                        "type": "string",
+                        "enum": [
+                          "AVAILABLE",
+                          "FULL",
+                          "UNKNOWN"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "label",
+                      "template",
+                      "capacity",
+                      "rentMinor",
+                      "basis",
+                      "vacancyStatus"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "nearbyEssentials": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "category": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 64
+                          },
+                          "label": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 160
+                          },
+                          "count": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "nearestDistanceMeters": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "label",
+                          "count",
+                          "nearestDistanceMeters"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "summary": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 800
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                },
+                "provenance": {
+                  "type": "object",
+                  "properties": {
+                    "dataKind": {
+                      "type": "string",
+                      "const": "SYNTHETIC"
+                    },
+                    "sourceLabel": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    },
+                    "verifiedAt": {
+                      "type": "null"
+                    }
+                  },
+                  "required": [
+                    "dataKind",
+                    "sourceLabel",
+                    "verifiedAt"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "id",
+                "title",
+                "publisherKind",
+                "visibility",
+                "locationLabel",
+                "hasExactEntrance",
+                "entrance",
+                "price",
+                "vacancy",
+                "unitsSummary",
+                "nearbyEssentials",
+                "summary",
+                "updatedAt",
+                "provenance"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "requestedCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "comparedCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "items",
+          "requestedCount",
+          "comparedCount"
         ],
         "additionalProperties": false
       },

@@ -21,3 +21,5 @@ export * from './boarding-inventory';
 export * from './boarding-vacancy';
 
 export * from './boarding-privacy';
+
+export * from './boarding-details';

@@ -45,6 +45,105 @@ const server = createServer(async (request, response) => {
   }
   let rows;
   if(url.pathname==='/api/v1/boardings/map'){response.end(JSON.stringify({items:[],page:{page:Number(url.searchParams.get('page')??1),pageSize:Number(url.searchParams.get('pageSize')??20),hasNextPage:false}}));return;}
+  if(url.pathname==='/api/v1/boardings/compare'){
+    const ids=(url.searchParams.get('ids')??'').split(',').filter(Boolean);
+    const items=ids.map(id=>{
+      const isPublic = id === '71000000-0000-4000-8000-000000000010';
+      const row = boardingRows.find(r=>r.listing.id===id);
+      if(!row && !isPublic) return null;
+      if(isPublic){
+        return {
+          id,
+          title: 'Synthetic Consented Public Home',
+          publisherKind: 'OWNER_OFFICIAL',
+          visibility: 'PUBLIC_MAP',
+          locationLabel: 'Synthetic Central Park',
+          hasExactEntrance: true,
+          entrance: { lat: 6.9012, lng: 79.8612 },
+          price: {
+            currency: 'LKR',
+            rentMonthly: 20000,
+            verifiedSource: 'OWNER',
+          },
+          vacancy: {
+            status: 'AVAILABLE',
+            confirmedAt: '2026-11-17T00:00:00Z',
+            expiresAt: '2026-11-24T00:00:00Z'
+          },
+          unitsSummary: [
+            {
+              id: '75000000-0000-4000-8000-000000000001',
+              label: 'Single Room',
+              template: 'STUDY_ROOM',
+              capacity: 1,
+              rentMinor: 2000000,
+              basis: 'BED',
+              vacancyStatus: 'AVAILABLE'
+            }
+          ],
+          nearbyEssentials: [
+            { category: 'pharmacy', label: 'Pharmacy', count: 1, nearestDistanceMeters: 140 },
+            { category: 'grocery', label: 'Grocery', count: 2, nearestDistanceMeters: 280 }
+          ],
+          summary: 'A public consented synthetic accommodation with exact entrance and nearby amenities.',
+          updatedAt: '2026-11-18T00:00:00.000Z',
+          provenance: { dataKind: 'SYNTHETIC', sourceLabel: 'UNI-038 synthetic demonstration; no real property or owner', verifiedAt: null }
+        };
+      }
+      return {
+        id: row.listing.id,
+        title: row.listing.title,
+        publisherKind: row.listing.publisherKind,
+        visibility: row.listing.visibility,
+        locationLabel: row.listing.locationLabel,
+        hasExactEntrance: false,
+        entrance: null,
+        price: null,
+        vacancy: row.listing.vacancy,
+        unitsSummary: [],
+        nearbyEssentials: null,
+        summary: row.summary,
+        updatedAt: '2026-11-18T00:00:00.000Z',
+        provenance: row.listing.provenance
+      };
+    }).filter(Boolean);
+    response.end(JSON.stringify({
+      items,
+      requestedCount: ids.length,
+      comparedCount: items.length,
+    }));return;
+  }
+  if(url.pathname.endsWith('/nearby-essentials')){
+    const id=url.pathname.split('/')[4];
+    if(id !== '71000000-0000-4000-8000-000000000010'){
+      response.statusCode=404;
+      response.end(JSON.stringify({error:{code:'NOT_FOUND',message:'The resource was not found.'}}));
+      return;
+    }
+    response.end(JSON.stringify({
+      boardingId: id,
+      visibility: 'PUBLIC_MAP',
+      entrance: { lat: 6.9012, lng: 79.8612 },
+      items: [
+        {
+          id: '40000000-0000-4000-8000-000000000001',
+          name: 'Synthetic Health Pharmacy',
+          category: { code: 'pharmacy', label: 'Pharmacy' },
+          location: { lat: 6.9015, lng: 79.8615 },
+          distanceMeters: 140,
+          provenance: { dataKind: 'SYNTHETIC', sourceLabel: 'Synthetic POI', verifiedAt: null }
+        },
+        {
+          id: '40000000-0000-4000-8000-000000000002',
+          name: 'Synthetic Community Grocer',
+          category: { code: 'grocery', label: 'Grocery' },
+          location: { lat: 6.9025, lng: 79.8625 },
+          distanceMeters: 280,
+          provenance: { dataKind: 'SYNTHETIC', sourceLabel: 'Synthetic POI', verifiedAt: null }
+        }
+      ]
+    }));return;
+  }
   if(url.pathname==='/api/v1/boardings'||url.pathname.startsWith('/api/v1/boardings/')){
     if(url.searchParams.get('q')==='synthetic-unavailable'){response.statusCode=503;response.end('{}');return;}
     const id=url.pathname.split('/')[4];
