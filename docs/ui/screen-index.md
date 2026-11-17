@@ -73,3 +73,5 @@ The owner wizard's privacy step requests a strict server-derived, unpublished sy
 ## UNI-034 public boarding entrances (UI-03/UI-22)
 
 The existing explorer adds a distinct square house marker, title-only bounded results and current public selection/preview/share state for owner-consented synthetic entrances. Private modes and community recommendations remain in advertisements with no inferred map point. `/owner/map` provides task-focused load, explicit consent, publish-fixture, area-only and hide/revoke controls using revision-safe local-only property authorization. [Scope/demo/revocation limits](../api/boarding-map.md), [actual evidence](../verification/UNI-034/README.md). No new human visual/AT/physical-device approval is claimed.
+
+UNI-035: `/owner/boardings/:id/rooms` and `/owner/boardings/:id/pricing` provide guarded synthetic-only capacity and LKR fee/history controls for existing fixture A. `/boardings/:id/rooms` is a privacy-safe public current-facts page. [Behavior and limitations](../api/boarding-inventory.md). Manual visual/AT approval is not implied.

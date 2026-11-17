@@ -15,3 +15,5 @@ export * from './boarding-advertisement';
 export * from './owner-draft';
 export * from './owner-visibility-preview';
 export * from './boarding-map';
+
+export * from './boarding-inventory';

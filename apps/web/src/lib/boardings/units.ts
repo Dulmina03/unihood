@@ -1,0 +1,9 @@
+import { BoardingUnitPageSchema,BoardingUnitQuerySchema,ErrorResponseSchema,PublicIdSchema } from '@unihood/contracts';
+export async function proxyBoardingUnits(request:Request,id:string){
+ const requestId=crypto.randomUUID(),headers={'Cache-Control':'no-store','X-Request-Id':requestId};
+ const params=new URL(request.url).searchParams,query=BoardingUnitQuerySchema.safeParse(Object.fromEntries(params));
+ if(!PublicIdSchema.safeParse(id).success||!query.success||Array.from(params.keys()).some(k=>params.getAll(k).length>1))return Response.json(ErrorResponseSchema.parse({error:{code:'VALIDATION_FAILED',message:'The room facts request is invalid.',details:[],requestId}}),{status:400,headers});
+ let missing=false;
+ try{const base=new URL(process.env.API_BASE_URL??process.env.NEXT_PUBLIC_API_URL??'http://127.0.0.1:3001/api/v1');if(!['http:','https:'].includes(base.protocol)||base.username||base.password||base.search||base.hash)throw new Error();const url=new URL(base.pathname.replace(/\/$/,'')+'/boardings/'+id.toLowerCase()+'/units',base.origin);url.search=new URLSearchParams(query.data).toString();const r=await fetch(url,{cache:'no-store',credentials:'omit',redirect:'error',signal:AbortSignal.timeout(3500)});missing=r.status===404;if(!r.ok)throw new Error();const data=BoardingUnitPageSchema.parse(await r.json());if(data.items.some(u=>u.boardingId!==id.toLowerCase())||data.page.page!==Number(query.data.page??1)||data.page.pageSize!==Number(query.data.pageSize??20))throw new Error();return Response.json(data,{headers});}
+ catch{return Response.json(ErrorResponseSchema.parse({error:{code:missing?'NOT_FOUND':'SERVICE_UNAVAILABLE',message:missing?'Room facts are not publicly available.':'Room facts are temporarily unavailable.',details:[],requestId}}),{status:missing?404:503,headers});}
+}

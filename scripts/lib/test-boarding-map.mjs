@@ -47,6 +47,7 @@ export async function testBoardingMap({client,url,migrations,get,endpoint:guestE
   await client.query("CREATE FUNCTION public.synthetic_map_failure() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'synthetic failure'; END $$; CREATE TRIGGER synthetic_map_failure BEFORE INSERT ON unihood_private.boarding_visibility_events FOR EACH ROW EXECUTE FUNCTION public.synthetic_map_failure()");
   assert.equal((await change(5,{visibility:'HIDDEN'})).status,503);assert.equal((await readMap()).items.length,1);settings=await (await fetch(endpoint+path)).json();assert.equal(settings.revision,5);
   await client.query('DROP TRIGGER synthetic_map_failure ON unihood_private.boarding_visibility_events; DROP FUNCTION public.synthetic_map_failure()');
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['010_boarding_inventory_prices']);
   await assert.rejects(runMigrations(client,migrations,'rollback'),/populated tables/);
   assert.equal((await change(5,{visibility:'AREA_ONLY',locality:'Synthetic Garden District'})).status,200);assert.equal((await readMap()).items.length,0);assert.equal((await (await get('/api/v1/boardings/'+id)).json()).listing.locationLabel,'Synthetic Garden District');
   console.log('PASS: real visibility race has one winner and revision conflict; archived/disputed records excluded; mid-write failure rolls back consent/point/history atomically; populated rollback retains data');

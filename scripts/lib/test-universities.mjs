@@ -113,6 +113,7 @@ export async function testUniversities({client, url, get, endpoint, migrations})
   // exercise UNI-010 rollback itself. Never a development reset.
   assert.equal((await client.query("SELECT count(*)::int AS n FROM public.places WHERE data_kind<>'SYNTHETIC'")).rows[0].n, 0);
   await client.query('DELETE FROM public.place_aliases; DELETE FROM public.place_source_refs; DELETE FROM public.public_place_locations; DELETE FROM public.places; DELETE FROM public.buildings; DELETE FROM public.poi_categories');
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['010_boarding_inventory_prices']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['009_boarding_public_entrances']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['008_boarding_advertisement_previews']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['007_boarding_property_foundation']);
@@ -166,6 +167,7 @@ export async function testUniversities({client, url, get, endpoint, migrations})
   assert.equal((await get('/api/v1/health/ready')).status, 200);
   cli('db:seed'); cli('db:seed');
   await client.query('DELETE FROM public.public_place_locations; DELETE FROM public.places; DELETE FROM public.poi_categories');
+  assert.match(cli('db:rollback'), /010_boarding_inventory_prices/);
   assert.match(cli('db:rollback'), /009_boarding_public_entrances/);
   assert.match(cli('db:rollback'), /008_boarding_advertisement_previews/);
   assert.match(cli('db:rollback'), /007_boarding_property_foundation/);

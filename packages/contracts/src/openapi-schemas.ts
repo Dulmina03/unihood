@@ -1,3 +1,4 @@
+import { OwnerPriceHistoryPageSchema,OwnerUnitCreateSchema,OwnerUnitUpdateSchema,OwnerPriceInputSchema,OfficialUnitPriceSchema,PublicBoardingUnitSchema,BoardingUnitPageSchema,BoardingUnitQuerySchema,OwnerInventorySchema,InventoryMutationSchema } from './boarding-inventory';
 import { BoardingMapPinSchema,BoardingMapPageSchema,BoardingMapQuerySchema,BoardingMapChangeSchema,BoardingMapSettingsSchema } from './boarding-map';
 import { OwnerVisibilityPreviewInputSchema,OwnerVisibilityPreviewSchema } from './owner-visibility-preview';
 import { OwnerWizardDraftSchema,OwnerDraftCheckSchema } from './owner-draft';
@@ -15,6 +16,7 @@ import { PublicBoardingResponseSchema, PublicBoardingPageSchema, OwnerPublicMapS
 import { BoardingAdvertisementQuerySchema,PublicBoardingAdvertisementSchema,BoardingAdvertisementPageSchema } from './boarding-advertisement';
 // No actor identities/memberships, private location/media or persistence entities belong in OpenAPI components.
 export const PublicSchemaRegistry = {
+  OwnerPriceHistoryPage:OwnerPriceHistoryPageSchema,OwnerUnitCreate:OwnerUnitCreateSchema,OwnerUnitUpdate:OwnerUnitUpdateSchema,OwnerPriceInput:OwnerPriceInputSchema,OfficialUnitPrice:OfficialUnitPriceSchema,PublicBoardingUnit:PublicBoardingUnitSchema,BoardingUnitPage:BoardingUnitPageSchema,BoardingUnitQuery:BoardingUnitQuerySchema,OwnerInventory:OwnerInventorySchema,InventoryMutation:InventoryMutationSchema,
   BoardingMapPin:BoardingMapPinSchema,BoardingMapPage:BoardingMapPageSchema,BoardingMapQuery:BoardingMapQuerySchema,BoardingMapChange:BoardingMapChangeSchema,BoardingMapSettings:BoardingMapSettingsSchema,
   OwnerVisibilityPreviewInput:OwnerVisibilityPreviewInputSchema,OwnerVisibilityPreview:OwnerVisibilityPreviewSchema,
   OwnerWizardDraft:OwnerWizardDraftSchema,OwnerDraftCheck:OwnerDraftCheckSchema,

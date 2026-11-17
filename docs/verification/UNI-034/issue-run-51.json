@@ -1,0 +1,34 @@
+{
+  "id": 44085046794,
+  "run_number": 51,
+  "run_attempt": 1,
+  "head_sha": "e0ed8f6efb7e0804c91fa64a34fe8ab147ab64bc",
+  "head_branch": "feat/uni-034-public-boarding-map",
+  "status": "completed",
+  "conclusion": "success",
+  "html_url": "https://github.com/Dulmina03/unihood/actions/runs/44085046794",
+  "path": ".github/workflows/ci.yml",
+  "jobs": [
+    {
+      "id": 134045165030,
+      "name": "Component browser acceptance",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/44085046794/job/134045165030"
+    },
+    {
+      "id": 134045165455,
+      "name": "Workspace quality",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/44085046794/job/134045165455"
+    },
+    {
+      "id": 134045165774,
+      "name": "Isolated PostGIS integration",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/44085046794/job/134045165774"
+    }
+  ]
+}

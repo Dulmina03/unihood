@@ -1,0 +1,32 @@
+import { Body,Controller,ForbiddenException,Get,Header,HttpCode,Inject,Param,Patch,Post,Query,Req } from '@nestjs/common';
+import { BoardingUnitQuerySchema,OwnerPriceInputSchema,OwnerUnitCreateSchema,OwnerUnitUpdateSchema,PublicIdSchema,type OwnerPriceInput,type OwnerUnitCreate,type OwnerUnitUpdate,type IdentityProvider,type PermissionService } from '@unihood/contracts';
+import { ApiContract } from '../openapi/operation';
+import { ContractValidationPipe } from '../http/contract-validation.pipe';
+import { RequirePermission } from '../identity/protected-boundary.guard';
+import { IDENTITY_PROVIDER,PERMISSION_SERVICE } from '../identity/tokens';
+import { BoardingInventoryService } from './boarding-inventory.service';
+const errors={'400':{schema:'ErrorResponse',description:'Invalid request'},'404':{schema:'ErrorResponse',description:'Not available'},'500':{schema:'ErrorResponse',description:'Internal error'},'503':{schema:'ErrorResponse',description:'Service unavailable'}} as const;
+const protectedErrors={...errors,'401':{schema:'ErrorResponse',description:'No issued local/test actor'},'403':{schema:'ErrorResponse',description:'Property permission denied'},'409':{schema:'ErrorResponse',description:'Revision conflict; reload before retry'}} as const;
+@Controller('api/v1')
+export class BoardingInventoryController {
+ constructor(private readonly service:BoardingInventoryService,@Inject(IDENTITY_PROVIDER)private readonly identity:IdentityProvider,@Inject(PERMISSION_SERVICE)private readonly permissions:PermissionService){}
+ private async authorize(req:unknown,id:string,price=false){const actor=await this.identity.resolveRequestActor(req);if(actor.authStatus!=='LOCAL_TEST_ACTOR'||!actor.actorId||!await this.permissions.canManageProperty(actor,id)||(price&&!await this.permissions.canSetOfficialPrice(actor,id)))throw new ForbiddenException();return actor.actorId;}
+ @Get('boardings/:id/units') @Header('Cache-Control','no-store')
+ @ApiContract({summary:'Current curated synthetic owner room capacities and effective LKR fees; no availability inference or geography',querySchema:'BoardingUnitQuery',responses:{'200':{schema:'BoardingUnitPage',description:'Public unit facts; capacity does not establish vacancy'},...errors}})
+ units(@Param('id',new ContractValidationPipe(PublicIdSchema)) id:string,@Query(new ContractValidationPipe(BoardingUnitQuerySchema)) query:{page?:string;pageSize?:string}){return this.service.publicUnits(id,query);}
+ @Get('owner/boardings/:boardingId/inventory') @Header('Cache-Control','no-store') @RequirePermission({action:'manage'})
+ @ApiContract({summary:'Guarded closed synthetic owner inventory and fee history, including future revisions; no private residence data',protected:true,authorization:'Issued local/test property management only; no deployed write/read simulator',responses:{'200':{schema:'OwnerInventory',description:'Minimal owner inventory/history without actor evidence'},...protectedErrors}})
+ async inventory(@Param('boardingId',new ContractValidationPipe(PublicIdSchema)) id:string,@Req() req:unknown){await this.authorize(req,id);return this.service.inventory(id);}
+ @Get('owner/boardings/:boardingId/units/:unitId/prices') @Header('Cache-Control','no-store') @RequirePermission({action:'manage'})
+ @ApiContract({summary:'Bounded complete synthetic owner price revision history; no public actor/evidence data',protected:true,authorization:'Issued local/test management for the property and exact unit; deployed simulators denied',querySchema:'BoardingUnitQuery',responses:{'200':{schema:'OwnerPriceHistoryPage',description:'Revision order, including scheduled fees; earlier records remain reachable'},...protectedErrors}})
+ async history(@Param('boardingId',new ContractValidationPipe(PublicIdSchema)) id:string,@Param('unitId',new ContractValidationPipe(PublicIdSchema)) unitId:string,@Query(new ContractValidationPipe(BoardingUnitQuerySchema)) query:{page?:string;pageSize?:string},@Req() req:unknown){await this.authorize(req,id);return this.service.history(id,unitId,query);}
+ @Post('owner/boardings/:boardingId/units') @HttpCode(200) @Header('Cache-Control','no-store') @RequirePermission({action:'manage'})
+ @ApiContract({summary:'Add a curated fictional room/bed-capacity unit to the preinstalled owner fixture only',protected:true,authorization:'Issued local/test property management; no production inventory writer',bodySchema:'OwnerUnitCreate',responses:{'200':{schema:'InventoryMutation',description:'Synthetic unit created; no vacancy confirmed'},...protectedErrors}})
+ async create(@Param('boardingId',new ContractValidationPipe(PublicIdSchema)) id:string,@Body(new ContractValidationPipe(OwnerUnitCreateSchema)) input:OwnerUnitCreate,@Req() req:unknown){await this.authorize(req,id);return this.service.create(id,input);}
+ @Patch('owner/boardings/:boardingId/units/:unitId') @Header('Cache-Control','no-store') @RequirePermission({action:'manage'})
+ @ApiContract({summary:'Revision-safe fictional unit capacity/template change; never official availability',protected:true,authorization:'Issued local/test property management for the target and its unit',bodySchema:'OwnerUnitUpdate',responses:{'200':{schema:'InventoryMutation',description:'Capacity changed; vacancy remains unknown'},...protectedErrors}})
+ async update(@Param('boardingId',new ContractValidationPipe(PublicIdSchema)) id:string,@Param('unitId',new ContractValidationPipe(PublicIdSchema)) unitId:string,@Body(new ContractValidationPipe(OwnerUnitUpdateSchema)) input:OwnerUnitUpdate,@Req() req:unknown){await this.authorize(req,id);return this.service.update(id,unitId,input);}
+ @Post('boardings/:id/prices') @HttpCode(200) @Header('Cache-Control','no-store') @RequirePermission({action:'setPrice',propertyParam:'id'})
+ @ApiContract({summary:'Append a synthetic official LKR monthly unit price revision with explicit basis/deposit/terms/effective date',protected:true,authorization:'Issued local/test property management plus SET_OFFICIAL_PRICE, exact target unit; map consent not required. Real-data/production writes denied.',bodySchema:'OwnerPriceInput',responses:{'200':{schema:'InventoryMutation',description:'Revision retained; future prices are not public before their effective date'},...protectedErrors}})
+ async price(@Param('id',new ContractValidationPipe(PublicIdSchema)) id:string,@Body(new ContractValidationPipe(OwnerPriceInputSchema)) input:OwnerPriceInput,@Req() req:unknown){const actorId=await this.authorize(req,id,true);return this.service.price(id,input,actorId);}
+}
