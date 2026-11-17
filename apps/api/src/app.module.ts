@@ -1,3 +1,5 @@
+import {BoardingVacancyController} from './boardings/boarding-vacancy.controller';
+import {BoardingVacancyService} from './boardings/boarding-vacancy.service';
 import { BoardingInventoryController } from './boardings/boarding-inventory.controller';
 import { BoardingInventoryService } from './boardings/boarding-inventory.service';
 import { BoardingMapController } from './boardings/boarding-map.controller';
@@ -24,5 +26,5 @@ import { DatabaseReadinessService } from './database-readiness.service';
 import { ReadinessController } from './readiness.controller';
 import { BoardingController } from './boardings/boarding.controller';
 import { BoardingService } from './boardings/boarding.service';
-@Module({ controllers: [BoardingInventoryController, BoardingMapController, OwnerDraftController, BoardingController, PoiProposalController, DuplicateController, PlaceController, UniversityController, HealthController, ReadinessController, OpenApiController], providers: [BoardingInventoryService, BoardingMapService, BoardingService, PoiSubmissionService, DuplicateRateGuard, PoiMatcherService, PlaceService, UniversityService, UniversityRepository, DatabaseReadinessService, OpenApiService, {provide: SyntheticActors, useFactory: () => new SyntheticActors()}, {provide: IDENTITY_PROVIDER, useExisting: SyntheticActors}, {provide: PERMISSION_SERVICE, useExisting: SyntheticActors}, {provide: APP_GUARD, useClass: ProtectedBoundaryGuard}] })
+@Module({ controllers: [BoardingVacancyController, BoardingInventoryController, BoardingMapController, OwnerDraftController, BoardingController, PoiProposalController, DuplicateController, PlaceController, UniversityController, HealthController, ReadinessController, OpenApiController], providers: [BoardingVacancyService, BoardingInventoryService, BoardingMapService, BoardingService, PoiSubmissionService, DuplicateRateGuard, PoiMatcherService, PlaceService, UniversityService, UniversityRepository, DatabaseReadinessService, OpenApiService, {provide: SyntheticActors, useFactory: () => new SyntheticActors()}, {provide: IDENTITY_PROVIDER, useExisting: SyntheticActors}, {provide: PERMISSION_SERVICE, useExisting: SyntheticActors}, {provide: APP_GUARD, useClass: ProtectedBoundaryGuard}] })
 export class AppModule {}

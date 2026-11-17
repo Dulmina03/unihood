@@ -6,7 +6,7 @@ import {FeeHistory} from '../src/components/owner/fee-history';
 const id='00000000-0000-4000-8000-000000000001',uid='75000000-0000-4000-8000-000000000001';
 const price={currency:'LKR' as const,period:'MONTH' as const,basis:'BED' as const,rentMinor:0,depositMinor:null,utilityTerms:'SEPARATE' as const,mealTerms:'NOT_SHARED' as const,effectiveAt:'2000-01-01T00:00:00Z',revision:1,recordedAt:'2026-01-01T00:00:00Z'};
 const unit={id:uid,boardingId:id,label:'Synthetic Study Room' as const,template:'STUDY_ROOM' as const,capacity:4,price,vacancy:{status:'UNKNOWN' as const,confirmedAt:null,expiresAt:null},provenance:{dataKind:'SYNTHETIC' as const,sourceLabel:'Fictional fixture',verifiedAt:null}};
-const owned={...unit,revision:1,priceRevision:1,priceHistory:[{...price,reason:'INITIAL' as const}],hasMoreHistory:false};
+const owned={...unit,vacancyRevision:0,vacancyHistory:[],hasMoreVacancyHistory:false,revision:1,priceRevision:1,priceHistory:[{...price,reason:'INITIAL' as const}],hasMoreHistory:false};
 const inventory={id,synthetic:true,inventoryRevision:1,units:[owned]};
 const endpoint=`http://127.0.0.1:3001/api/v1/owner/boardings/${id}/inventory`;
 afterEach(()=>{cleanup();vi.unstubAllGlobals();});

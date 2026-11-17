@@ -1,6 +1,6 @@
 # UNI-035 — room/bed inventory and official owner pricing
 
-17 November 2026 (Asia/Colombo). **Implementation/local verification complete; remote CI NOT OBSERVED, not integrated.** Branch `feat/uni-035-owner-pricing` from clean synchronized dev `e0ed8f6efb7e0804c91fa64a34fe8ab147ab64bc` after independently verified UNI-034 issue #51/dev #52 success in all three jobs. The observed UNI-034 JSON records are included in this evidence follow-up; historical cancelled #49 and superseded green #50 remain recorded.
+17 November 2026 (Asia/Colombo). **Complete and fast-forward integrated/pushed into dev; exact issue/dev CI independently verified SUCCESS.** Branch `feat/uni-035-owner-pricing` from clean synchronized dev `e0ed8f6efb7e0804c91fa64a34fe8ab147ab64bc` after independently verified UNI-034 issue #51/dev #52 success in all three jobs. The observed UNI-034 JSON records are included in this evidence follow-up; historical cancelled #49 and superseded green #50 remain recorded.
 
 ## Scope and boundaries
 
@@ -32,4 +32,4 @@ Agent screenshot inspection: desktop preserves the approved navy/teal editorial 
 
 ## Remote integration
 
-Issue exact commit, run URL, all required job results, clean fast-forward dev integration and dev exact-commit run: **NOT OBSERVED / NOT DONE**. Pending checks are not PASS. UNI-036 has not begun.
+Exact commit **`3a156380fb47f10d54cf7c70adc8497caed1b5eb`**, branch `feat/uni-035-owner-pricing`: [issue #53](https://github.com/Dulmina03/unihood/actions/runs/44122496801) and [dev #54](https://github.com/Dulmina03/unihood/actions/runs/44124067555) independently observed completed SUCCESS, `.github/workflows/ci.yml`, all three jobs each: Workspace quality, Isolated PostGIS integration, Component browser acceptance. Clean synchronized dev was fast-forward merged and pushed only after issue CI passed; dev CI was verified before creating UNI-036. [Issue metadata](issue-run-53.json), [dev metadata](dev-run-54.json). These observations are recorded as the next issue’s evidence follow-up; this documentation does not predeclare its own future commit/CI passed.

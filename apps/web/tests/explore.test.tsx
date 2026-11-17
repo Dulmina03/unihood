@@ -15,7 +15,9 @@ describe('Urban Map public shell', () => {
   it('restores a valid hierarchy and preview without fabricating map or route facts', async () => {
     query.value = `university=synthetic-demo&campus=${cid}&entrance=${eid}`;
     vi.stubGlobal('fetch', mockFetch()); render(<Explore />);
-    expect(await screen.findByRole('heading', {name: 'Synthetic Gate'})).toBeVisible();
+    // Cheap readiness query lets chained fetch promises settle; preserve the accessible-role assertion.
+    await screen.findByText('Synthetic Gate', {selector: 'h2'});
+    expect(screen.getByRole('heading', {name: 'Synthetic Gate'})).toBeVisible();
     expect(screen.getByLabelText('University')).toHaveValue('synthetic-demo');
     expect(screen.getByLabelText('Campus')).toHaveValue(cid);
     expect(screen.getByLabelText('Public entrance')).toHaveValue(eid);

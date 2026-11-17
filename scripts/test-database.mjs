@@ -1,3 +1,4 @@
+import {testBoardingVacancy} from './lib/test-boarding-vacancy.mjs';
 import { testBoardingInventory } from './lib/test-boarding-inventory.mjs';
 import { testBoardingMap } from './lib/test-boarding-map.mjs';
 import { testBoardingFoundation } from './lib/test-boarding-foundation.mjs';
@@ -117,6 +118,8 @@ try {
   assert.deepEqual(await runMigrations(client, ordered, 'rollback'), ['900_order_probe']);
   console.log('PASS: ordered migration/reverse order; failing batch rolls back DDL/history; checksum drift rejected');
 
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['011_boarding_vacancy_confirmations']);
+
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['010_boarding_inventory_prices']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['009_boarding_public_entrances']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['008_boarding_advertisement_previews']);
@@ -145,9 +148,11 @@ try {
   console.log('PASS: repeatable synthetic seeds; production/remote refusal; local edits preserved on conflict');
 
   await testPublicPois({client,url,get,endpoint});
+  await testBoardingVacancy({client,url,migrations,get,endpoint});
   await testBoardingInventory({client,migrations,url,get,endpoint});
   await testBoardingMap({client,migrations,url,get,endpoint});
   await testBoardingAdvertisements({client,migrations,url,get});
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['011_boarding_vacancy_confirmations']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['010_boarding_inventory_prices']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['009_boarding_public_entrances']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['008_boarding_advertisement_previews']);

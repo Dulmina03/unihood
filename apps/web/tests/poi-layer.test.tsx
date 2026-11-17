@@ -18,7 +18,8 @@ afterEach(()=>{cleanup();vi.unstubAllGlobals();vi.restoreAllMocks();});
 describe('public Essentials layer',()=>{
  it('shows labeled public POIs, functional categories/sorting and bounded API reads',async()=>{
   const fetcher=setup();vi.stubGlobal('fetch',fetcher);const push=vi.spyOn(window.history,'pushState');render(<Explore/>);
-  expect(await screen.findByRole('heading',{name:'Synthetic Pharmacy'})).toBeVisible();expect(screen.getByText('Synthetic public place')).toBeVisible();
+  // Avoid repeated full accessible-name traversal while the hierarchy is loading.
+  await screen.findByText('Synthetic Pharmacy',{selector:'h3'});expect(screen.getByRole('heading',{name:'Synthetic Pharmacy'})).toBeVisible();expect(screen.getByText('Synthetic public place')).toBeVisible();
   expect(fetcher.mock.calls.some(([url])=>String(url).includes('bbox=-0.01%2C-0.01%2C0.01%2C0.01'))).toBe(true);
   fireEvent.change(screen.getByRole('combobox',{name:'Service category'}),{target:{value:'pharmacy'}});expect(push.mock.calls.at(-1)?.[2]).toContain('poiCategory=pharmacy');
   fireEvent.change(screen.getByRole('combobox',{name:'Sort public places'}),{target:{value:'newest'}});expect(push.mock.calls.at(-1)?.[2]).toContain('poiSort=newest');

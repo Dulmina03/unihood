@@ -47,6 +47,7 @@ export async function testBoardingInventory({client,url,migrations,get,endpoint}
   assert.equal((await units()).find(u=>u.id===unitId).price.revision,4);
   for(const sql of ["UPDATE public.boarding_properties SET authorization_status='UNVERIFIED' WHERE place_id=$1","UPDATE public.places SET status='ARCHIVED' WHERE id=$1"]){await client.query(sql,[a]);assert.equal((await get(`/api/v1/boardings/${a}/units`)).status,404);await client.query("UPDATE public.places SET status='ACTIVE' WHERE id=$1",[a]);await client.query("UPDATE public.boarding_properties SET authorization_status='LOCAL_TEST_AUTHORIZED' WHERE place_id=$1",[a]);}
   const {BoardingInventoryService}=await import('../../apps/api/dist/boardings/boarding-inventory.service.js');const deployed=new BoardingInventoryService({includeSynthetic:false,query:async(sql,v)=>(await client.query(sql,v)).rows});await assert.rejects(deployed.publicUnits(a,{}),e=>e.getStatus()===404);
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['011_boarding_vacancy_confirmations']);
   await assert.rejects(runMigrations(client,migrations,'rollback'),/populated tables/);assert.equal((await client.query('SELECT count(*)::int AS n FROM public.boarding_official_prices WHERE unit_id=$1',[unitId])).rows[0].n,21);
   console.log('PASS: real unit/property target isolation and FK, price race/replay conflict, insert+revision rollback after injected failure, zero vs missing fees, current-authority/archive and deployed filtering; populated pricing rollback preserves data');
  }finally{

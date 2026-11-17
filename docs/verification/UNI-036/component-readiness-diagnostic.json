@@ -1,0 +1,36 @@
+{
+  "kind": "Temporary readiness diagnostic, not an acceptance result",
+  "timing": [
+    [
+      "request",
+      138,
+      "/api/universities?page=1&pageSize=100"
+    ],
+    [
+      "response",
+      649,
+      "/api/universities?page=1&pageSize=100"
+    ],
+    [
+      "request",
+      882,
+      "/api/universities/10000000-0000-4000-8000-000000000001/campuses?page=1&pageSize=100"
+    ],
+    [
+      "response",
+      884,
+      "/api/universities/10000000-0000-4000-8000-000000000001/campuses?page=1&pageSize=100"
+    ],
+    [
+      "request",
+      1023,
+      "/api/universities/10000000-0000-4000-8000-000000000001/entrances?campusId=20000000-0000-4000-8000-000000000001&page=1&pageSize=100"
+    ],
+    [
+      "response",
+      1024,
+      "/api/universities/10000000-0000-4000-8000-000000000001/entrances?campusId=20000000-0000-4000-8000-000000000001&page=1&pageSize=100"
+    ]
+  ],
+  "total": 1189.0998720000002
+}

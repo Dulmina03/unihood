@@ -5,11 +5,11 @@ import type { INestApplication } from '@nestjs/common';
 export function configureApp(app: INestApplication): void {
   app.enableShutdownHooks();
   app.use((request: {path?:string;method?:string;headers:{origin?:string}}, response: {setHeader:(key:string,value:string)=>void;status:(status:number)=>{end:()=>void}}, next:()=>void)=>{
-    if((['/api/v1/duplicates/check','/api/v1/places/proposals'].includes(request.path??'')||/^\/api\/v1\/boardings\/[0-9a-f-]{36}\/prices$/.test(request.path??'')||/^\/api\/v1\/owner\/boardings\/[0-9a-f-]{36}\/(?:draft-check|visibility-preview|map-settings|inventory|units(?:\/[0-9a-f-]{36}(?:\/prices)?)?)$/.test(request.path??'')) && localDuplicateOrigin(request.headers.origin)){
+    if((['/api/v1/duplicates/check','/api/v1/places/proposals'].includes(request.path??'')||/^\/api\/v1\/boardings\/[0-9a-f-]{36}\/(?:prices|vacancy-confirmations)$/.test(request.path??'')||/^\/api\/v1\/owner\/boardings\/[0-9a-f-]{36}\/(?:draft-check|visibility-preview|map-settings|inventory|units(?:\/[0-9a-f-]{36}(?:\/(?:prices|vacancy-confirmations))?)?)$/.test(request.path??'')) && localDuplicateOrigin(request.headers.origin)){
       response.setHeader('Access-Control-Allow-Origin',request.headers.origin!);
       response.setHeader('Vary','Origin');
       if(request.method==='OPTIONS'){
-        response.setHeader('Access-Control-Allow-Methods',(request.path?.endsWith('/inventory')||/\/owner\/boardings\/[0-9a-f-]{36}\/units\/[0-9a-f-]{36}\/prices$/.test(request.path??''))?'GET':/\/units\/[0-9a-f-]{36}$/.test(request.path??'')?'PATCH':request.path?.endsWith('/map-settings')?'GET, POST':'POST');
+        response.setHeader('Access-Control-Allow-Methods',(request.path?.endsWith('/inventory')||/\/owner\/boardings\/[0-9a-f-]{36}\/units\/[0-9a-f-]{36}\/(?:prices|vacancy-confirmations)$/.test(request.path??''))?'GET':/\/units\/[0-9a-f-]{36}$/.test(request.path??'')?'PATCH':request.path?.endsWith('/map-settings')?'GET, POST':'POST');
         response.setHeader('Access-Control-Allow-Headers','Content-Type');
         response.status(204).end();return;
       }

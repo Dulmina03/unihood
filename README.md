@@ -198,3 +198,5 @@ UNI-033 adds [server-enforced visibility projections and an unpublished syntheti
 UNI-034 connects [owner-consented synthetic public boarding entrances](docs/api/boarding-map.md) to Explore. The optional `APP_ENV=local pnpm db:seed:boardings --owner-demo` installs one closed HIDDEN fixture after migrations; `/owner/map` can change only that fixture using the existing explicit loopback owner-a adapter. Public mode requires deliberate fictional-entrance selection and consent; hiding/area-only deletes its public point and preserves canonical/history data. This never publishes real property or enables production writes.
 
 UNI-035 adds guarded synthetic [room inventory and official LKR fee history](docs/api/boarding-inventory.md), with public current room facts and no vacancy or location inference. [Actual verification](docs/verification/UNI-035/README.md).
+
+UNI-036 adds guarded synthetic [per-unit availability confirmation and expiry](docs/api/boarding-vacancy.md), with server timestamps, retained history and automatic UNKNOWN for stale facts. [Actual verification](docs/verification/UNI-036/README.md).
