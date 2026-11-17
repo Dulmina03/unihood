@@ -1,4 +1,4 @@
-import { Body,Controller,ForbiddenException,Get,Header,HttpCode,Inject,Param,Post,Query,Req } from '@nestjs/common';
+import { Body,Controller,ForbiddenException,Get,Header,HttpCode,Inject,Param,Patch,Post,Query,Req } from '@nestjs/common';
 import { BoardingMapChangeSchema,BoardingMapQuerySchema,PublicIdSchema,type BoardingMapChange,type IdentityProvider,type PermissionService } from '@unihood/contracts';
 import { ContractValidationPipe } from '../http/contract-validation.pipe';
 import { ApiContract } from '../openapi/operation';
@@ -16,6 +16,9 @@ export class BoardingMapController {
  @Get('owner/boardings/:boardingId/map-settings') @Header('Cache-Control','no-store') @RequirePermission({action:'manage'})
  @ApiContract({summary:'Read fictional owner fixture mode and revision; no location payload',protected:true,authorization:'Issued local/test property manager only; no production identity adapter',responses:{'200':{schema:'BoardingMapSettings',description:'Minimal current settings'},...protectedErrors}})
  settings(@Param('boardingId',new ContractValidationPipe(PublicIdSchema)) id:string){return this.service.settings(id);}
+ @Patch('boardings/:id/visibility') @HttpCode(200) @Header('Cache-Control','no-store') @RequirePermission({action:'manage',propertyParam:'id'})
+ @ApiContract({summary:'Canonical visibility change: atomic consent/revocation for the closed synthetic owner fixture only',protected:true,authorization:'Issued local/test property management; PUBLIC_MAP additionally requires exact-location permission and explicit consent. Real-data and deployed writes remain denied.',bodySchema:'BoardingMapChange',responses:{'200':{schema:'BoardingMapSettings',description:'Committed settings; same canonical identity, no geometry'},'409':{schema:'ErrorResponse',description:'Revision changed; reload before deliberate retry'},...protectedErrors}})
+ visibility(@Param('id',new ContractValidationPipe(PublicIdSchema)) id:string,@Body(new ContractValidationPipe(BoardingMapChangeSchema)) input:BoardingMapChange,@Req() req:unknown){return this.change(id,input,req);}
  @Post('owner/boardings/:boardingId/map-settings') @HttpCode(200) @Header('Cache-Control','no-store') @RequirePermission({action:'manage'})
  @ApiContract({summary:'Change visibility of the closed fictional owner fixture only; revision-safe atomic consent/revocation, never real publication',protected:true,authorization:'Issued local/test property management; PUBLIC_MAP additionally requires exact-location permission and explicit consent. No header identity authority.',bodySchema:'BoardingMapChange',responses:{'200':{schema:'BoardingMapSettings',description:'Committed settings; no geometry in response'},'409':{schema:'ErrorResponse',description:'Revision changed; reload before deliberate retry'},...protectedErrors}})
  async change(@Param('boardingId',new ContractValidationPipe(PublicIdSchema)) id:string,@Body(new ContractValidationPipe(BoardingMapChangeSchema)) input:BoardingMapChange,@Req() req:unknown){

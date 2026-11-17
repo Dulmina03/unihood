@@ -13,7 +13,7 @@ export async function testBoardingMap({client,url,migrations,get,endpoint:guestE
  const endpoint=`http://127.0.0.1:${port}`,path='/api/v1/owner/boardings/'+id+'/map-settings';
  let web;
  const readMap=async()=>{const r=await get('/api/v1/boardings/map');assert.equal(r.status,200);assert.equal(r.headers.get('cache-control'),'no-store');const body=await r.json();if(web){const proxy=await fetch(web.base+'/api/boardings/map');assert.equal(proxy.status,200);assert.equal(proxy.headers.get('cache-control'),'no-store');assert.deepEqual(await proxy.json(),body);}return body;};
- const change=(expectedRevision,choice)=>fetch(endpoint+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({expectedRevision,choice}),signal:AbortSignal.timeout(8000)});
+ const change=(expectedRevision,choice,ownerAlias=false)=>fetch(endpoint+(ownerAlias?path:'/api/v1/boardings/'+id+'/visibility'),{method:ownerAlias?'POST':'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({expectedRevision,choice}),signal:AbortSignal.timeout(8000)});
  const publicChoice={visibility:'PUBLIC_MAP',entranceFixture:'synthetic-courtyard-entrance',publicMapConsent:true,externalCopiesAcknowledged:true};
  try{
   for(let i=0;i<40;i++){try{if((await fetch(endpoint+'/health')).ok)break;}catch{}if(i===39||child.exitCode!==null)throw new Error('Owner map API startup failed');await delay(250);}
@@ -22,7 +22,7 @@ export async function testBoardingMap({client,url,migrations,get,endpoint:guestE
   if(process.env.TEST_LANDING_WEB==='1')web=await startLandingIntegration(guestEndpoint);
   assert.equal((await readMap()).items.length,0);assert.equal((await get('/api/v1/boardings/'+id)).status,200);
   assert.equal((await fetch(endpoint+path)).status,200);
-  assert.equal((await change(1,publicChoice)).status,200);const map=await readMap();assert.equal(map.items.length,1);assert.equal(map.items[0].id,id);assert.deepEqual(map.items[0].entrance,{lat:0,lng:0});assert.ok(!/42\.123456|43\.654321|exact_geo|address_enc|actor_ref/.test(JSON.stringify(map)));
+  assert.equal((await change(1,publicChoice,true)).status,200);const map=await readMap();assert.equal(map.items.length,1);assert.equal(map.items[0].id,id);assert.deepEqual(map.items[0].entrance,{lat:0,lng:0});assert.ok(!/42\.123456|43\.654321|exact_geo|address_enc|actor_ref/.test(JSON.stringify(map)));
   assert.equal((await get('/api/v1/boardings/'+id)).status,404); // private-only ad route never masks map geometry
   assert.equal((await change(1,{visibility:'HIDDEN'})).status,409);
   const hidden=await change(2,{visibility:'HIDDEN'});assert.equal(hidden.status,200);const hiddenBody=await hidden.json();assert.equal(hiddenBody.id,id);assert.equal(hiddenBody.revision,3);assert.ok(!/"lat"|"lng"|42\.123456|43\.654321/.test(JSON.stringify(hiddenBody)));
