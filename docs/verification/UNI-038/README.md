@@ -69,3 +69,17 @@ Command: `pnpm --filter @unihood/web test:ui`
   - `boarding-compare-tablet.png`
   - `boarding-advertisement-privacy-desktop.png`, `boarding-advertisement-privacy-desktop-full.png`, `boarding-advertisement-privacy-desktop-axe.json` (0 violations)
   - `boarding-advertisement-privacy-mobile.png`, `boarding-advertisement-privacy-mobile-full.png`, `boarding-advertisement-privacy-mobile-axe.json` (0 violations)
+
+### 5. Remote GitHub Actions CI & Integration
+- **Commit**: `cbbd0af149d0a691aa7ced76ed986768b02e8ecf`
+- **Feature branch**: `feat/uni-038-details-comparison-essentials`
+- **Issue CI Run**: [#63](https://github.com/Dulmina03/unihood/actions/runs/44176675246) — **SUCCESS**
+  - Workspace quality in 1m11s (ID 134369762985): **PASS**
+  - Isolated PostGIS integration in 1m37s (ID 134369762342): **PASS**
+  - Component browser acceptance in 6m7s (ID 134369762898): **PASS**
+- **Integration**: Fast-forward merged into `dev` (`git merge --ff-only feat/uni-038-details-comparison-essentials`) and pushed.
+- **dev CI Run**: [#64](https://github.com/Dulmina03/unihood/actions/runs/44177859549) — **SUCCESS**
+  - Workspace quality in 1m21s (ID 134373928527): **PASS**
+  - Isolated PostGIS integration in 1m23s (ID 134373928585): **PASS**
+  - Component browser acceptance in 6m18s (ID 134373928003): **PASS**
+
