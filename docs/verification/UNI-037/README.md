@@ -76,6 +76,29 @@ Command: `pnpm --filter @unihood/web test:ui`
   - `owner-media-preview-mobile.png`, `owner-media-preview-mobile-full.png`, `owner-media-preview-mobile-axe.json` (0 violations)
   - `owner-media-tablet.png`
 
+### 5. Remote GitHub Actions CI Verification
+Exact commit: **`f83e1f80a09e91ed0c99b6df4b974fe059694d1f`**
+Workflow: `.github/workflows/ci.yml`
+
+1. **Issue Run #59** (branch `feat/uni-037-media-contact-privacy`):
+   - URL: [https://github.com/Dulmina03/unihood/actions/runs/44162588471](https://github.com/Dulmina03/unihood/actions/runs/44162588471)
+   - Status: **SUCCESS** (all three jobs passed)
+     - `Isolated PostGIS integration` in 1m27s: SUCCESS
+     - `Workspace quality` in 1m25s: SUCCESS
+     - `Component browser acceptance` in 6m10s: SUCCESS
+   - Metadata recorded in [issue-run-59.json](./issue-run-59.json).
+
+2. **Integration into `dev`**:
+   - Clean synchronized `dev` was fast-forward integrated with `git merge --ff-only f83e1f80a09e91ed0c99b6df4b974fe059694d1f` and pushed to `origin/dev`.
+
+3. **Dev Run #60** (branch `dev`, exact commit `f83e1f80a09e91ed0c99b6df4b974fe059694d1f`):
+   - URL: [https://github.com/Dulmina03/unihood/actions/runs/44163872475](https://github.com/Dulmina03/unihood/actions/runs/44163872475)
+   - Status: **SUCCESS** (all three jobs passed)
+     - `Workspace quality` in 1m32s: SUCCESS
+     - `Isolated PostGIS integration` in 1m27s: SUCCESS
+     - `Component browser acceptance` in 7m7s: SUCCESS
+   - Metadata recorded in [dev-run-60.json](./dev-run-60.json).
+
 ## Limitations & Carry-overs
 - Remaining Phase 1 detailed manual assistive technology checks remain explicitly deferred to Phase 6.
 - No production phone verification, SMS OTP, or carrier validation is implemented (deferred to Phase 7).
