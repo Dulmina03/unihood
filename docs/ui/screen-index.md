@@ -49,3 +49,7 @@ UNI-021 extends `/explore` Essentials with bounded public POI/category reads, di
 ## UNI-022 public POI detail (UI-09 / service cards)
 
 `/places/[id]` adds the public POI detail: serif heading, source/confirmation/record-update facts, responsive mint public-point panel and canonical Share dialog. Result cards and previews in UI-03 link to it with validated return state; direct UUID links work for guests. Hours/contact/walking routes are honestly unavailable. Unknown/unpublished/private IDs share a generic not-found view, network errors have retry/list return, and loading has a status announcement. Correction guidance is expandable but sends no report; contribution work remains deferred. See [API/navigation boundaries](../api/places.md) and [actual verification](../verification/UNI-022/README.md).
+
+## UNI-024 duplicate review
+
+`/places/check-duplicates`, linked from public POI results, uses existing Campus Teal header, editorial heading, fields/buttons/badges/notices. Public business name/category/entrance input → guarded read-only preflight → candidate/context review → prepare update-existing or distinct-with-reason choice, or cancel. Choices are in-memory only; no actual update/proposal is sent. Loading/error/retry, rate/authorization/unavailable/empty/incomplete states preserve public browsing. [Behavior/local setup](../api/duplicates.md), [verification and screenshot review](../verification/UNI-024/README.md). No private boarding geometry/owner authority or future contribution wizard is added.

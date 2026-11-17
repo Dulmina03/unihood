@@ -2,7 +2,7 @@
 
 Recorded 17 November 2026 (Asia/Colombo). Human-created branch `feat/uni-023-duplicate-matcher` from clean synchronized dev ecf7a80155d34cf935a7c8ce19d6223ecffbb309, after independently verified UNI-022 issue #28/dev #29 all-three-job SUCCESS. No agent Git mutations. [Scope, algorithm, privacy and deferred matrix](../../architecture/poi-duplicate-matching.md).
 
-Local verification complete with the recorded default-build limitation; human Git checkpoint pending. No current issue remote commit/push/CI/integration is claimed. New migration 004 is index-only; previous migrations, extension ownership, persistent development data and five ADRs are unchanged. No new UI/REST/write endpoint/authentication or UNI-024 work. Pending contributions, private boarding matching, image/contact evidence, calibration and transactional submit protection remain explicitly unfinished future work, not a claimed complete §6.3 pass.
+Local verification complete with the recorded default-build limitation. The original checkpoint below is historical; human integration and independently observed remote CI are confirmed in the follow-up below. New migration 004 is index-only; previous migrations, extension ownership, persistent development data and five ADRs are unchanged. No new UI/REST/write endpoint/authentication or UNI-024 work. Pending contributions, private boarding matching, image/contact evidence, calibration and transactional submit protection remain explicitly unfinished future work, not a claimed complete §6.3 pass.
 
 ## Executed local checks
 
@@ -53,3 +53,8 @@ git push -u origin feat/uni-023-duplicate-matcher
 ```
 
 PR base dev; PR optional. Observe all three issue-branch jobs for the exact resulting commit before human fast-forward-only dev integration/push; verify exact dev CI before creating the next UNI-024 branch. No new commit SHA or future CI result is invented. Stop here; no routine Git operations by the agent and no UNI-024 implementation.
+
+
+## Confirmed human integration and exact-commit CI
+
+Human committed/pushed `feat/uni-023-duplicate-matcher`, then confirmed fast-forward integration/push into dev. Exact commit **e36681c940b990b903cf88633f8eafd329ca3130** independently observed in [issue run #30](https://github.com/Dulmina03/unihood/actions/runs/43961130063) and [dev run #31](https://github.com/Dulmina03/unihood/actions/runs/43962267440), both SUCCESS: Workspace quality, Isolated PostGIS integration and Component browser acceptance all completed successfully. Public metadata: [issue](issue-run-30.json), [dev](dev-run-31.json). Subsequent read-only inspection confirms clean human-created UNI-024 branch at the same commit with local dev/origin-dev synchronized. No agent Git mutation occurred. This supersedes the original pending handoff without erasing earlier attempts or local Turbopack limitations.

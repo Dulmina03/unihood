@@ -33,7 +33,7 @@ export class OpenApiService {
             const query = schemas[contract.querySchema];
             for (const name of Object.keys(query.properties ?? {})) parameters.push({name, in: 'query', required: query.required?.includes(name) ?? false, schema: {$ref: `#/components/schemas/${contract.querySchema}/properties/${name}`}});
           }
-          (paths[path] ??= {})[verb] = {operationId: `${controller.name}_${method}_${path.replace(/\W/g, '_')}`, summary: contract.summary, security: [], ...(parameters.length ? {parameters} : {}), responses};
+          (paths[path] ??= {})[verb] = {operationId: `${controller.name}_${method}_${path.replace(/\W/g, '_')}`, summary: contract.summary, ...(contract.protected ? {'x-unihood-authorization': 'Contributing actor required; only explicit loopback synthetic simulation until final authentication. No identity headers or production bypass.'} : {security: []}), ...(contract.bodySchema ? {requestBody: {required: true, content: {'application/json': {schema: {$ref: `#/components/schemas/${contract.bodySchema}`}}}}} : {}), ...(parameters.length ? {parameters} : {}), responses};
         }
       }
     }

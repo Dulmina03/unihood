@@ -6,6 +6,158 @@
     "description": "Only implemented routes are listed. Shared boarding schemas are contract foundations, not live workflows. Identity/owner verification remains deferred."
   },
   "paths": {
+    "/api/v1/duplicates/check": {
+      "post": {
+        "operationId": "DuplicateController_check__api_v1_duplicates_check",
+        "summary": "Contributing-actor public POI preflight only; never creates, merges or clears publication",
+        "x-unihood-authorization": "Contributing actor required; only explicit loopback synthetic simulation until final authentication. No identity headers or production bypass.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DuplicateCheckInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bounded review candidates, not verified identity; final transactional recheck still required",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DuplicateCheckResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid public POI input",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No contributing actor; deployed access denied until final authentication",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Actor cannot contribute",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Shared local simulator budget: 20 checks per minute, three active checks",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Candidate check unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/places/{id}": {
       "get": {
         "operationId": "PlaceController_detail__api_v1_places__id_",
@@ -1006,6 +1158,180 @@
   },
   "components": {
     "schemas": {
+      "DuplicateCheckInput": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "POI"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[^\\u0000-\\u001f\\u007f\\u202a-\\u202e\\u2066-\\u2069]+$"
+          },
+          "category": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "location": {
+            "type": "object",
+            "properties": {
+              "lat": {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              },
+              "lng": {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              }
+            },
+            "required": [
+              "lat",
+              "lng"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "kind",
+          "name",
+          "category",
+          "location"
+        ],
+        "additionalProperties": false
+      },
+      "DuplicateCheckResult": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "policyVersion": {
+            "type": "string",
+            "const": "public-poi-v1"
+          },
+          "scope": {
+            "type": "string",
+            "const": "PUBLIC_POI_ONLY"
+          },
+          "candidates": {
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200,
+                  "pattern": "^[^\\u0000-\\u001f\\u007f\\u202a-\\u202e\\u2066-\\u2069]+$"
+                },
+                "category": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 60,
+                  "pattern": "^[a-z][a-z0-9_]*$"
+                },
+                "score": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "classification": {
+                  "type": "string",
+                  "enum": [
+                    "STRONG_CANDIDATE",
+                    "POSSIBLE_CANDIDATE",
+                    "REVIEW_REQUIRED"
+                  ]
+                },
+                "signals": {
+                  "type": "object",
+                  "properties": {
+                    "nameSimilarity": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "normalizedNameExact": {
+                      "type": "boolean"
+                    },
+                    "categoryMatch": {
+                      "type": "boolean"
+                    },
+                    "withinRadius": {
+                      "type": "boolean"
+                    },
+                    "sameBuilding": {
+                      "type": "boolean"
+                    },
+                    "sourceMatch": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "nameSimilarity",
+                    "normalizedNameExact",
+                    "categoryMatch",
+                    "withinRadius",
+                    "sameBuilding",
+                    "sourceMatch"
+                  ],
+                  "additionalProperties": false
+                },
+                "requiresReview": {
+                  "type": "boolean",
+                  "const": true
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "category",
+                "score",
+                "classification",
+                "signals",
+                "requiresReview"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "hasMore": {
+            "type": "boolean"
+          },
+          "incomplete": {
+            "type": "boolean"
+          },
+          "requiresReview": {
+            "type": "boolean",
+            "const": true
+          },
+          "checkOnly": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "policyVersion",
+          "scope",
+          "candidates",
+          "hasMore",
+          "incomplete",
+          "requiresReview",
+          "checkOnly"
+        ],
+        "additionalProperties": false
+      },
       "PublicPoiDetail": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",

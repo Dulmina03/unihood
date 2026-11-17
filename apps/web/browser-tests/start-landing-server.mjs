@@ -13,6 +13,13 @@ const server = createServer((request, response) => {
   const url = new URL(request.url, 'http://127.0.0.1');
   response.setHeader('Content-Type', 'application/json'); response.setHeader('Cache-Control', 'no-store');
   if (url.searchParams.get('slug') === 'synthetic-unavailable') {response.statusCode = 503; response.end('{}'); return;}
+  // Explicit synthetic browser upstream, not an authorization/matcher test.
+  if(url.pathname==='/api/v1/duplicates/check'){
+    const origin=request.headers.origin;
+    if(['http://127.0.0.1:3180','http://127.0.0.1:3181'].includes(origin)){response.setHeader('Access-Control-Allow-Origin',origin);response.setHeader('Access-Control-Allow-Headers','Content-Type');response.setHeader('Access-Control-Allow-Methods','POST');}
+    if(request.method==='OPTIONS'){response.statusCode=204;response.end();return;}
+    response.end(JSON.stringify({checkOnly:true,policyVersion:'public-poi-v1',scope:'PUBLIC_POI_ONLY',candidates:[{id:poiRows[0].id,name:poiRows[0].name,category:'pharmacy',score:79,classification:'REVIEW_REQUIRED',signals:{nameSimilarity:1,normalizedNameExact:true,categoryMatch:true,withinRadius:true,sameBuilding:true,sourceMatch:false},requiresReview:true}],hasMore:false,incomplete:false,requiresReview:true}));return;
+  }
   let rows;
   if(/^\/api\/v1\/places\/[^/]+$/.test(url.pathname)) {
     if(url.pathname.endsWith('/40000000-0000-4000-8000-000000000098')){response.statusCode=503;response.end(JSON.stringify({error:'PRIVATE_CANARY synthetic upstream failure'}));return;}

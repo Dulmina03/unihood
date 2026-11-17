@@ -1,3 +1,4 @@
+import { DuplicateController, DuplicateRateGuard } from './duplicates/duplicate.controller';
 import { PlaceController } from './places/place.controller';
 import { PoiMatcherService } from './duplicates/poi-matcher.service';
 import { PlaceService } from './places/place.service';
@@ -14,5 +15,5 @@ import { Module } from '@nestjs/common';
 import { HealthController } from './health.controller';
 import { DatabaseReadinessService } from './database-readiness.service';
 import { ReadinessController } from './readiness.controller';
-@Module({ controllers: [PlaceController, UniversityController, HealthController, ReadinessController, OpenApiController], providers: [PoiMatcherService, PlaceService, UniversityService, UniversityRepository, DatabaseReadinessService, OpenApiService, {provide: SyntheticActors, useFactory: () => new SyntheticActors()}, {provide: IDENTITY_PROVIDER, useExisting: SyntheticActors}, {provide: PERMISSION_SERVICE, useExisting: SyntheticActors}, {provide: APP_GUARD, useClass: ProtectedBoundaryGuard}] })
+@Module({ controllers: [DuplicateController, PlaceController, UniversityController, HealthController, ReadinessController, OpenApiController], providers: [DuplicateRateGuard, PoiMatcherService, PlaceService, UniversityService, UniversityRepository, DatabaseReadinessService, OpenApiService, {provide: SyntheticActors, useFactory: () => new SyntheticActors()}, {provide: IDENTITY_PROVIDER, useExisting: SyntheticActors}, {provide: PERMISSION_SERVICE, useExisting: SyntheticActors}, {provide: APP_GUARD, useClass: ProtectedBoundaryGuard}] })
 export class AppModule {}

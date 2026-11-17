@@ -1,3 +1,4 @@
+import { testDuplicateApi } from './test-duplicate-api.mjs';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { createClient, runMigrations } from './database.mjs';
@@ -29,6 +30,8 @@ export async function testPoiMatching({client,migrations,url}) {
   await client.query("INSERT INTO public.place_source_refs(id,place_id,provider,external_id,license_tag) VALUES($1,$1,'synthetic-matcher','private-boarding-id','Synthetic exclusion fixture')",[boarding]);
   await client.query("INSERT INTO public.place_source_refs(id,place_id,provider,external_id,license_tag) VALUES('57000000-0000-4000-8000-000000000001',$1,' synthetic identity ',' ００１ ','Synthetic opaque identifier fixture')",[byKey.legacy.id]);
   const before=await snapshot();
+  await testDuplicateApi(url);
+  assert.equal(await snapshot(),before);
   // Actual read-only SQL transaction, not just mocked assertions about SELECT.
   await client.query('BEGIN READ ONLY');
   try {

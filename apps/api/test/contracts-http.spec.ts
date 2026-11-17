@@ -95,13 +95,16 @@ describe('live OpenAPI baseline', () => {
   let app: INestApplication;
   beforeAll(async () => {app = await createApp({}, false);});
   afterAll(async () => {await app.close();});
-  it('documents only live read routes and resolves all schema refs', async () => {
+  it('documents live public reads and the guarded preflight with resolved schema refs', async () => {
     const response = await request(app.getHttpServer()).get('/api/v1/openapi.json').expect(200);
     const document = response.body;
     expect(document.openapi).toBe('3.1.0');
     expect(document).toEqual(JSON.parse(readFileSync(resolve(process.cwd(), '../../docs/api/openapi.json'), 'utf8')));
-    expect(Object.keys(document.paths).sort()).toEqual(['/health', '/health/ready', '/api/v1/health', '/api/v1/health/ready', '/api/v1/openapi.json', '/api/v1/places', '/api/v1/places/{id}', '/api/v1/place-categories', '/api/v1/universities', '/api/v1/universities/{id}/campuses', '/api/v1/universities/{id}/entrances'].sort());
+    expect(Object.keys(document.paths).sort()).toEqual(['/health', '/health/ready', '/api/v1/duplicates/check', '/api/v1/health', '/api/v1/health/ready', '/api/v1/openapi.json', '/api/v1/places', '/api/v1/places/{id}', '/api/v1/place-categories', '/api/v1/universities', '/api/v1/universities/{id}/campuses', '/api/v1/universities/{id}/entrances'].sort());
     for (const [path, methods] of Object.entries(document.paths)) {
+      if(path==='/api/v1/duplicates/check'){
+        const operation=(methods as {post:{requestBody:unknown}}).post;expect(operation.requestBody).toBeDefined();await request(app.getHttpServer()).post(path).send({}).expect(401);continue;
+      }
       expect(Object.keys(methods as object)).toEqual(['get']);
       const url = path.replace('{id}', '10000000-0000-4000-8000-000000000001');
       const poi = path === '/api/v1/places' || path === '/api/v1/place-categories';

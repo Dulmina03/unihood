@@ -7,3 +7,4 @@ export * from './openapi-schemas';
 export * from './university';
 export * from './place';
 export * from './poi-matching';
+export * from './duplicate-check';
