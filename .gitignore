@@ -10,3 +10,6 @@ test-results/
 .pnpm-store/
 .DS_Store
 next-env.d.ts
+
+# Private local-only upload derivatives; never serve or commit.
+.local/

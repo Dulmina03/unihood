@@ -1,0 +1,33 @@
+# Private media and contact boundary — UNI-037
+
+Implementation in progress; [verification](../verification/UNI-037/README.md) records actual checks. Scope follows specification §7.1/§7.6/§8.6 and all five ADRs, especially [property authority](../decisions/0003-property-specific-owner-authority.md) and [registration deferral](../decisions/0005-registration-deferral.md). No real-data publication, production write, identity provider, SMS/call or owner-proof mechanism is enabled.
+
+Only the existing fictional property A fixture and issued local/test owner-a capability can manage media/contact. Separate MANAGE_MEDIA and MANAGE_CONTACT interface checks retain least privilege: the limited price manager and contributor cannot use them. These are additional synthetic operation capabilities for the same property, not real ownership grants. Deployed adapters remain denied. Map visibility/consent is independent; private owners need not publish geography to manage private files/contact intent.
+
+## Upload and storage sequence
+
+The global property/capability guard runs before bounded multipart buffering. A per-process guard limits two in-flight uploads with a 15-second request deadline. File input is limited to 5 MiB, one image, two strict fields (rights consent/request key). Decoder checks actual JPEG/PNG/WebP signature versus MIME, dimensions, one page and a 16-megapixel ceiling; output is resized within 2048×2048 and re-encoded to WebP with metadata removed. Original bytes/names/EXIF/XMP are not persisted. Sharp native concurrency is one, image cache disabled, decode pipeline deadline three seconds. These are prototype resource controls, not complete production abuse/performance certification.
+
+After sanitization, create a durable private STAGING reservation with a generated object ID and sanitized checksum. This commits before any file write. Completing the upload locks the same property and reservation while writing/flushing the private derivative, creating private asset metadata and the audit event, then atomically transitions to ACTIVE. A failed/ambiguous completion leaves a reachable STAGING or ACTIVE record. Retry the same request key/image or explicitly withdraw it; never blindly delete an uncertain commit's binary. The same property lock prevents a cancelled upload from later recreating its file. Keys bind to sanitized checksums; conflicting reuse returns conflict. Twenty non-revoked reservations and a local directory capacity bound prevent unbounded prototype storage growth.
+
+The local `PrivateMediaStore` adapter is the development implementation of a private object-store boundary (prepare/put/read/remove). It requires explicit private absolute MEDIA_STORAGE_ROOT, owned directory mode0700/files0600, generated UUID keys, no public/build/Git paths, no overwrite of unrelated content and no-follow reads. Each record binds to the canonical storage namespace; changing root does not move/delete old data and fails mismatched reads/cleanup closed. Preserve the old root to recover. No S3 provider/credentials or public signed URL is assumed. A future adapter must preserve these authorization/consent/namespace semantics.
+
+All derivatives remain PENDING; no malware/content clearance is claimed without a configured engine. Re-encoding and validation do not detect every visual privacy issue or establish rights. There is no public media-delivery endpoint, approval shortcut or fabricated gallery photo. Private previews require current issued property media capability, current consent/state and no-store/no-sniff responses; binary-route errors remain sanitized JSON. Consent withdrawal first marks REVOKED and records the action, then removes only the known derivative. Failed physical cleanup remains visible/retryable; it does not restore preview eligibility.
+
+## Private contact sequence
+
+Only a closed fictional contact reference is accepted by the synthetic adapter. Its underlying test number uses NANPA's reserved fictional 555-0100 range; no real number collection or call/SMS occurs. [NANPA primary reference](https://www.nanpa.com/numbering/555-line-numbers), checked 17 November 2026. No phone implies account verification or property authority.
+
+AES-256-GCM uses an explicitly configured 32-byte CONTACT_ENCRYPTION_KEY_HEX, random 12-byte nonce, 16-byte authentication tag, and property/revision-bound AAD. Missing/malformed key fails new storage closed. Private GET exposes only a fixed fixture mask/state; wrong key or corrupted ciphertext produces an unreadable state without returning plaintext/ciphertext. Keep the key; changing it does not migrate existing records. Owner removal can clear logical ciphertext/consent even when a key is unavailable. This is not a claim of erasure from backups/MVCC or production key management/rotation.
+
+Sharing intent is independent of map consent. Verification stays UNVERIFIED and publicAvailable stays false; a checkbox never verifies a number or ownership. New writes replace ciphertext with an incremented revision/fresh nonce; stale revisions conflict. Removal retains a versioned tombstone and minimal audit, without retaining old contact values. Real contact verification/provider/retention/authority policy remains in final registration/security/release phases.
+
+## Audit and release boundaries
+
+Audit records are private, property-bound and server-authored. They contain action/time/object references, never phone values, ciphertext, original filenames, EXIF, private locations, object keys or image fingerprints in public/owner event DTOs. No ordinary admin dashboard or ownership transfer.
+
+Real malware/content engine, operational retention/cleanup review, production object storage/signing/key management, real identities/contact verification and real consented media remain explicit release gates. Synthetic/browser mocks cannot mark them PASS. Phase 1 detailed manual AT remains deferred to Phase 6; new screens also require honest manual evidence.
+
+## Implementation sources
+
+Checked 17 November 2026: [Sharp output metadata behavior](https://sharp.pixelplumbing.com/api-output/), [Sharp input limits](https://sharp.pixelplumbing.com/api-constructor/), [Nest upload transport](https://docs.nestjs.com/techniques/file-upload), [Node22 authenticated encryption API](https://nodejs.org/docs/latest-v22.x/api/crypto.html). Sharp 0.35.5 is the exact existing lockfile version made an explicit API dependency; [Apache2 license](https://github.com/lovell/sharp/blob/v0.35.5/LICENSE). Native/transitive licenses still accompany their packages; this is not a blanket license claim for every native dependency. Actual stripping/security behavior must be tested, not inferred from documentation alone.

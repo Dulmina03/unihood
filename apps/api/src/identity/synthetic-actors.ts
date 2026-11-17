@@ -30,7 +30,7 @@ function localRequest(input: unknown): boolean {
   return true;
 }
 type Grants = {actorId: string; contribute: boolean; properties: ReadonlyArray<{boardingId: string; permissions: readonly string[]}>};
-const ownerPermissions = ['MANAGE_PROPERTY', 'PUBLISH_EXACT_LOCATION', 'SET_OFFICIAL_PRICE', 'CONFIRM_VACANCY'];
+const ownerPermissions = ['MANAGE_PROPERTY', 'PUBLISH_EXACT_LOCATION', 'SET_OFFICIAL_PRICE', 'CONFIRM_VACANCY', 'MANAGE_MEDIA', 'MANAGE_CONTACT'];
 // No request header/cookie/body selects a fixture. Selection is server-side and synthetic only.
 @Injectable()
 export class SyntheticActors implements IdentityProvider, PermissionService {
@@ -55,5 +55,7 @@ export class SyntheticActors implements IdentityProvider, PermissionService {
   async canManageProperty(actor: ActorContext, id: string) {return this.permitted(actor, id, 'MANAGE_PROPERTY');}
   async canPublishExactBoardingLocation(actor: ActorContext, id: string) {return this.permitted(actor, id, 'PUBLISH_EXACT_LOCATION');}
   async canSetOfficialPrice(actor: ActorContext, id: string) {return this.permitted(actor, id, 'SET_OFFICIAL_PRICE');}
+  async canManageMedia(actor:ActorContext,id:string){return this.permitted(actor,id,'MANAGE_MEDIA');}
+  async canManageContact(actor:ActorContext,id:string){return this.permitted(actor,id,'MANAGE_CONTACT');}
   async canConfirmVacancy(actor: ActorContext, id: string) {return this.permitted(actor, id, 'CONFIRM_VACANCY');}
 }

@@ -1,0 +1,47 @@
+import {Body,Controller,Delete,ForbiddenException,Get,Header,HttpCode,Inject,Param,Post,Put,Query,Req,StreamableFile,UploadedFile,UseGuards,UseInterceptors,BadRequestException} from '@nestjs/common';
+import {FileInterceptor} from '@nestjs/platform-express';
+import {BoardingUnitQuerySchema,MAX_MEDIA_BYTES,MediaUploadInputSchema,OwnerPrivateContactInputSchema,PrivacyRevisionInputSchema,PublicIdSchema,type IdentityProvider,type PermissionService,type OwnerPrivateContactInput} from '@unihood/contracts';
+import {ApiContract} from '../openapi/operation';
+import {ContractValidationPipe} from '../http/contract-validation.pipe';
+import {RequirePermission} from '../identity/protected-boundary.guard';
+import {IDENTITY_PROVIDER,PERMISSION_SERVICE} from '../identity/tokens';
+import {BoardingPrivacyService} from './boarding-privacy.service';
+import {MediaConcurrencyGuard} from './media-concurrency.guard';
+const errors={'400':{schema:'ErrorResponse',description:'Invalid privacy request'},'401':{schema:'ErrorResponse',description:'No issued local/test actor'},'403':{schema:'ErrorResponse',description:'Property capability denied'},'404':{schema:'ErrorResponse',description:'Not available'},'409':{schema:'ErrorResponse',description:'Revision/request-key conflict or active quarantine limit'},'413':{schema:'ErrorResponse',description:'Upload exceeds size limit'},'429':{schema:'ErrorResponse',description:'Upload concurrency limit'},'500':{schema:'ErrorResponse',description:'Internal error'},'503':{schema:'ErrorResponse',description:'Private storage/encryption/service unavailable'}} as const;
+const auth='Issued local/test property management and operation capability only; production/staging disabled. No public delivery or real verification.';
+@Controller('api/v1/owner/boardings/:boardingId/privacy')
+export class BoardingPrivacyController{
+ constructor(private readonly service:BoardingPrivacyService,@Inject(IDENTITY_PROVIDER)private readonly identity:IdentityProvider,@Inject(PERMISSION_SERVICE)private readonly permissions:PermissionService){}
+ private async authorize(req:unknown,id:string,kind:'media'|'contact'|'either'){
+  const actor=await this.identity.resolveRequestActor(req);if(actor.authStatus!=='LOCAL_TEST_ACTOR'||!actor.actorId||!await this.permissions.canManageProperty(actor,id))throw new ForbiddenException();
+  const media=kind!=='contact'&&await this.permissions.canManageMedia(actor,id),contact=kind!=='media'&&await this.permissions.canManageContact(actor,id);if(!media&&!contact)throw new ForbiddenException();return actor.actorId;
+ }
+ @Get('overview') @Header('Cache-Control','no-store') @RequirePermission({action:'manage'})
+ @ApiContract({summary:'Closed synthetic private-storage/contact configuration flags; no paths/keys',protected:true,authorization:auth,responses:{'200':{schema:'OwnerPrivacyOverview',description:'Safe owner configuration flags; public delivery disabled'},...errors}})
+ async overview(@Param('boardingId',new ContractValidationPipe(PublicIdSchema))id:string,@Req()req:unknown){await this.authorize(req,id,'either');return this.service.overview(id);}
+ @Get('media') @Header('Cache-Control','no-store') @RequirePermission({action:'manageMedia'})
+ @ApiContract({summary:'Private quarantined synthetic media metadata, no object keys/checksums/original names',protected:true,authorization:auth,querySchema:'BoardingUnitQuery',responses:{'200':{schema:'OwnerMediaPage',description:'Minimal private media metadata; never public assets'},...errors}})
+ async media(@Param('boardingId',new ContractValidationPipe(PublicIdSchema))id:string,@Query(new ContractValidationPipe(BoardingUnitQuerySchema))query:{page?:string;pageSize?:string},@Req()req:unknown){await this.authorize(req,id,'media');return this.service.media(id,query);}
+ @Post('media') @HttpCode(200) @Header('Cache-Control','no-store') @RequirePermission({action:'manageMedia'}) @UseGuards(MediaConcurrencyGuard)
+ @UseInterceptors(FileInterceptor('image',{limits:{fileSize:MAX_MEDIA_BYTES,files:1,fields:2,parts:3,fieldSize:64}}))
+ @ApiContract({summary:'Consent-gated bounded JPEG/PNG/WebP decode and metadata removal into private PENDING quarantine',protected:true,authorization:auth,bodySchema:'OwnerMediaUploadBody',requestContentType:'multipart/form-data',responses:{'200':{schema:'OwnerMediaReceipt',description:'Private sanitized derivative retained; malware/content clearance and publication NOT granted'},...errors}})
+ async upload(@Param('boardingId',new ContractValidationPipe(PublicIdSchema))id:string,@Body(new ContractValidationPipe(MediaUploadInputSchema))input:{requestKey:string;consent:'true'},@UploadedFile()file:unknown,@Req()req:unknown){const actor=await this.authorize(req,id,'media');if(!file||typeof file!=='object'||!('buffer' in file)||!Buffer.isBuffer(file.buffer)||!('mimetype' in file)||typeof file.mimetype!=='string')throw new BadRequestException();return this.service.upload(id,input,{buffer:file.buffer,mimetype:file.mimetype},actor);}
+ @Get('media/:assetId/content') @Header('Cache-Control','no-store') @Header('Content-Type','image/webp') @Header('X-Content-Type-Options','nosniff') @Header('Cross-Origin-Resource-Policy','same-origin') @Header('Content-Security-Policy',"default-src 'none'; sandbox") @RequirePermission({action:'manageMedia'})
+ @ApiContract({summary:'Authenticated private sanitized quarantine preview; no public/signed asset URL',protected:true,authorization:auth,responses:{'200':{schema:'MediaBinary',contentType:'image/webp',description:'Private sanitized image bytes only'},...errors}})
+ async content(@Param('boardingId',new ContractValidationPipe(PublicIdSchema))id:string,@Param('assetId',new ContractValidationPipe(PublicIdSchema))assetId:string,@Req()req:unknown){await this.authorize(req,id,'media');return new StreamableFile(await this.service.content(id,assetId),{type:'image/webp',disposition:'inline; filename="synthetic-quarantine.webp"'});}
+ @Delete('media/:assetId') @Header('Cache-Control','no-store') @RequirePermission({action:'manageMedia'})
+ @ApiContract({summary:'Revision-safe media consent withdrawal; private derivative removal with honest retry state',protected:true,authorization:auth,bodySchema:'PrivacyRevisionInput',responses:{'200':{schema:'OwnerMediaReceipt',description:'Consent revoked; cleanupPending reflects physical removal'},...errors}})
+ async revoke(@Param('boardingId',new ContractValidationPipe(PublicIdSchema))id:string,@Param('assetId',new ContractValidationPipe(PublicIdSchema))assetId:string,@Body(new ContractValidationPipe(PrivacyRevisionInputSchema))input:{expectedRevision:number},@Req()req:unknown){const actor=await this.authorize(req,id,'media');return this.service.revokeMedia(id,assetId,input.expectedRevision,actor);}
+ @Get('contact') @Header('Cache-Control','no-store') @RequirePermission({action:'manageContact'})
+ @ApiContract({summary:'Private synthetic contact state/mask, no plaintext/ciphertext/key or public number',protected:true,authorization:auth,responses:{'200':{schema:'OwnerPrivateContact',description:'Unverified private contact; publicAvailable always false'},...errors}})
+ async contact(@Param('boardingId',new ContractValidationPipe(PublicIdSchema))id:string,@Req()req:unknown){await this.authorize(req,id,'contact');return this.service.contact(id);}
+ @Put('contact') @Header('Cache-Control','no-store') @RequirePermission({action:'manageContact'})
+ @ApiContract({summary:'Revision-safe AES-GCM private storage of closed fictional contact fixture and sharing intent; no verification/public delivery',protected:true,authorization:auth,bodySchema:'OwnerPrivateContactInput',responses:{'200':{schema:'OwnerContactReceipt',description:'Fictional contact stored privately; no SMS/call/publication'},...errors}})
+ async setContact(@Param('boardingId',new ContractValidationPipe(PublicIdSchema))id:string,@Body(new ContractValidationPipe(OwnerPrivateContactInputSchema))input:OwnerPrivateContactInput,@Req()req:unknown){const actor=await this.authorize(req,id,'contact');return this.service.setContact(id,input,actor);}
+ @Delete('contact') @Header('Cache-Control','no-store') @RequirePermission({action:'manageContact'})
+ @ApiContract({summary:'Withdraw contact sharing and clear stored ciphertext with retained version/minimal audit',protected:true,authorization:auth,bodySchema:'PrivacyRevisionInput',responses:{'200':{schema:'OwnerContactReceipt',description:'Logical private-contact removal; not a claim of secure backup erasure'},...errors}})
+ async removeContact(@Param('boardingId',new ContractValidationPipe(PublicIdSchema))id:string,@Body(new ContractValidationPipe(PrivacyRevisionInputSchema))input:{expectedRevision:number},@Req()req:unknown){const actor=await this.authorize(req,id,'contact');return this.service.removeContact(id,input.expectedRevision,actor);}
+ @Get('events') @Header('Cache-Control','no-store') @RequirePermission({action:'manage'})
+ @ApiContract({summary:'Minimal private privacy-action audit; no actor identity, phone, file paths or location',protected:true,authorization:auth,querySchema:'BoardingUnitQuery',responses:{'200':{schema:'OwnerPrivacyEventPage',description:'Bounded private action/time/asset references'},...errors}})
+ async events(@Param('boardingId',new ContractValidationPipe(PublicIdSchema))id:string,@Query(new ContractValidationPipe(BoardingUnitQuerySchema))query:{page?:string;pageSize?:string},@Req()req:unknown){await this.authorize(req,id,'either');return this.service.events(id,query);}
+}

@@ -3,7 +3,7 @@ export type RuntimeSchema<T> = z.ZodType<T>;
 export const PublicIdSchema = z.uuid();
 export const PublicFieldSchema = z.enum(['request', 'id', 'title', 'q', 'page', 'pageSize', 'sort', 'visibility', 'publisherKind']);
 export const ValidationReasonSchema = z.enum(['INVALID_VALUE', 'UNKNOWN_FIELD']);
-export const ErrorCodeSchema = z.enum(['BAD_REQUEST', 'VALIDATION_FAILED', 'UNAUTHORIZED', 'FORBIDDEN', 'NOT_FOUND', 'CONFLICT', 'UNPROCESSABLE_ENTITY', 'RATE_LIMITED', 'FEATURE_NOT_AVAILABLE', 'SERVICE_UNAVAILABLE', 'INTERNAL_ERROR']);
+export const ErrorCodeSchema = z.enum(['BAD_REQUEST', 'VALIDATION_FAILED', 'UNAUTHORIZED', 'FORBIDDEN', 'NOT_FOUND', 'CONFLICT', 'UNPROCESSABLE_ENTITY', 'RATE_LIMITED', 'PAYLOAD_TOO_LARGE', 'FEATURE_NOT_AVAILABLE', 'SERVICE_UNAVAILABLE', 'INTERNAL_ERROR']);
 export const ErrorDetailSchema = z.strictObject({field: PublicFieldSchema, reason: ValidationReasonSchema});
 export const ErrorResponseSchema = z.strictObject({error: z.strictObject({
   code: ErrorCodeSchema, message: z.string().min(1).max(160), details: z.array(ErrorDetailSchema).max(20), requestId: z.uuid(),

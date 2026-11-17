@@ -29,7 +29,7 @@ describe('synthetic capability boundary', () => {
     const actor = await actors.resolveRequestActor({...local, headers: {...local.headers, 'x-role': 'admin', 'x-user-id': 'real-user'}});
     expect(actor.actorId).toBe('synthetic:owner-a');
     expect(await actors.canSuggestPlace(actor)).toBe(true);
-    for (const method of ['canManageProperty', 'canPublishExactBoardingLocation', 'canSetOfficialPrice', 'canConfirmVacancy'] as const) {
+    for (const method of ['canManageProperty', 'canPublishExactBoardingLocation', 'canSetOfficialPrice', 'canConfirmVacancy','canManageMedia','canManageContact'] as const) {
       expect(await actors[method](actor, a)).toBe(true); expect(await actors[method](actor, b)).toBe(false);
       expect(await actors[method]({...actor}, a)).toBe(false);
       expect(await actors[method]({...actor, authStatus: 'VERIFIED_ACCOUNT'}, a)).toBe(false);
@@ -43,7 +43,7 @@ describe('synthetic capability boundary', () => {
       const actors = new SyntheticActors(syntheticConfig({...env, SYNTHETIC_ACTOR: fixture}));
       const actor = await actors.resolveRequestActor(local);
       expect(await actors.canPublishExactBoardingLocation(actor, a)).toBe(false);
-      expect(await actors.canConfirmVacancy(actor, a)).toBe(false);
+      expect(await actors.canConfirmVacancy(actor, a)).toBe(false);expect(await actors.canManageMedia(actor,a)).toBe(false);expect(await actors.canManageContact(actor,a)).toBe(false);
       expect(await actors.canSetOfficialPrice(actor, a)).toBe(fixture === 'price-manager-a');
     }
   });

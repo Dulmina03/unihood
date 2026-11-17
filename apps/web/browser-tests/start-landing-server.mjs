@@ -73,7 +73,7 @@ const server = createServer(async (request, response) => {
 });
 await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
 const port = server.address().port;
-const children = [[process.env.UI_TEST_WEB_PORT ?? '3180', 'disabled'], [process.env.UI_TEST_MAP_PORT ?? '3181', 'openfreemap']].map(([webPort, provider]) => spawn(process.execPath, ['scripts/next.mjs', 'start'], {stdio: 'inherit', env: {...process.env, WEB_PORT: webPort, MAP_PROVIDER: provider, MAP_STYLE: 'liberty', API_BASE_URL: `http://127.0.0.1:${port}/api/v1`}}));
+const children = [[process.env.UI_TEST_WEB_PORT ?? '3180', 'disabled'], [process.env.UI_TEST_MAP_PORT ?? '3181', 'openfreemap']].map(([webPort, provider]) => spawn(process.execPath, ['scripts/next.mjs', 'start'], {stdio: 'inherit', env: {...process.env, APP_ENV: process.env.APP_ENV ?? 'test', WEB_PORT: webPort, MAP_PROVIDER: provider, MAP_STYLE: 'liberty', API_BASE_URL: `http://127.0.0.1:${port}/api/v1`}}));
 let closing = false;
 const close = (signal = 'SIGTERM') => {if (closing) return; closing = true; for (const child of children) child.kill(signal); server.close();};
 for (const signal of ['SIGTERM', 'SIGINT']) process.on(signal, () => close(signal));

@@ -5,6 +5,7 @@ export const requestIdKey = Symbol('unihood.requestId');
 const errors = {
   400: ['BAD_REQUEST', 'The request is invalid.'], 401: ['UNAUTHORIZED', 'Authorization is required.'],
   403: ['FORBIDDEN', 'This action is not permitted.'], 404: ['NOT_FOUND', 'The resource was not found.'],
+  413: ['PAYLOAD_TOO_LARGE', 'The request exceeds the allowed size.'],
   409: ['CONFLICT', 'The request conflicts with the current state.'], 422: ['UNPROCESSABLE_ENTITY', 'The request cannot be processed.'],
   429: ['RATE_LIMITED', 'Too many requests.'], 503: ['SERVICE_UNAVAILABLE', 'The service is unavailable.'],
 } as const;
@@ -31,6 +32,7 @@ export class ApiExceptionFilter implements ExceptionFilter {
       requestId: request[requestIdKey] ?? randomUUID()}});
     response.setHeader('X-Request-Id', body.error.requestId);
     response.setHeader('Cache-Control', 'no-store');
+    response.setHeader('Content-Type','application/json; charset=utf-8');
     response.status(status).json(body);
   }
 }

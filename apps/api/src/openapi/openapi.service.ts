@@ -26,14 +26,14 @@ export class OpenApiService {
           const verb = RequestMethod[requestMethod].toLowerCase();
           const responses = Object.fromEntries(Object.entries(contract.responses).map(([status, response]) => [status, {
             description: response.description, headers: {'X-Request-Id': {description: 'Server-generated correlation ID; inbound IDs are ignored.', schema: {type: 'string', format: 'uuid'}}},
-            content: {'application/json': {schema: response.schema ? {$ref: `#/components/schemas/${response.schema}`} : {type: 'object', description: 'Generated OpenAPI document'}}},
+            content: {[response.contentType??'application/json']: {schema: response.schema ? {$ref: `#/components/schemas/${response.schema}`} : {type: 'object', description: 'Generated OpenAPI document'}}},
           }]));
           const parameters: object[] = [...path.matchAll(/\{([^}]+)\}/g)].map(([, name]) => ({name, in: 'path', required: true, schema: {$ref: '#/components/schemas/PublicId'}}));
           if (contract.querySchema) {
             const query = schemas[contract.querySchema];
             for (const name of Object.keys(query.properties ?? {})) parameters.push({name, in: 'query', required: query.required?.includes(name) ?? false, schema: {$ref: `#/components/schemas/${contract.querySchema}/properties/${name}`}});
           }
-          (paths[path] ??= {})[verb] = {operationId: `${controller.name}_${method}_${path.replace(/\W/g, '_')}`, summary: contract.summary, ...(contract.protected ? {'x-unihood-authorization': contract.authorization ?? 'Contributing actor required; only explicit loopback synthetic simulation until final authentication. No identity headers or production bypass.'} : {security: []}), ...(contract.bodySchema ? {requestBody: {required: true, content: {'application/json': {schema: {$ref: `#/components/schemas/${contract.bodySchema}`}}}}} : {}), ...(parameters.length ? {parameters} : {}), responses};
+          (paths[path] ??= {})[verb] = {operationId: `${controller.name}_${method}_${path.replace(/\W/g, '_')}`, summary: contract.summary, ...(contract.protected ? {'x-unihood-authorization': contract.authorization ?? 'Contributing actor required; only explicit loopback synthetic simulation until final authentication. No identity headers or production bypass.'} : {security: []}), ...(contract.bodySchema ? {requestBody: {required: true, content: {[contract.requestContentType??'application/json']: {schema: {$ref: `#/components/schemas/${contract.bodySchema}`}}}}} : {}), ...(parameters.length ? {parameters} : {}), responses};
         }
       }
     }

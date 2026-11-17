@@ -1,8 +1,8 @@
 # Phase 3 — boardings, advertisements, privacy and vacancy
 
-Status: **UNI-030/031/032/033/034/035 complete/integrated; UNI-036 in progress**, branch `feat/uni-036-vacancy-freshness`; initial a904cad integrated with issue #55/dev #56 all-job CI SUCCESS, canonical PATCH correction now being verified. Autonomous issue branches, exact-commit remote checks and fast-forward-only dev integration apply; no routine human Git checkpoints.
+Status: **UNI-030–036 complete/integrated; UNI-037 in progress**, branch `feat/uni-037-media-contact-privacy` from clean synchronized dev `4041385ac7ae606a3283d32f709e87986702e4af` after UNI-036 final correction issue #57/dev #58 all-job SUCCESS. Authorized autonomous issue branches, exact-commit CI and fast-forward-only integration apply.
 
-Exact roadmap: UNI-030 canonical property/unit/listing/media schema and all public visibility DTO variants → UNI-031 ad feed/detail → UNI-032 local-only owner wizard → UNI-033 visibility/serialization → UNI-034 eligible public map pins/revocation → UNI-035 official pricing/inventory → UNI-036 vacancy freshness → UNI-037 media/phone/audit safety → UNI-038 details/comparison/essentials → UNI-039 comprehensive privacy acceptance. UNI-036 canonical PATCH correction is in progress; UNI-037 branch exists but no implementation began, and later issues remain unstarted.
+Exact roadmap: UNI-030 canonical property/unit/listing/media schema and all public visibility DTO variants → UNI-031 ad feed/detail → UNI-032 local-only owner wizard → UNI-033 visibility/serialization → UNI-034 eligible public map pins/revocation → UNI-035 official pricing/inventory → UNI-036 vacancy freshness → UNI-037 media/phone/audit safety → UNI-038 details/comparison/essentials → UNI-039 comprehensive privacy acceptance. UNI-036 including canonical PATCH correction is complete; UNI-037 is current, UNI-038 onward remain unstarted.
 
 ## UNI-030 — canonical boarding foundation
 
@@ -37,3 +37,9 @@ In progress after verified UNI-035 dev CI. Local workspace418, browser90, real E
 UNI-036 correction: initial a904cad was verified/integrated, but §7.4 canonical unit PATCH was omitted. Reuse the same guarded transaction, reject body/path unit conflicts, switch owner controls and verify HTTP/OpenAPI/DB/browser regressions before another exact issue/dev CI cycle. [Historical runs and actual correction results](../verification/UNI-036/README.md#canonical-endpoint-correction-after-initial-integration).
 
 Correction local checks PASS: workspace419, typecheck/lint, API/OpenAPI and supported Webpack builds, four targeted canonical PATCH browser cases and isolated DB40 groups. Full browser90/real E2E16 remain initial local evidence and required unchanged remote suites; new exact issue/dev CI is pending.
+
+Final UNI-036 correction 4041385 is verified/integrated: issue #57/dev #58 all three jobs SUCCESS; initial a904cad/#55/#56 and the discovered omission remain historical. [Complete evidence](../verification/UNI-036/README.md).
+
+## UNI-037 — media and private contact safety
+
+Local implementation and verification complete on `feat/uni-037-media-contact-privacy` after verified UNI-036 final dev CI. 438 workspace tests, 94 browser cases, 35+ isolated PostGIS result groups, lint/typecheck and supported builds PASS, with 12 screenshots and six zero-violation axe reports. Consent/type/size/metadata controls, EXIF/XMP stripping, private WebP quarantined derivatives, staging interruption recovery, property-scoped private AES-GCM encrypted contact settings, immutable audit events and explicit quarantine/verification boundaries. No malware scanning or phone carrier verification claimed. Production writes remain closed. [Verification](../verification/UNI-037/README.md). Remote issue/dev CI pending integration.

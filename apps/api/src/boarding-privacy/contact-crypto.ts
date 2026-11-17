@@ -1,0 +1,5 @@
+import {createCipheriv,createDecipheriv,randomBytes} from 'node:crypto';
+export function contactKey(value=process.env.CONTACT_ENCRYPTION_KEY_HEX):Buffer|null{return value&&/^[0-9a-fA-F]{64}$/.test(value)?Buffer.from(value,'hex'):null;}
+function aad(id:string,revision:number){return Buffer.from(`unihood:private-contact:v1:${id}:${revision}`,'utf8');}
+export function encryptContact(phone:string,id:string,revision:number,key:Buffer){if(key.length!==32)throw new Error('Invalid contact key');const iv=randomBytes(12),cipher=createCipheriv('aes-256-gcm',key,iv,{authTagLength:16});cipher.setAAD(aad(id,revision));return {ciphertext:Buffer.concat([cipher.update(phone,'utf8'),cipher.final()]),iv,tag:cipher.getAuthTag()};}
+export function decryptContact(value:{ciphertext:Buffer;iv:Buffer;tag:Buffer},id:string,revision:number,key:Buffer){if(key.length!==32||value.iv.length!==12||value.tag.length!==16)throw new Error('Invalid encrypted contact');const cipher=createDecipheriv('aes-256-gcm',key,value.iv,{authTagLength:16});cipher.setAAD(aad(id,revision));cipher.setAuthTag(value.tag);return Buffer.concat([cipher.update(value.ciphertext),cipher.final()]).toString('utf8');}

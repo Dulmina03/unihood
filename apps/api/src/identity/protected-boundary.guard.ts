@@ -2,7 +2,7 @@ import { Injectable, Inject, SetMetadata, UnauthorizedException, ForbiddenExcept
 import { Reflector } from '@nestjs/core';
 import type { IdentityProvider, PermissionService } from '@unihood/contracts';
 import { IDENTITY_PROVIDER, PERMISSION_SERVICE } from './tokens';
-export type RequiredPermission = {action: 'suggest' | 'manage' | 'publishMap' | 'setPrice' | 'confirmVacancy'; propertyParam?: string};
+export type RequiredPermission = {action: 'suggest' | 'manage' | 'publishMap' | 'setPrice' | 'confirmVacancy' | 'manageMedia' | 'manageContact'; propertyParam?: string};
 export const RequirePermission = (permission: RequiredPermission) => SetMetadata('unihood:permission', permission);
 @Injectable()
 export class ProtectedBoundaryGuard implements CanActivate {
@@ -21,6 +21,8 @@ export class ProtectedBoundaryGuard implements CanActivate {
       : required.action === 'manage' ? await this.permissions.canManageProperty(actor, id)
       : required.action === 'publishMap' ? await this.permissions.canPublishExactBoardingLocation(actor, id)
       : required.action === 'setPrice' ? await this.permissions.canSetOfficialPrice(actor, id)
+      : required.action === 'manageMedia' ? await this.permissions.canManageMedia(actor,id)
+      : required.action === 'manageContact' ? await this.permissions.canManageContact(actor,id)
       : required.action === 'confirmVacancy' ? await this.permissions.canConfirmVacancy(actor, id) : false;
     if (!allowed) throw new ForbiddenException();
     return true;

@@ -24,4 +24,4 @@ Use the approved Campus Teal / Editorial Explorer + Urban Map direction and shar
 
 Update README/configuration docs when commands or runtime requirements change; record decisions in architecture/ADRs, exact issue results in PHASE-XX and current state in CURRENT_STATUS. Keep historical results clearly historical and record human merge confirmation without inventing hashes or remote success. Source comments explain important reasons/boundaries; product UI should not expose irrelevant implementation details.
 
-Use a conventional commit suggested to the human, such as feat(web), fix(boarding), test(auth), chore(ci) or docs(project). Use descriptive issue branches type/uni-###-description; templates are optional review aids and do not authorize assistant Git actions or automatic continuation.
+Use a conventional commit under the authorized autonomous workflow, such as feat(web), fix(boarding), test(auth), chore(ci) or docs(project). Use descriptive issue branches type/uni-###-description; templates are optional review aids; AGENTS.md and CONTRIBUTING.md define authorized Git operations and automatic continuation.

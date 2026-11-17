@@ -47,6 +47,7 @@ export async function testBoardingMap({client,url,migrations,get,endpoint:guestE
   await client.query("CREATE FUNCTION public.synthetic_map_failure() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'synthetic failure'; END $$; CREATE TRIGGER synthetic_map_failure BEFORE INSERT ON unihood_private.boarding_visibility_events FOR EACH ROW EXECUTE FUNCTION public.synthetic_map_failure()");
   assert.equal((await change(5,{visibility:'HIDDEN'})).status,503);assert.equal((await readMap()).items.length,1);settings=await (await fetch(endpoint+path)).json();assert.equal(settings.revision,5);
   await client.query('DROP TRIGGER synthetic_map_failure ON unihood_private.boarding_visibility_events; DROP FUNCTION public.synthetic_map_failure()');
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['012_boarding_media_contacts']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['011_boarding_vacancy_confirmations']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['010_boarding_inventory_prices']);
   await assert.rejects(runMigrations(client,migrations,'rollback'),/populated tables/);

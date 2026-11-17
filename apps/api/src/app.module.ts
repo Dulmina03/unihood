@@ -1,3 +1,7 @@
+import {BoardingPrivacyController} from './boarding-privacy/boarding-privacy.controller';
+import {BoardingPrivacyService} from './boarding-privacy/boarding-privacy.service';
+import {MediaConcurrencyGuard} from './boarding-privacy/media-concurrency.guard';
+import {PRIVATE_MEDIA_STORE,LocalPrivateMediaStore} from './boarding-privacy/private-media-store';
 import {BoardingVacancyController} from './boardings/boarding-vacancy.controller';
 import {BoardingVacancyService} from './boardings/boarding-vacancy.service';
 import { BoardingInventoryController } from './boardings/boarding-inventory.controller';
@@ -26,5 +30,5 @@ import { DatabaseReadinessService } from './database-readiness.service';
 import { ReadinessController } from './readiness.controller';
 import { BoardingController } from './boardings/boarding.controller';
 import { BoardingService } from './boardings/boarding.service';
-@Module({ controllers: [BoardingVacancyController, BoardingInventoryController, BoardingMapController, OwnerDraftController, BoardingController, PoiProposalController, DuplicateController, PlaceController, UniversityController, HealthController, ReadinessController, OpenApiController], providers: [BoardingVacancyService, BoardingInventoryService, BoardingMapService, BoardingService, PoiSubmissionService, DuplicateRateGuard, PoiMatcherService, PlaceService, UniversityService, UniversityRepository, DatabaseReadinessService, OpenApiService, {provide: SyntheticActors, useFactory: () => new SyntheticActors()}, {provide: IDENTITY_PROVIDER, useExisting: SyntheticActors}, {provide: PERMISSION_SERVICE, useExisting: SyntheticActors}, {provide: APP_GUARD, useClass: ProtectedBoundaryGuard}] })
+@Module({ controllers: [BoardingPrivacyController, BoardingVacancyController, BoardingInventoryController, BoardingMapController, OwnerDraftController, BoardingController, PoiProposalController, DuplicateController, PlaceController, UniversityController, HealthController, ReadinessController, OpenApiController], providers: [BoardingPrivacyService, MediaConcurrencyGuard, {provide:PRIVATE_MEDIA_STORE,useFactory:()=>new LocalPrivateMediaStore()}, BoardingVacancyService, BoardingInventoryService, BoardingMapService, BoardingService, PoiSubmissionService, DuplicateRateGuard, PoiMatcherService, PlaceService, UniversityService, UniversityRepository, DatabaseReadinessService, OpenApiService, {provide: SyntheticActors, useFactory: () => new SyntheticActors()}, {provide: IDENTITY_PROVIDER, useExisting: SyntheticActors}, {provide: PERMISSION_SERVICE, useExisting: SyntheticActors}, {provide: APP_GUARD, useClass: ProtectedBoundaryGuard}] })
 export class AppModule {}

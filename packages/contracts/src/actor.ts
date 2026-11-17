@@ -12,6 +12,8 @@ export interface PermissionService {
   canManageProperty(actor: ActorContext, boardingId: string): Promise<boolean>;
   canPublishExactBoardingLocation(actor: ActorContext, boardingId: string): Promise<boolean>;
   canSetOfficialPrice(actor: ActorContext, boardingId: string): Promise<boolean>;
+  canManageMedia(actor: ActorContext, boardingId: string): Promise<boolean>;
+  canManageContact(actor: ActorContext, boardingId: string): Promise<boolean>;
   canConfirmVacancy(actor: ActorContext, boardingId: string): Promise<boolean>;
 }
 
