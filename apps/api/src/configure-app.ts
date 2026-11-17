@@ -5,11 +5,11 @@ import type { INestApplication } from '@nestjs/common';
 export function configureApp(app: INestApplication): void {
   app.enableShutdownHooks();
   app.use((request: {path?:string;method?:string;headers:{origin?:string}}, response: {setHeader:(key:string,value:string)=>void;status:(status:number)=>{end:()=>void}}, next:()=>void)=>{
-    if((['/api/v1/duplicates/check','/api/v1/places/proposals'].includes(request.path??'')||/^\/api\/v1\/owner\/boardings\/[0-9a-f-]{36}\/(?:draft-check|visibility-preview)$/.test(request.path??'')) && localDuplicateOrigin(request.headers.origin)){
+    if((['/api/v1/duplicates/check','/api/v1/places/proposals'].includes(request.path??'')||/^\/api\/v1\/owner\/boardings\/[0-9a-f-]{36}\/(?:draft-check|visibility-preview|map-settings)$/.test(request.path??'')) && localDuplicateOrigin(request.headers.origin)){
       response.setHeader('Access-Control-Allow-Origin',request.headers.origin!);
       response.setHeader('Vary','Origin');
       if(request.method==='OPTIONS'){
-        response.setHeader('Access-Control-Allow-Methods','POST');
+        response.setHeader('Access-Control-Allow-Methods',request.path?.endsWith('/map-settings')?'GET, POST':'POST');
         response.setHeader('Access-Control-Allow-Headers','Content-Type');
         response.status(204).end();return;
       }

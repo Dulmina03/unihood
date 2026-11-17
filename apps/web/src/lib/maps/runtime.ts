@@ -74,10 +74,10 @@ export function mountMap(container: HTMLElement, provider: Extract<MapProvider, 
     // Reconcile stable DOM marker buttons so Back/Forward/filter updates do not leak listeners.
     for (const item of markers) {item.button.removeEventListener('click', item.click); item.marker.remove();}
     markers = points.map((point) => {
-      const button = document.createElement('button'); button.type = 'button'; button.className = 'campus-map-marker'; if ('kind' in point) button.dataset.category = point.category.code;
+      const button = document.createElement('button'); button.type = 'button'; button.className = 'campus-map-marker'; if ('kind' in point) button.dataset.category = point.kind==='POI'?point.category.code:'boarding';
       button.setAttribute('aria-label', `Select ${point.name} on map${point.provenance.dataKind === 'SYNTHETIC' ? ' · Synthetic example' : ''}`);
       button.setAttribute('aria-pressed', String(point.id === selected));
-      const symbol = document.createElement('span'); symbol.setAttribute('aria-hidden', 'true'); symbol.textContent = 'kind' in point ? (({pharmacy:'+',clinic:'✚',restaurant:'♨',hardware:'⚒'} as Record<string,string>)[point.category.code] ?? '•') : '↗'; button.append(symbol);
+      const symbol = document.createElement('span'); symbol.setAttribute('aria-hidden', 'true'); symbol.textContent = 'kind' in point ? point.kind==='BOARDING'?'⌂':(({pharmacy:'+',clinic:'✚',restaurant:'♨',hardware:'⚒'} as Record<string,string>)[point.category.code] ?? '•') : '↗'; button.append(symbol);
       const click = () => onSelect(point.id); button.addEventListener('click', click);
       const marker = new gl.Marker({element: button, anchor: 'bottom'}).setLngLat([point.location.lng, point.location.lat]).addTo(map);
       return {marker, button, click, id: point.id};

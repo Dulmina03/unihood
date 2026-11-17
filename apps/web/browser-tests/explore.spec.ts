@@ -57,8 +57,8 @@ test('URL restoration, share, Back/Forward, search and category filters preserve
   await page.goForward(); await expect(page.getByLabel('Find a public entrance')).toHaveValue('no match');
   await page.getByRole('button', {name: 'Clear search'}).click();
   await page.getByRole('button', {name: 'Boardings', exact: true}).click();
-  await expect(page.getByText('Boarding advertisements respect privacy')).toBeVisible();
-  await page.getByRole('button', {name: 'Show campus gates'}).click();
+  await expect(page.getByText('No eligible public boarding entrances')).toBeVisible();
+  await page.getByRole('button', {name: 'Campus gates', exact:true}).click();
   await page.getByRole('button', {name: 'Share', exact: true}).click();
   const link = await page.getByLabel('Shareable exploration link').inputValue();
   expect(link).toContain(`entrance=${entrance}`); expect(link).not.toMatch(/lat=|lng=|role=/);

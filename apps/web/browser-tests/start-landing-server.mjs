@@ -44,6 +44,7 @@ const server = createServer(async (request, response) => {
     response.end(JSON.stringify({checkOnly:true,policyVersion:'public-poi-v1',scope:'PUBLIC_POI_ONLY',candidates:[{id:poiRows[0].id,name:poiRows[0].name,category:'pharmacy',score:79,classification:'REVIEW_REQUIRED',signals:{nameSimilarity:1,normalizedNameExact:true,categoryMatch:true,withinRadius:true,sameBuilding:true,sourceMatch:false},requiresReview:true}],hasMore:false,incomplete:false,requiresReview:true}));return;
   }
   let rows;
+  if(url.pathname==='/api/v1/boardings/map'){response.end(JSON.stringify({items:[],page:{page:Number(url.searchParams.get('page')??1),pageSize:Number(url.searchParams.get('pageSize')??20),hasNextPage:false}}));return;}
   if(url.pathname==='/api/v1/boardings'||url.pathname.startsWith('/api/v1/boardings/')){
     if(url.searchParams.get('q')==='synthetic-unavailable'){response.statusCode=503;response.end('{}');return;}
     const id=url.pathname.split('/')[4];

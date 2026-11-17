@@ -69,3 +69,7 @@ UNI-021 extends `/explore` Essentials with bounded public POI/category reads, di
 ## UNI-033 owner visibility preview (UI-22)
 
 The owner wizard's privacy step requests a strict server-derived, unpublished synthetic template. Hidden/Area only never include geometry; Public map needs a deliberately selected fictional entrance and both consent/copy acknowledgements. Mode/locality changes clear old preview state and abort stale responses; points/consent are never saved or shared. Public map publication/revocation remain UNI-034. [Rules and local demo](../api/boarding-visibility.md), [actual results/screenshots](../verification/UNI-033/README.md). No new human visual/AT approval is inferred.
+
+## UNI-034 public boarding entrances (UI-03/UI-22)
+
+The existing explorer adds a distinct square house marker, title-only bounded results and current public selection/preview/share state for owner-consented synthetic entrances. Private modes and community recommendations remain in advertisements with no inferred map point. `/owner/map` provides task-focused load, explicit consent, publish-fixture, area-only and hide/revoke controls using revision-safe local-only property authorization. [Scope/demo/revocation limits](../api/boarding-map.md), [actual evidence](../verification/UNI-034/README.md). No new human visual/AT/physical-device approval is claimed.

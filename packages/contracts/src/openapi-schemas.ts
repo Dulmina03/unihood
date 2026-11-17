@@ -1,3 +1,4 @@
+import { BoardingMapPinSchema,BoardingMapPageSchema,BoardingMapQuerySchema,BoardingMapChangeSchema,BoardingMapSettingsSchema } from './boarding-map';
 import { OwnerVisibilityPreviewInputSchema,OwnerVisibilityPreviewSchema } from './owner-visibility-preview';
 import { OwnerWizardDraftSchema,OwnerDraftCheckSchema } from './owner-draft';
 import { PublicBoardingListingSchema, PublicBoardingListingPageSchema } from './boarding-model';
@@ -14,6 +15,7 @@ import { PublicBoardingResponseSchema, PublicBoardingPageSchema, OwnerPublicMapS
 import { BoardingAdvertisementQuerySchema,PublicBoardingAdvertisementSchema,BoardingAdvertisementPageSchema } from './boarding-advertisement';
 // No actor identities/memberships, private location/media or persistence entities belong in OpenAPI components.
 export const PublicSchemaRegistry = {
+  BoardingMapPin:BoardingMapPinSchema,BoardingMapPage:BoardingMapPageSchema,BoardingMapQuery:BoardingMapQuerySchema,BoardingMapChange:BoardingMapChangeSchema,BoardingMapSettings:BoardingMapSettingsSchema,
   OwnerVisibilityPreviewInput:OwnerVisibilityPreviewInputSchema,OwnerVisibilityPreview:OwnerVisibilityPreviewSchema,
   OwnerWizardDraft:OwnerWizardDraftSchema,OwnerDraftCheck:OwnerDraftCheckSchema,
   BoardingAdvertisementQuery:BoardingAdvertisementQuerySchema, PublicBoardingAdvertisement:PublicBoardingAdvertisementSchema, BoardingAdvertisementPage:BoardingAdvertisementPageSchema,

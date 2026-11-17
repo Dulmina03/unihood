@@ -1,0 +1,34 @@
+{
+  "id": 44074175541,
+  "run_number": 47,
+  "run_attempt": 1,
+  "head_sha": "c44e2b78a4237735c96cc288b5e09a2f61f65a5c",
+  "head_branch": "feat/uni-033-visibility-controls",
+  "status": "completed",
+  "conclusion": "success",
+  "html_url": "https://github.com/Dulmina03/unihood/actions/runs/44074175541",
+  "path": ".github/workflows/ci.yml",
+  "jobs": [
+    {
+      "id": 134007799414,
+      "name": "Workspace quality",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/44074175541/job/134007799414"
+    },
+    {
+      "id": 134007799792,
+      "name": "Isolated PostGIS integration",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/44074175541/job/134007799792"
+    },
+    {
+      "id": 134007800188,
+      "name": "Component browser acceptance",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/44074175541/job/134007800188"
+    }
+  ]
+}

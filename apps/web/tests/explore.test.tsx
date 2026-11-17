@@ -9,7 +9,7 @@ const university = {id: uid, slug: 'synthetic-demo', name: 'Synthetic Demo Unive
 const campus = {id: cid, universityId: uid, name: 'Synthetic Campus', publicArea: null, provenance};
 const entrance = {id: eid, campusId: cid, name: 'Synthetic Gate', location: {lat: 0, lng: 0}, isPrimary: true, provenance};
 const page = (items: unknown[]) => ({items, page: {page: 1, pageSize: 100, hasNextPage: false}});
-function mockFetch() {return vi.fn(async (url: string) => Response.json(page(url.includes('/entrances') ? [entrance] : url.includes('/campuses') ? [campus] : [university])));}
+function mockFetch() {return vi.fn(async (url: string) => Response.json(page(url.includes('/boardings/map')?[]:url.includes('/entrances') ? [entrance] : url.includes('/campuses') ? [campus] : [university])));}
 afterEach(() => {cleanup(); vi.unstubAllGlobals(); vi.restoreAllMocks(); query.value = '';});
 describe('Urban Map public shell', () => {
   it('restores a valid hierarchy and preview without fabricating map or route facts', async () => {
@@ -64,19 +64,28 @@ describe('Urban Map public shell', () => {
     fireEvent.change(screen.getByLabelText('University'), {target: {value: ''}});
     expect(push).toHaveBeenLastCalledWith(null, '', '/explore?view=list');
   });
-  it('provides a keyboard-operable sheet and a truthful future feed empty state', async () => {
+  it('provides a keyboard-operable sheet and an eligible public boarding empty state', async () => {
     query.value = `university=synthetic-demo&campus=${cid}&category=boardings`;
     vi.stubGlobal('fetch', mockFetch()); render(<Explore />);
-    expect(await screen.findByText('Boarding advertisements respect privacy')).toBeVisible();
+    expect(await screen.findByText('No eligible public boarding entrances')).toBeVisible();
     const handle = screen.getByRole('button', {name: 'Collapse results'});
     fireEvent.click(handle); expect(handle).toHaveAttribute('aria-expanded', 'false');
     fireEvent.click(handle); expect(handle).toHaveAttribute('aria-expanded', 'true');
     const push = vi.spyOn(window.history, 'pushState');
-    fireEvent.click(screen.getByRole('button', {name: 'Show campus gates'}));
+    fireEvent.click(screen.getByRole('button', {name: 'Campus gates'}));
     expect(push).toHaveBeenLastCalledWith(null, '', `/explore?university=synthetic-demo&campus=${cid}`);
   });
 });
 describe('refined public gate cards', () => {
+  it('clears a stale boarding selection when resetting filters to campus gates', async () => {
+    query.value=`university=synthetic-demo&campus=${cid}&category=boardings&boarding=00000000-0000-4000-8000-000000000001`;
+    vi.stubGlobal('fetch',mockFetch());render(<Explore/>);
+    await screen.findByText('No eligible public boarding entrances');
+    fireEvent.click(screen.getByRole('button',{name:/^Filters$/}));
+    const push=vi.spyOn(window.history,'pushState');
+    fireEvent.click(screen.getByRole('button',{name:/^Clear filters$/}));
+    expect(push).toHaveBeenLastCalledWith(null,'',`/explore?university=synthetic-demo&campus=${cid}`);
+  });
   it('keeps result and preview save states consistent with minimal persisted identity', async () => {
     query.value = `university=synthetic-demo&campus=${cid}&entrance=${eid}`;
     vi.stubGlobal('fetch', mockFetch()); render(<Explore />);

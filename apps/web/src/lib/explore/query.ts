@@ -1,6 +1,6 @@
 import { PoiCategoryCodeSchema, PublicIdSchema, UniversitySlugSchema } from '@unihood/contracts';
-export type ExploreState = {university: string; campus: string; entrance: string; category: 'entrances' | 'boardings' | 'essentials'; q: string; gate: 'all' | 'primary'; sort: 'directory' | 'name'; view: 'map' | 'list'; poiCategory:string; poiSort:'name'|'newest'; poiPage:string; place:string};
-export const defaultExploreState: ExploreState = {university: '', campus: '', entrance: '', category: 'entrances', q: '', gate: 'all', sort: 'directory', view: 'map', poiCategory:'', poiSort:'name', poiPage:'1', place:''};
+export type ExploreState = {university: string; campus: string; entrance: string; category: 'entrances' | 'boardings' | 'essentials'; q: string; gate: 'all' | 'primary'; sort: 'directory' | 'name'; view: 'map' | 'list'; poiCategory:string; poiSort:'name'|'newest'; poiPage:string; place:string; boarding:string};
+export const defaultExploreState: ExploreState = {university: '', campus: '', entrance: '', category: 'entrances', q: '', gate: 'all', sort: 'directory', view: 'map', poiCategory:'', poiSort:'name', poiPage:'1', place:'', boarding:''};
 const keys = Object.keys(defaultExploreState);
 // Reject unknown/repeated fields and arbitrary spatial/identity parameters. Never reflect bad values.
 export function parseExploreQuery(params: URLSearchParams): {valid: boolean; state: ExploreState} {
@@ -17,11 +17,12 @@ export function parseExploreQuery(params: URLSearchParams): {valid: boolean; sta
     else if(key==='poiCategory'&&PoiCategoryCodeSchema.safeParse(value).success) state.poiCategory=value;
     else if(key==='poiSort'&&['name','newest'].includes(value)) state.poiSort=value as ExploreState['poiSort'];
     else if(key==='poiPage'&&/^(?:[1-9]|[1-9][0-9]{1,3}|10000)$/.test(value))state.poiPage=value;
+    else if(key==='boarding'&&PublicIdSchema.safeParse(value).success)state.boarding=value;
     else if(key==='place'&&PublicIdSchema.safeParse(value).success)state.place=value;
     else if (key === 'q' && value.length <= 100 && !/[\u0000-\u001f\u007f]/.test(value) && value.trim()) state.q = value.trim();
     else return {valid: false, state: {...defaultExploreState}};
   }
-  return {valid: !(state.campus && !state.university) && !(state.entrance && !state.campus) && !(state.place && (state.category!=='essentials'||!state.entrance)), state};
+  return {valid: !(state.boarding && (state.category!=='boardings'||!state.campus)) && !(state.campus && !state.university) && !(state.entrance && !state.campus) && !(state.place && (state.category!=='essentials'||!state.entrance)), state};
 }
 export function exploreHref(state: Partial<ExploreState> = {}) {
   const full = {...defaultExploreState, ...state};

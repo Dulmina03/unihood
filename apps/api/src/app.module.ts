@@ -1,3 +1,5 @@
+import { BoardingMapController } from './boardings/boarding-map.controller';
+import { BoardingMapService } from './boardings/boarding-map.service';
 import { OwnerDraftController } from './boardings/owner-draft.controller';
 import { PoiProposalController } from './duplicates/poi-proposal.controller';
 import { PoiSubmissionService } from './duplicates/poi-submission.service';
@@ -20,5 +22,5 @@ import { DatabaseReadinessService } from './database-readiness.service';
 import { ReadinessController } from './readiness.controller';
 import { BoardingController } from './boardings/boarding.controller';
 import { BoardingService } from './boardings/boarding.service';
-@Module({ controllers: [OwnerDraftController, BoardingController, PoiProposalController, DuplicateController, PlaceController, UniversityController, HealthController, ReadinessController, OpenApiController], providers: [BoardingService, PoiSubmissionService, DuplicateRateGuard, PoiMatcherService, PlaceService, UniversityService, UniversityRepository, DatabaseReadinessService, OpenApiService, {provide: SyntheticActors, useFactory: () => new SyntheticActors()}, {provide: IDENTITY_PROVIDER, useExisting: SyntheticActors}, {provide: PERMISSION_SERVICE, useExisting: SyntheticActors}, {provide: APP_GUARD, useClass: ProtectedBoundaryGuard}] })
+@Module({ controllers: [BoardingMapController, OwnerDraftController, BoardingController, PoiProposalController, DuplicateController, PlaceController, UniversityController, HealthController, ReadinessController, OpenApiController], providers: [BoardingMapService, BoardingService, PoiSubmissionService, DuplicateRateGuard, PoiMatcherService, PlaceService, UniversityService, UniversityRepository, DatabaseReadinessService, OpenApiService, {provide: SyntheticActors, useFactory: () => new SyntheticActors()}, {provide: IDENTITY_PROVIDER, useExisting: SyntheticActors}, {provide: PERMISSION_SERVICE, useExisting: SyntheticActors}, {provide: APP_GUARD, useClass: ProtectedBoundaryGuard}] })
 export class AppModule {}

@@ -7,7 +7,7 @@ const from=`FROM public.boarding_advertisement_previews a JOIN public.listings l
  JOIN public.boarding_properties b ON b.place_id=a.boarding_id JOIN public.places p ON p.id=b.place_id`;
 const eligible=`$1::boolean AND p.kind='BOARDING' AND p.status='ACTIVE' AND p.merged_into IS NULL
  AND p.data_kind='SYNTHETIC' AND b.data_kind='SYNTHETIC' AND a.data_kind='SYNTHETIC'
- AND l.is_current AND l.publication_status='PUBLISHED' AND b.visibility=a.visibility AND l.visibility_snapshot=a.visibility
+ AND a.visibility<>'PUBLIC_MAP' AND l.is_current AND l.publication_status='PUBLISHED' AND b.visibility=a.visibility AND l.visibility_snapshot=a.visibility
  AND (a.visibility='HIDDEN' OR (b.locality_consent AND b.general_locality=a.locality))
  AND (l.publisher_kind='COMMUNITY_RECOMMENDATION' OR b.authorization_status='LOCAL_TEST_AUTHORIZED')`;
 const projection=`json_build_object('listing',json_build_object('id',p.id,'listingId',l.id,'kind','BOARDING','title',a.title,
