@@ -1,0 +1,11 @@
+# UNI-030 — canonical boarding/property foundation
+
+17 November 2026, Asia/Colombo; Node 22.23.5, pnpm 10.34.9. Branch `feat/uni-030-boarding-property-foundation`, based on independently CI-verified synchronized dev `3fa3d0cb4bb88aa4c0b9c09f8a13e44c42e95830`. [Schema/contract/privacy design](../../architecture/boarding-privacy.md). Exact §10 UNI-030; future feed/wizard/public pins/prices/vacancy/media processing/auth workflows are excluded.
+
+Additive paired migration 007 separates canonical properties, units, listing revisions and private location/building/media metadata. All existing migrations/extension ownership and POI-only public geometry remain intact. Private schema grants, consent/locality/synthetic authorization checks, capacities, revision uniqueness, media quarantine metadata and strict public response variants are implemented. No persistent development migration, seed/reset, real private data or file processing is performed by this issue. Metadata flags do not prove ownership, encryption, file safety or permission to publish.
+
+Initial local lint/typecheck/API build and isolated PostGIS checks PASS. The real database suite includes two new groups for canonical/FK/identity/capacity/revision/media/consent/ACL/public-exclusion safeguards and populated/concurrent-writer/dependent/pre-existing-object rollback safety. Full remaining acceptance/results will be recorded before commit; no future result is inferred. No new UI means no new human visual approval or screenshots are claimed.
+
+OpenAPI adds response/page components, with no unimplemented boarding paths. Internal unit/private schema models are not public components. Contract tests cover all five visibility/publisher variants, private/nested geometry and metadata rejection, inventory bounds and stale/future vacancy normalization; those are contract guarantees, not a deployed owner service or complete UNI-039 audit.
+
+Git commit/push/exact issue CI/dev integration/dev CI PENDING / NOT OBSERVED. Existing local Turbopack limitation, historical CI failures and Phase 6 manual accessibility carry-over remain. The exact preceding UNI-027 [issue #38](https://github.com/Dulmina03/unihood/actions/runs/44011061756)/[dev #39](https://github.com/Dulmina03/unihood/actions/runs/44011833954) both passed all three jobs and were integrated by fast-forward; no release/deployment occurred.

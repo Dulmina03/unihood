@@ -10,3 +10,4 @@ export * from './poi-matching';
 export * from './duplicate-check';
 export * from './poi-submission';
 export * from './poi-proposal';
+export * from './boarding-model';

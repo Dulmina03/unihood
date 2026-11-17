@@ -21,3 +21,8 @@ All three exact-commit remote jobs remain required, with no path exemption. UNI-
 ## Outstanding work
 
 Human pilot/rights/field/retention/provider-age/privacy review, real-data importer contracts/storage/authorization/attribution, actual importer/restore tests and later production deployment are not satisfied by a written strategy. They remain explicit future gates, not blockers to completing this documentation issue. No final registration/provider identity decision, real POI/boarding import or deployment is implemented here.
+
+
+### Observed Git/CI integration follow-up
+
+Exact commit `3fa3d0cb4bb88aa4c0b9c09f8a13e44c42e95830`, branch `docs/uni-027-provider-import-strategy`: independently observed [issue #38](https://github.com/Dulmina03/unihood/actions/runs/44011061756) SUCCESS, then clean synchronized dev fast-forward integration/push and [dev #39](https://github.com/Dulmina03/unihood/actions/runs/44011833954) SUCCESS. Workspace quality, Isolated PostGIS integration and Component browser acceptance completed successfully for that exact full commit in both runs. [Issue JSON](issue-run-38.json), [dev JSON](dev-run-39.json). Earlier pending statements are historical and resolved; future importer/legal/manual limits remain. No main/history rewrite or deployment.

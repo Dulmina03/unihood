@@ -1,0 +1,33 @@
+{
+  "id": 44011061756,
+  "run_number": 38,
+  "run_attempt": 1,
+  "head_sha": "3fa3d0cb4bb88aa4c0b9c09f8a13e44c42e95830",
+  "head_branch": "docs/uni-027-provider-import-strategy",
+  "status": "completed",
+  "conclusion": "success",
+  "html_url": "https://github.com/Dulmina03/unihood/actions/runs/44011061756",
+  "jobs": [
+    {
+      "id": 133797903679,
+      "name": "Isolated PostGIS integration",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/44011061756/job/133797903679"
+    },
+    {
+      "id": 133797904023,
+      "name": "Workspace quality",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/44011061756/job/133797904023"
+    },
+    {
+      "id": 133797904192,
+      "name": "Component browser acceptance",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Dulmina03/unihood/actions/runs/44011061756/job/133797904192"
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import { testBoardingFoundation } from './lib/test-boarding-foundation.mjs';
 import { testPoiProposalApi } from './lib/test-poi-proposal-api.mjs';
 import { testPoiSubmissions } from './lib/test-poi-submissions.mjs';
 import { testPoiMatching } from './lib/test-poi-matching.mjs';
@@ -113,6 +114,7 @@ try {
   assert.deepEqual(await runMigrations(client, ordered, 'rollback'), ['900_order_probe']);
   console.log('PASS: ordered migration/reverse order; failing batch rolls back DDL/history; checksum drift rejected');
 
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['007_boarding_property_foundation']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['006_poi_proposal_review']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['005_poi_submission_transactions']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['004_public_poi_geography_index']);
@@ -137,7 +139,9 @@ try {
   console.log('PASS: repeatable synthetic seeds; production/remote refusal; local edits preserved on conflict');
 
   await testPublicPois({client,url,get,endpoint});
-  await testPoiProposalApi({client,migrations,url,endpoint});
+  await testBoardingFoundation({client,migrations,url,get});
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['007_boarding_property_foundation']);
+  await testPoiProposalApi({client,migrations:migrations.slice(0,6),url,endpoint});
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['006_poi_proposal_review']);
   await testPoiSubmissions({client,migrations:migrations.slice(0,5),url,endpoint});
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['005_poi_submission_transactions']);

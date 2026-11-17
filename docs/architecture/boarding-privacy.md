@@ -1,0 +1,41 @@
+# Boarding property and privacy foundation — UNI-030
+
+Specification §5.1–5.5, §7.3/7.5 and exact §10 UNI-030. M3/M2/M5; depends on UNI-002/004/005 and integrated Phase 2. Preserves [all five ADRs](../decisions/README.md). This slice provides storage and response contracts, not a feed, owner wizard, map publication, media upload or final identity implementation.
+
+## Identity and relationships
+
+Migration 007 is additive; earlier migrations remain immutable. `boarding_properties.place_id` is the canonical `places.id`, constrained through an additive composite identity key to kind BOARDING and the same data kind. Advertisements have independent UUIDs/revision numbers and reference that property. Units also reference the property, never an advertisement as a new canonical residence. One property can have many historical listing revisions but at most one current PUBLISHED row. No name/coordinate uniqueness equates distinct businesses or separately managed properties.
+
+The existing places constraint forbids BOARDING rows linking directly to a public building, and public_place_locations remains POI-only. A private `boarding_building_links` relation permits multiple independently managed boarding properties in one building without exposing the association or inheriting its public POI geometry. It is never a public DTO field or discovery join. Future eligible owner boarding map projection remains UNI-034.
+
+Units constrain nonnegative integer capacity and nullable 0..capacity bed counts. A null count is unknown; a raw count is not a current owner vacancy assertion. Capacity ceiling 10,000 is a storage guard, not a product inventory claim; room-type/occupancy vocabulary remains bounded text rather than a finalized taxonomy. Official price revisions and confirmation/expiry behavior belong to UNI-035/036; this migration creates no fee or vacancy publication path.
+
+## Separate private storage
+
+A new `unihood_private` schema holds boarding location/ciphertext references, building associations and media metadata. PUBLIC receives no schema/table privileges. The disposable SQL-role test verifies a nonprivileged reader cannot query private location or media tables. This ACL is defense in depth: database owners/superusers can still access it. It does not implement least-privilege production roles, RLS, application owner checks, final authentication or an encryption service.
+
+Private locations accept an optional bounded valid Point(4326) and/or nonempty opaque `address_enc` bytes plus a required retention-policy reference. There is no public serializer, spatial-search index, encryption/decryption implementation, plaintext address writer or default retention duration. Future authorized writers must actually encrypt addresses under a reviewed key/retention design; bytea alone proves no encryption. No real private information is seeded or used in tests. The isolated `(0,0)` points are explicitly fictional.
+
+Visibility defaults HIDDEN, with no locality or map consent. AREA_ONLY requires a nonempty explicitly consented broad label; HIDDEN disallows the optional-city exception until separately implemented/authorized. PUBLIC_MAP metadata requires explicit consent/time and LOCAL_TEST_AUTHORIZED status, which is restricted to SYNTHETIC properties. This status records a development fixture state; it grants no application permission or real owner verification. UNVERIFIED and DISPUTED cannot satisfy it. No production-authorized owner status or proof mechanism is selected; Phase 7 owns that decision and any necessary reviewed migration. A requested/recorded public mode never creates public geometry. The private residence coordinate is not automatically the owner-selected publishable entrance.
+
+Listing visibility_snapshot is historical evidence, not current publication authority. Community rows cannot request PUBLIC_MAP even if the underlying property later permits it. Future feed/visibility/map services must compute safe output from the current property/publisher/authority/consent state rather than replaying old snapshots; revocation/caches are UNI-033/034/039 obligations. Titles/descriptions/labels are private unreviewed storage until future content/projection checks; schema validity does not certify free text safe.
+
+## Quarantined media
+
+Private media assets separate storage identity from listing associations. Metadata includes opaque object key, optional uploader reference, checksum, bounded MIME/size/dimensions, consent, moderation and metadata-processing states. Listing-media references preserve order and referential integrity; they contain no display URL or object key in public contracts.
+
+Defaults are UNKNOWN consent, PENDING moderation and UNPROCESSED metadata. An APPROVED metadata state requires GRANTED consent and STRIPPED metadata state. That is a consistency constraint, not proof a file was inspected or GPS stripped. Only JPEG/PNG/WebP metadata is allowed, up to a 20 MiB storage ceiling and 16,384-pixel dimensions; these are explicit storage bounds, not an implemented upload policy or safe decoder budget. UNI-037 must validate actual signatures/decoded sizes, consent/ownership, malware/content, GPS metadata and signed access, and may enforce lower operational limits. No upload, bucket, file transform, public image URL, real owner media or signed-access claim is implemented now.
+
+## Public contracts and API boundary
+
+[Shared boarding contracts](../../packages/contracts/src/boarding-model.ts) extend the five UNI-005 variants with `kind:BOARDING`, a separate `listingId` and public provenance. `id` remains the canonical property/place UUID. Owner PUBLIC_MAP needs consent/owner trust plus a public entrance; owner AREA_ONLY/HIDDEN and community AREA_ONLY/HIDDEN carry null geometry/routes/distances. Community variants cannot carry owner trust/official prices/confirmed vacancy. Private building IDs, encrypted addresses, raw inventory, media storage keys and arbitrary extra/nested fields are rejected. Provenance does not establish property authority.
+
+`parsePublicBoardingListing` retains the existing clock-based stale/future vacancy normalization. The internal BoardingUnitModel is not registered as a public schema. DTO validation alone is never caller authorization or a raw-entity serializer. Real projection/permission checks remain later scoped services. Existing UNI-005 contracts stay compatible; no previous component/demo payload is silently changed.
+
+[OpenAPI](../api/openapi.json) registers the new response/page components only. It adds no boarding endpoint before UNI-031. Existing public POI APIs reject boarding IDs and never select private tables. No student boarding pin, route/distance, owner claim, live inventory, registration or public write is introduced. Existing actor/property permission boundaries are unchanged.
+
+## Migrations, verification and remaining work
+
+Down locks all owned new tables, refuses any populated table and uses RESTRICT for tables/schema/key dependencies. A waiting rollback sees a concurrent committed writer and refuses rather than deleting rows. Dependent views or pre-existing table/schema collisions leave data/history intact. Empty down/up/repeat is supported; no CASCADE, persistent reset, extension drop or existing-row rewrite. The generic `unihood_private` schema is created exclusively, never adopted: a name collision is an explicit migration failure requiring review, not permission to remove an existing schema.
+
+[Actual UNI-030 results](../verification/UNI-030/README.md) distinguish synthetic storage/contract tests from real owner/media/publication behavior. Price/vacancy services, feed UI/API, ownership/write wizard, visibility/revocation, eligible public map endpoint, media processing and exhaustive cross-surface privacy acceptance remain UNI-031–039 in roadmap order. Phase 7 identity proof stays last. Existing Phase 1 manual accessibility remains deferred to Phase 6, not PASS.
