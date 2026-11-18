@@ -92,5 +92,17 @@ export async function testRiskRules({client,url,migrations}){
   console.log('PASS: UNI-045 versioned explainable risk rules hold routine contributions behind the closed publication gate, require evidence for private/contact content, escalate sensitive reports without overriding suppression, reject official/self-review attempts, keep replays idempotent and preserve populated history on rollback');
  }finally{
   await Promise.all(children.map(async child=>{if(child.exitCode!==null)return;child.kill('SIGTERM');await new Promise(resolve=>{const timer=setTimeout(()=>{child.kill('SIGKILL');resolve();},3000);child.once('exit',()=>{clearTimeout(timer);resolve();});});}));
+  await client.query('DELETE FROM unihood_private.risk_evaluations');
+  await client.query('DELETE FROM unihood_private.report_audit_events');
+  await client.query('DELETE FROM unihood_private.report_suppressions');
+  await client.query('DELETE FROM unihood_private.report_appeals');
+  await client.query('DELETE FROM unihood_private.report_cases');
+  await client.query('DELETE FROM unihood_private.review_intake');
+  await client.query('DELETE FROM unihood_private.boarding_recommendation_intake');
+  await client.query('DELETE FROM public.boarding_advertisement_previews WHERE boarding_id=$1',[a]);
+  await client.query('DELETE FROM public.listings WHERE boarding_id=$1',[a]);
+  await client.query('DELETE FROM public.boarding_properties WHERE place_id=$1',[a]);
+  await client.query('DELETE FROM public.public_place_locations WHERE place_id=$1',[a]);
+  await client.query('DELETE FROM public.places WHERE id=$1',[a]);
  }
 }
