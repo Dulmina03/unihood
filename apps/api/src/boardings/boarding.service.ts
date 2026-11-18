@@ -9,7 +9,8 @@ const eligible=`$1::boolean AND p.kind='BOARDING' AND p.status='ACTIVE' AND p.me
  AND p.data_kind='SYNTHETIC' AND b.data_kind='SYNTHETIC' AND a.data_kind='SYNTHETIC'
  AND a.visibility<>'PUBLIC_MAP' AND l.is_current AND l.publication_status='PUBLISHED' AND b.visibility=a.visibility AND l.visibility_snapshot=a.visibility
  AND (a.visibility='HIDDEN' OR (b.locality_consent AND b.general_locality=a.locality))
- AND (l.publisher_kind='COMMUNITY_RECOMMENDATION' OR b.authorization_status='LOCAL_TEST_AUTHORIZED')`;
+ AND (l.publisher_kind='COMMUNITY_RECOMMENDATION' OR b.authorization_status='LOCAL_TEST_AUTHORIZED')
+ AND NOT l.public_suppressed`;
 const projection=`json_build_object('listing',json_build_object('id',p.id,'listingId',l.id,'kind','BOARDING','title',a.title,
  'publisherKind',l.publisher_kind,'visibility',a.visibility,'locationLabel',a.locality,'entrance',NULL,'distanceMeters',NULL,'route',NULL,
  'price',NULL,'vacancy',json_build_object('status','UNKNOWN','confirmedAt',NULL,'expiresAt',NULL),

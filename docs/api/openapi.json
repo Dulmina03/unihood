@@ -6,48 +6,24 @@
     "description": "Only implemented routes are listed. Shared boarding schemas are contract foundations, not live workflows. Identity/owner verification remains deferred."
   },
   "paths": {
-    "/api/v1/contributions": {
-      "get": {
-        "operationId": "PoiCorrectionController_history__api_v1_contributions",
-        "summary": "Own minimal held contribution status/history only; no private payload, geometry, contact or other actors",
+    "/api/v1/contributions/correction": {
+      "post": {
+        "operationId": "PoiCorrectionController_create__api_v1_contributions_correction",
+        "summary": "Hold a synthetic current-public-POI correction; never edits canonical facts or boardings",
         "x-unihood-authorization": "Contributing actor required; only explicit loopback synthetic simulation until final authentication. No identity headers or production bypass.",
-        "parameters": [
-          {
-            "name": "pageSize",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/ContributionHistoryQuery/properties/pageSize"
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/ContributionHistoryQuery/properties/page"
-            }
-          },
-          {
-            "name": "kind",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/ContributionHistoryQuery/properties/kind"
-            }
-          },
-          {
-            "name": "state",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/ContributionHistoryQuery/properties/state"
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PoiCorrectionInput"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
-            "description": "Paginated own recorded submissions; no fabricated moderation decisions",
+            "description": "Own held correction receipt; unavailable source ID suppressed",
             "headers": {
               "X-Request-Id": {
                 "description": "Server-generated correlation ID; inbound IDs are ignored.",
@@ -60,7 +36,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ContributionHistoryPage"
+                  "$ref": "#/components/schemas/PoiCorrectionReceipt"
                 }
               }
             }
@@ -220,24 +196,48 @@
         }
       }
     },
-    "/api/v1/contributions/correction": {
-      "post": {
-        "operationId": "PoiCorrectionController_create__api_v1_contributions_correction",
-        "summary": "Hold a synthetic current-public-POI correction; never edits canonical facts or boardings",
+    "/api/v1/contributions": {
+      "get": {
+        "operationId": "PoiCorrectionController_history__api_v1_contributions",
+        "summary": "Own minimal held contribution status/history only; no private payload, geometry, contact or other actors",
         "x-unihood-authorization": "Contributing actor required; only explicit loopback synthetic simulation until final authentication. No identity headers or production bypass.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PoiCorrectionInput"
-              }
+        "parameters": [
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ContributionHistoryQuery/properties/pageSize"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ContributionHistoryQuery/properties/page"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ContributionHistoryQuery/properties/kind"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ContributionHistoryQuery/properties/state"
             }
           }
-        },
+        ],
         "responses": {
           "200": {
-            "description": "Own held correction receipt; unavailable source ID suppressed",
+            "description": "Paginated own recorded submissions; no fabricated moderation decisions",
             "headers": {
               "X-Request-Id": {
                 "description": "Server-generated correlation ID; inbound IDs are ignored.",
@@ -250,7 +250,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PoiCorrectionReceipt"
+                  "$ref": "#/components/schemas/ContributionHistoryPage"
                 }
               }
             }
@@ -580,6 +580,786 @@
           },
           "503": {
             "description": "Unavailable; retry unchanged request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reports": {
+      "post": {
+        "operationId": "ReportController_create__api_v1_reports",
+        "summary": "Hold a confidential structured report; only obvious private-data exposure or inappropriate media temporarily suppresses its public target",
+        "x-unihood-authorization": "Issued local/test actor only; production/staging writes fail closed. Reporter identity and confidential evidence are never returned.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Own protected receipt; canonical P0/P1/P2 severity and reversible public effect only",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid, future-dated or mismatched structured report input",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authenticated contributing actor required; deployed mode closed",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized for this report action",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unavailable target, report or ineligible route segment",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Changed idempotency intent or conflicting case state",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Shared bounded simulator budget",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Unavailable evidence encryption or retry unchanged request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reports/{reportId}": {
+      "get": {
+        "operationId": "ReportController_status__api_v1_reports__reportId_",
+        "summary": "Actor-scoped report status for the reporter or affected property manager only; no reporter identity, evidence or operator notes",
+        "x-unihood-authorization": "Issued local/test actor only; production/staging writes fail closed. Reporter identity and confidential evidence are never returned.",
+        "parameters": [
+          {
+            "name": "reportId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PublicId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Redacted status, canonical severity, public effect and appeal outcome only",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportStatusView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid, future-dated or mismatched structured report input",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authenticated contributing actor required; deployed mode closed",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized for this report action",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unavailable target, report or ineligible route segment",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Changed idempotency intent or conflicting case state",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Shared bounded simulator budget",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Unavailable evidence encryption or retry unchanged request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reports/{reportId}/appeal": {
+      "post": {
+        "operationId": "ReportController_appeal__api_v1_reports__reportId__appeal",
+        "summary": "Reporter or affected property manager opens one encrypted private appeal; decisions stay with restricted local/test operators",
+        "x-unihood-authorization": "Issued local/test actor only; production/staging writes fail closed. Reporter identity and confidential evidence are never returned.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportAppealInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "reportId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PublicId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Protected appeal receipt; no reason disclosure or automatic ownership effect",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportAppealReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid, future-dated or mismatched structured report input",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authenticated contributing actor required; deployed mode closed",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized for this report action",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unavailable target, report or ineligible route segment",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Changed idempotency intent or conflicting case state",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Shared bounded simulator budget",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Unavailable evidence encryption or retry unchanged request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reports/{reportId}/operator": {
+      "post": {
+        "operationId": "ReportController_operate__api_v1_reports__reportId__operator",
+        "summary": "Synthetic local/test operator only: restore suppressed public data, dismiss a held case or decide an open appeal",
+        "x-unihood-authorization": "Issued local/test actor only; production/staging writes fail closed. Reporter identity and confidential evidence are never returned.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportOperatorInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "reportId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PublicId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Restricted reversible case transition; never transfers ownership, force-merges or edits official facts",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportOperatorReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid, future-dated or mismatched structured report input",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authenticated contributing actor required; deployed mode closed",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized for this report action",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unavailable target, report or ineligible route segment",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Changed idempotency intent or conflicting case state",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Shared bounded simulator budget",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Unavailable evidence encryption or retry unchanged request",
             "headers": {
               "X-Request-Id": {
                 "description": "Server-generated correlation ID; inbound IDs are ignored.",
@@ -7701,7 +8481,8 @@
           "POI_CORRECTION",
           "POI_PROPOSAL",
           "BOARDING_RECOMMENDATION",
-          "REVIEW"
+          "REVIEW",
+          "REPORT"
         ]
       },
       "ContributionState": {
@@ -7709,7 +8490,12 @@
         "type": "string",
         "enum": [
           "PENDING",
-          "NEEDS_EVIDENCE"
+          "NEEDS_EVIDENCE",
+          "HELD",
+          "SUPPRESSED",
+          "ESCALATED",
+          "RESOLVED",
+          "DISMISSED"
         ]
       },
       "ContributionHistoryQuery": {
@@ -7730,14 +8516,20 @@
               "POI_CORRECTION",
               "POI_PROPOSAL",
               "BOARDING_RECOMMENDATION",
-              "REVIEW"
+              "REVIEW",
+              "REPORT"
             ]
           },
           "state": {
             "type": "string",
             "enum": [
               "PENDING",
-              "NEEDS_EVIDENCE"
+              "NEEDS_EVIDENCE",
+              "HELD",
+              "SUPPRESSED",
+              "ESCALATED",
+              "RESOLVED",
+              "DISMISSED"
             ]
           }
         },
@@ -7758,14 +8550,20 @@
               "POI_CORRECTION",
               "POI_PROPOSAL",
               "BOARDING_RECOMMENDATION",
-              "REVIEW"
+              "REVIEW",
+              "REPORT"
             ]
           },
           "state": {
             "type": "string",
             "enum": [
               "PENDING",
-              "NEEDS_EVIDENCE"
+              "NEEDS_EVIDENCE",
+              "HELD",
+              "SUPPRESSED",
+              "ESCALATED",
+              "RESOLVED",
+              "DISMISSED"
             ]
           },
           "createdAt": {
@@ -7828,6 +8626,45 @@
               }
             ]
           },
+          "reportType": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "DUPLICATE",
+                  "WRONG_FEE",
+                  "WRONG_VACANCY",
+                  "STALE_INFORMATION",
+                  "INAPPROPRIATE_MEDIA",
+                  "PRIVATE_DATA_EXPOSED",
+                  "FAKE_OWNERSHIP",
+                  "HARASSMENT",
+                  "NEGATIVE_REVIEW",
+                  "ROUTE_INFORMATION",
+                  "CLOSURE",
+                  "OTHER"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "severity": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "P0",
+                  "P1",
+                  "P2"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "dataKind": {
             "type": "string",
             "const": "SYNTHETIC"
@@ -7864,14 +8701,20 @@
                     "POI_CORRECTION",
                     "POI_PROPOSAL",
                     "BOARDING_RECOMMENDATION",
-                    "REVIEW"
+                    "REVIEW",
+                    "REPORT"
                   ]
                 },
                 "state": {
                   "type": "string",
                   "enum": [
                     "PENDING",
-                    "NEEDS_EVIDENCE"
+                    "NEEDS_EVIDENCE",
+                    "HELD",
+                    "SUPPRESSED",
+                    "ESCALATED",
+                    "RESOLVED",
+                    "DISMISSED"
                   ]
                 },
                 "createdAt": {
@@ -7928,6 +8771,45 @@
                       "type": "integer",
                       "minimum": 1,
                       "maximum": 5
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "reportType": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "DUPLICATE",
+                        "WRONG_FEE",
+                        "WRONG_VACANCY",
+                        "STALE_INFORMATION",
+                        "INAPPROPRIATE_MEDIA",
+                        "PRIVATE_DATA_EXPOSED",
+                        "FAKE_OWNERSHIP",
+                        "HARASSMENT",
+                        "NEGATIVE_REVIEW",
+                        "ROUTE_INFORMATION",
+                        "CLOSURE",
+                        "OTHER"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "severity": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "P0",
+                        "P1",
+                        "P2"
+                      ]
                     },
                     {
                       "type": "null"
@@ -8718,6 +9600,505 @@
           "outcome",
           "reviewState",
           "published",
+          "dataKind"
+        ],
+        "additionalProperties": false
+      },
+      "ReportInput": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "targetType": {
+            "type": "string",
+            "enum": [
+              "BOARDING",
+              "POI",
+              "MEDIA",
+              "ROUTE_SEGMENT"
+            ]
+          },
+          "targetId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "reportType": {
+            "type": "string",
+            "enum": [
+              "DUPLICATE",
+              "WRONG_FEE",
+              "WRONG_VACANCY",
+              "STALE_INFORMATION",
+              "INAPPROPRIATE_MEDIA",
+              "PRIVATE_DATA_EXPOSED",
+              "FAKE_OWNERSHIP",
+              "HARASSMENT",
+              "NEGATIVE_REVIEW",
+              "ROUTE_INFORMATION",
+              "CLOSURE",
+              "OTHER"
+            ]
+          },
+          "details": {
+            "type": "string",
+            "minLength": 15,
+            "maxLength": 1000,
+            "pattern": "^[^\\u0000-\\u001f\\u007f\\u202a-\\u202e\\u2066-\\u2069]+$"
+          },
+          "observedOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "syntheticAcknowledged": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "key",
+          "targetType",
+          "targetId",
+          "reportType",
+          "details",
+          "syntheticAcknowledged"
+        ],
+        "additionalProperties": false
+      },
+      "ReportReceipt": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reportId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "HELD_REPORT",
+              "SUPPRESSED_HELD_REPORT"
+            ]
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "P0",
+              "P1",
+              "P2"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "HELD",
+              "SUPPRESSED",
+              "ESCALATED",
+              "RESOLVED",
+              "DISMISSED"
+            ]
+          },
+          "published": {
+            "type": "boolean",
+            "const": false
+          },
+          "reporterIdentity": {
+            "type": "string",
+            "const": "PROTECTED"
+          },
+          "appealable": {
+            "type": "boolean"
+          },
+          "dataKind": {
+            "type": "string",
+            "const": "SYNTHETIC"
+          }
+        },
+        "required": [
+          "reportId",
+          "outcome",
+          "severity",
+          "status",
+          "published",
+          "reporterIdentity",
+          "appealable",
+          "dataKind"
+        ],
+        "additionalProperties": false
+      },
+      "ReportAppealInput": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 15,
+            "maxLength": 1000,
+            "pattern": "^[^\\u0000-\\u001f\\u007f\\u202a-\\u202e\\u2066-\\u2069]+$"
+          },
+          "syntheticAcknowledged": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "key",
+          "reason",
+          "syntheticAcknowledged"
+        ],
+        "additionalProperties": false
+      },
+      "ReportAppealReceipt": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "appealId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "reportId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "GRANTED",
+              "DENIED"
+            ]
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "GRANTED",
+                  "DENIED"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "published": {
+            "type": "boolean",
+            "const": false
+          },
+          "dataKind": {
+            "type": "string",
+            "const": "SYNTHETIC"
+          }
+        },
+        "required": [
+          "appealId",
+          "reportId",
+          "status",
+          "outcome",
+          "published",
+          "dataKind"
+        ],
+        "additionalProperties": false
+      },
+      "ReportStatusView": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reportId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "reportType": {
+            "type": "string",
+            "enum": [
+              "DUPLICATE",
+              "WRONG_FEE",
+              "WRONG_VACANCY",
+              "STALE_INFORMATION",
+              "INAPPROPRIATE_MEDIA",
+              "PRIVATE_DATA_EXPOSED",
+              "FAKE_OWNERSHIP",
+              "HARASSMENT",
+              "NEGATIVE_REVIEW",
+              "ROUTE_INFORMATION",
+              "CLOSURE",
+              "OTHER"
+            ]
+          },
+          "targetType": {
+            "type": "string",
+            "enum": [
+              "BOARDING",
+              "POI",
+              "MEDIA",
+              "ROUTE_SEGMENT"
+            ]
+          },
+          "targetId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "P0",
+              "P1",
+              "P2"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "HELD",
+              "SUPPRESSED",
+              "ESCALATED",
+              "RESOLVED",
+              "DISMISSED"
+            ]
+          },
+          "publicEffect": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "LISTING_HIDDEN",
+              "MEDIA_BLOCKED"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          },
+          "appeal": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "appealId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "OPEN",
+                      "GRANTED",
+                      "DENIED"
+                    ]
+                  },
+                  "outcome": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "GRANTED",
+                          "DENIED"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "appealId",
+                  "status",
+                  "outcome"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reporterIdentity": {
+            "type": "string",
+            "const": "PROTECTED"
+          },
+          "dataKind": {
+            "type": "string",
+            "const": "SYNTHETIC"
+          }
+        },
+        "required": [
+          "reportId",
+          "reportType",
+          "targetType",
+          "targetId",
+          "severity",
+          "status",
+          "publicEffect",
+          "createdAt",
+          "appeal",
+          "reporterIdentity",
+          "dataKind"
+        ],
+        "additionalProperties": false
+      },
+      "ReportOperatorInput": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "RESTORE_PUBLIC",
+              "DISMISS_REPORT",
+              "DECIDE_APPEAL"
+            ]
+          },
+          "appealId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "GRANTED",
+              "DENIED"
+            ]
+          },
+          "syntheticAcknowledged": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "key",
+          "action",
+          "syntheticAcknowledged"
+        ],
+        "additionalProperties": false
+      },
+      "ReportOperatorReceipt": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "reportId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "HELD",
+              "SUPPRESSED",
+              "ESCALATED",
+              "RESOLVED",
+              "DISMISSED"
+            ]
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "P0",
+              "P1",
+              "P2"
+            ]
+          },
+          "publicEffect": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "LISTING_HIDDEN",
+              "MEDIA_BLOCKED"
+            ]
+          },
+          "revision": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "appeal": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "appealId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "OPEN",
+                      "GRANTED",
+                      "DENIED"
+                    ]
+                  },
+                  "outcome": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "GRANTED",
+                          "DENIED"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "appealId",
+                  "status",
+                  "outcome"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "dataKind": {
+            "type": "string",
+            "const": "SYNTHETIC"
+          }
+        },
+        "required": [
+          "reportId",
+          "status",
+          "severity",
+          "publicEffect",
+          "revision",
+          "appeal",
           "dataKind"
         ],
         "additionalProperties": false
@@ -17703,6 +19084,72 @@
         "enum": [
           "DAY",
           "NIGHT"
+        ]
+      },
+      "ReportTypeSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "string",
+        "enum": [
+          "DUPLICATE",
+          "WRONG_FEE",
+          "WRONG_VACANCY",
+          "STALE_INFORMATION",
+          "INAPPROPRIATE_MEDIA",
+          "PRIVATE_DATA_EXPOSED",
+          "FAKE_OWNERSHIP",
+          "HARASSMENT",
+          "NEGATIVE_REVIEW",
+          "ROUTE_INFORMATION",
+          "CLOSURE",
+          "OTHER"
+        ]
+      },
+      "ReportSeveritySchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "string",
+        "enum": [
+          "P0",
+          "P1",
+          "P2"
+        ]
+      },
+      "ReportStatusSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "string",
+        "enum": [
+          "HELD",
+          "SUPPRESSED",
+          "ESCALATED",
+          "RESOLVED",
+          "DISMISSED"
+        ]
+      },
+      "ReportTargetTypeSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "string",
+        "enum": [
+          "BOARDING",
+          "POI",
+          "MEDIA",
+          "ROUTE_SEGMENT"
+        ]
+      },
+      "ReportPublicEffectSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "string",
+        "enum": [
+          "NONE",
+          "LISTING_HIDDEN",
+          "MEDIA_BLOCKED"
+        ]
+      },
+      "ReportAppealStatusSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "string",
+        "enum": [
+          "OPEN",
+          "GRANTED",
+          "DENIED"
         ]
       },
       "HealthResponse": {

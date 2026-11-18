@@ -45,6 +45,16 @@ describe('synthetic capability boundary', () => {
       expect(await actors.canPublishExactBoardingLocation(actor, a)).toBe(false);
       expect(await actors.canConfirmVacancy(actor, a)).toBe(false);expect(await actors.canManageMedia(actor,a)).toBe(false);expect(await actors.canManageContact(actor,a)).toBe(false);
       expect(await actors.canSetOfficialPrice(actor, a)).toBe(fixture === 'price-manager-a');
+      expect(await actors.canOperateReports(actor)).toBe(false);
     }
+  });
+  it('restricts report operation to the explicit synthetic operator fixture', async () => {
+    const operator = new SyntheticActors(syntheticConfig({...env, SYNTHETIC_ACTOR: 'operator'}));
+    const actor = await operator.resolveRequestActor(local);
+    expect(actor.actorId).toBe('synthetic:operator');
+    expect(await operator.canOperateReports(actor)).toBe(true);
+    expect(await operator.canSuggestPlace(actor)).toBe(false);
+    expect(await operator.canOperateReports({...actor})).toBe(false);
+    expect(await new SyntheticActors(syntheticConfig({...env, APP_ENV: 'production'})).resolveRequestActor(local)).toMatchObject({authStatus: 'GUEST'});
   });
 });

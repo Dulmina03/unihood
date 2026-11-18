@@ -29,3 +29,4 @@ export * from './boarding-recommendation';
 export * from './boarding-duplicates';
 export * from './poi-correction';
 export * from './review';
+export * from './report';

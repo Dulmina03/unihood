@@ -15,5 +15,6 @@ export interface PermissionService {
   canManageMedia(actor: ActorContext, boardingId: string): Promise<boolean>;
   canManageContact(actor: ActorContext, boardingId: string): Promise<boolean>;
   canConfirmVacancy(actor: ActorContext, boardingId: string): Promise<boolean>;
+  canOperateReports(actor: ActorContext): Promise<boolean>;
 }
 

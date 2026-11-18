@@ -37,11 +37,11 @@ export class SyntheticActors implements IdentityProvider, PermissionService {
   private readonly issued = new WeakMap<ActorContext, Grants>();
   constructor(private readonly config: SyntheticConfig = syntheticConfig(process.env)) {}
   async resolveRequestActor(request: unknown): Promise<ActorContext> {
-    if (!this.config.enabled || !localRequest(request) || !['contributor', 'owner-a', 'price-manager-a'].includes(this.config.fixture ?? '')) return guest();
-    const properties = this.config.fixture === 'contributor' ? [] : [{boardingId: SYNTHETIC_PROPERTY_A, permissions: this.config.fixture === 'owner-a' ? [...ownerPermissions] : ['MANAGE_PROPERTY', 'SET_OFFICIAL_PRICE']}];
-    const actor: ActorContext = {actorId: `synthetic:${this.config.fixture}`, authStatus: 'LOCAL_TEST_ACTOR', memberships: structuredClone(properties)};
+    if (!this.config.enabled || !localRequest(request) || !['contributor', 'owner-a', 'price-manager-a', 'operator'].includes(this.config.fixture ?? '')) return guest();
+    const fixture = this.config.fixture, properties = fixture === 'contributor' || fixture === 'operator' ? [] : [{boardingId: SYNTHETIC_PROPERTY_A, permissions: fixture === 'owner-a' ? [...ownerPermissions] : ['MANAGE_PROPERTY', 'SET_OFFICIAL_PRICE']}];
+    const actor: ActorContext = {actorId: `synthetic:${fixture}`, authStatus: 'LOCAL_TEST_ACTOR', memberships: structuredClone(properties)};
     // Privileges come from this instance's private issuance record, never mutable caller-supplied fields.
-    this.issued.set(actor, {actorId: actor.actorId!, contribute: true, properties});
+    this.issued.set(actor, {actorId: actor.actorId!, contribute: fixture !== 'operator', properties});
     return actor;
   }
   private grants(actor:ActorContext):Grants|undefined {
@@ -58,4 +58,5 @@ export class SyntheticActors implements IdentityProvider, PermissionService {
   async canManageMedia(actor:ActorContext,id:string){return this.permitted(actor,id,'MANAGE_MEDIA');}
   async canManageContact(actor:ActorContext,id:string){return this.permitted(actor,id,'MANAGE_CONTACT');}
   async canConfirmVacancy(actor: ActorContext, id: string) {return this.permitted(actor, id, 'CONFIRM_VACANCY');}
+  async canOperateReports(actor: ActorContext): Promise<boolean> {return this.config.enabled && actor.authStatus === 'LOCAL_TEST_ACTOR' && actor.actorId === 'synthetic:operator' && this.grants(actor)?.contribute === false;}
 }
