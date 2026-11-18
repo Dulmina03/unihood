@@ -124,6 +124,7 @@ try {
   assert.deepEqual(await runMigrations(client, ordered, 'rollback'), ['900_order_probe']);
   console.log('PASS: ordered migration/reverse order; failing batch rolls back DDL/history; checksum drift rejected');
 
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['016_review_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['015_poi_correction_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['014_boarding_recommendation_resolutions']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['013_boarding_recommendation_intake']);
@@ -168,6 +169,7 @@ try {
   await testBoardingInventory({client,migrations,url,get,endpoint});
   await testBoardingMap({client,migrations,url,get,endpoint});
   await testBoardingAdvertisements({client,migrations,url,get});
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['016_review_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['015_poi_correction_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['014_boarding_recommendation_resolutions']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['013_boarding_recommendation_intake']);

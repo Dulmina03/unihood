@@ -241,6 +241,7 @@ export async function testBoardingPrivacy({client,url,migrations}){
   assert.equal((await fetch(base+`/api/v1/owner/boardings/${b}/privacy/media`)).status,403);
 
   // 9. Remove only the empty later leaf before testing populated 012 refusal.
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['016_review_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['015_poi_correction_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['014_boarding_recommendation_resolutions']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['013_boarding_recommendation_intake']);
@@ -267,6 +268,7 @@ export async function testBoardingPrivacy({client,url,migrations}){
  }
 
  // Test migration 012 rollback and re-migrate on empty tables
+ assert.deepEqual(await runMigrations(client,migrations,'rollback'),['016_review_intake']);
  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['015_poi_correction_intake']);
  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['014_boarding_recommendation_resolutions']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['013_boarding_recommendation_intake']);
