@@ -1,3 +1,4 @@
+import { BoardingDuplicateInputSchema, BoardingResolutionInputSchema } from '@unihood/contracts';
 import { OwnerVisibilityPreviewInputSchema } from '@unihood/contracts';
 // Test-only HTTP upstream. Never imported by runtime code or bundled in the app.
 import { createServer } from 'node:http';
@@ -23,6 +24,14 @@ const server = createServer(async (request, response) => {
     try{let body='';for await(const chunk of request){body+=chunk;if(body.length>4000)throw new Error();}const input=JSON.parse(body);
       if(url.pathname.endsWith('/visibility-preview')){const value=OwnerVisibilityPreviewInputSchema.parse(input);const common={id:'00000000-0000-4000-8000-000000000001',title:'Synthetic owner visibility preview',publisherKind:'OWNER_OFFICIAL',ownerVerified:true,price:null,vacancy:{status:'UNKNOWN',confirmedAt:null,expiresAt:null},visibility:value.visibility};const preview=value.visibility==='PUBLIC_MAP'?{...common,publicMapConsent:true,entrance:{lat:0,lng:0},locationLabel:null}:{...common,entrance:null,distanceMeters:null,route:null,locationLabel:value.visibility==='AREA_ONLY'?value.locality:null};response.end(JSON.stringify({outcome:'PREVIEW_ONLY',published:false,provenance:{dataKind:'SYNTHETIC',sourceLabel:'Synthetic browser preview fixture; not real data or authority',verifiedAt:null},preview}));return;}
       response.end(JSON.stringify({outcome:'DRAFT_ONLY',published:false,draft:input}));return;}catch{response.statusCode=400;response.end('{}');return;}
+  }
+  if(['/api/v1/contributions/boarding/duplicates','/api/v1/contributions/boarding/resolve'].includes(url.pathname)){
+    const origin=request.headers.origin;if(['http://127.0.0.1:3180','http://127.0.0.1:3181'].includes(origin)){response.setHeader('Access-Control-Allow-Origin',origin);response.setHeader('Access-Control-Allow-Headers','Content-Type');response.setHeader('Access-Control-Allow-Methods','POST');}
+    if(request.method==='OPTIONS'){response.statusCode=204;response.end();return;}
+    try{let body='';for await(const chunk of request){body+=chunk;if(body.length>4000)throw new Error();}const input=JSON.parse(body);
+      if(url.pathname.endsWith('/duplicates')){BoardingDuplicateInputSchema.parse(input);response.end(JSON.stringify({policyVersion:'boarding-ad-text-v1',candidates:[],hasMore:false,incomplete:false,requiresReview:true}));return;}
+      const parsed=BoardingResolutionInputSchema.parse(input);response.end(JSON.stringify({contributionId:'40000000-0000-4000-8000-000000000040',outcome:'HELD_RECOMMENDATION',reviewState:parsed.resolution.kind==='EXISTING'?'PENDING':'NEEDS_EVIDENCE',publisherKind:'COMMUNITY_RECOMMENDATION',dataKind:'SYNTHETIC',published:false,resolution:parsed.resolution.kind==='EXISTING'?'ATTACHED_FOR_REVIEW':'REVIEW_REQUIRED',canonicalBoardingId:parsed.resolution.kind==='EXISTING'?parsed.resolution.boardingId:null}));return;
+    }catch{response.statusCode=400;response.end('{}');return;}
   }
   if (url.searchParams.get('slug') === 'synthetic-unavailable') {response.statusCode = 503; response.end('{}'); return;}
   if(url.pathname==='/api/v1/places/proposals'){

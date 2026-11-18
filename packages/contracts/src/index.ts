@@ -25,3 +25,5 @@ export * from './boarding-privacy';
 export * from './boarding-details';
 
 export * from './boarding-recommendation';
+
+export * from './boarding-duplicates';

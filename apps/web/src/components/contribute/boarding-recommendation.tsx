@@ -1,7 +1,8 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { BoardingAdvertisementPageSchema, BoardingRecommendationDraftSchema, BoardingRecommendationReceiptSchema, type BoardingRecommendationDraft, type BoardingRecommendationReceipt, type PublicBoardingAdvertisement } from '@unihood/contracts';
+import { BoardingAdvertisementPageSchema, BoardingRecommendationDraftSchema, BoardingDuplicateResultSchema, BoardingResolutionInputSchema, BoardingResolutionReceiptSchema, type BoardingRecommendationDraft, type BoardingDuplicateResult, type BoardingResolutionReceipt, type PublicBoardingAdvertisement } from '@unihood/contracts';
+import { BoardingDuplicateChoices } from './boarding-duplicate-choices';
 import { Badge, Button, Field, Notice, SiteHeader } from '@unihood/ui';
 
 export const contributionNavigation = [{ label: 'Explore Map', href: '/explore' }, { label: 'Advertisements', href: '/advertisements' }, { label: 'Saved favourites', href: '/saved' }, { label: 'Contribute', href: '/contribute' }];
@@ -10,7 +11,8 @@ export function BoardingRecommendation({ endpoint }: { endpoint: string | null }
   const [query, setQuery] = useState(''), [matches, setMatches] = useState<PublicBoardingAdvertisement[] | null>(null), [searchError, setSearchError] = useState('');
   const [title, setTitle] = useState(''), [description, setDescription] = useState(''), [locality, setLocality] = useState('');
   const [selected, setSelected] = useState<string[]>([]), [privacy, setPrivacy] = useState(false), [media, setMedia] = useState(false);
-  const [review, setReview] = useState<BoardingRecommendationDraft | null>(null), [receipt, setReceipt] = useState<BoardingRecommendationReceipt | null>(null);
+  const [review, setReview] = useState<BoardingRecommendationDraft | null>(null), [receipt, setReceipt] = useState<BoardingResolutionReceipt | null>(null);
+  const [duplicates, setDuplicates] = useState<BoardingDuplicateResult | null>(null), [choice, setChoice] = useState(''), [reason, setReason] = useState('');
   const [error, setError] = useState(''), [busy, setBusy] = useState('');
   const search = useRef<AbortController | null>(null), request = useRef<AbortController | null>(null), intent = useRef<{ key: string; body: string } | null>(null);
   const reviewHeading = useRef<HTMLHeadingElement>(null), receiptHeading = useRef<HTMLHeadingElement>(null), errorRegion = useRef<HTMLParagraphElement>(null);
@@ -18,8 +20,21 @@ export function BoardingRecommendation({ endpoint }: { endpoint: string | null }
   useEffect(() => { if (review) reviewHeading.current?.focus(); }, [review]);
   useEffect(() => { if (receipt) receiptHeading.current?.focus(); }, [receipt]);
   useEffect(() => { if (error) errorRegion.current?.focus(); }, [error]);
-  function invalidate() { request.current?.abort(); request.current = null; intent.current = null; setReview(null); setReceipt(null); setError(''); setBusy(''); }
+  function invalidate() { request.current?.abort(); request.current = null; intent.current = null; setReview(null); setReceipt(null); setDuplicates(null); setChoice(''); setReason(''); setError(''); setBusy(''); }
   function clear() { invalidate(); setTitle(''); setDescription(''); setLocality(''); setSelected([]); setPrivacy(false); setMedia(false); }
+  function selectionChanged() { request.current?.abort(); request.current = null; intent.current = null; setReceipt(null); setError(''); setBusy(''); }
+  async function checkMatches(value: BoardingRecommendationDraft) {
+    if (!endpoint) return;
+    request.current?.abort(); const controller = new AbortController(); request.current = controller;
+    intent.current = null; setDuplicates(null); setChoice(''); setReason(''); setReceipt(null); setError(''); setBusy('duplicates');
+    const timer = setTimeout(() => controller.abort(), 5000);
+    try {
+      const response = await fetch(endpoint + '/duplicates', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: value.title, locality: value.locality }), cache: 'no-store', credentials: 'omit', redirect: 'error', signal: controller.signal });
+      if (!response.ok) throw new Error(); const result = BoardingDuplicateResultSchema.parse(await response.json());
+      if (request.current === controller) setDuplicates(result);
+    } catch { if (request.current === controller) setError('We couldn’t check public matches. Retry matching; no suggestion was submitted.'); }
+    finally { clearTimeout(timer); if (request.current === controller) setBusy(''); }
+  }
   async function find(event: FormEvent) {
     event.preventDefault(); search.current?.abort(); setMatches(null); setSearchError('');
     if (!query.trim() || query.length > 80 || /@|https?:|\d{5,}/i.test(query)) { setSearchError('Search public advertisement titles only; omit private contact or address information.'); return; }
@@ -35,20 +50,24 @@ export function BoardingRecommendation({ endpoint }: { endpoint: string | null }
     event.preventDefault(); setError('');
     const result = BoardingRecommendationDraftSchema.safeParse({ title, description, locality: locality || null, facilities: selected, privacyAcknowledged: privacy, mediaGuidanceAcknowledged: media });
     if (!result.success) { setError('Use a Synthetic-prefixed title, a 15–400 character description, permitted facilities and both privacy acknowledgements.'); return; }
-    setReview(result.data); setReceipt(null);
+    setReview(result.data); setReceipt(null); void checkMatches(result.data);
   }
   async function submit() {
-    if (!review || !endpoint || busy) return;
-    request.current?.abort(); const controller = new AbortController(); request.current = controller; setBusy('submit'); setError('');
-    const body = JSON.stringify(review);
+    if (!review || !endpoint || busy || !duplicates) return;
+    const resolution = choice === 'distinct' ? { kind: 'DISTINCT', reason } : { kind: 'EXISTING', boardingId: choice };
+    const body = JSON.stringify({ draft: review, resolution });
     if (!intent.current || intent.current.body !== body) intent.current = { key: crypto.randomUUID(), body };
-    const input = { key: intent.current.key, draft: review }, timer = setTimeout(() => controller.abort(), 8000);
+    const parsed = BoardingResolutionInputSchema.safeParse({ key: intent.current.key, draft: review, resolution });
+    if (!parsed.success) { setError('Choose a current public match or provide a 15–240 character reason to keep this suggestion separate.'); return; }
+    request.current?.abort(); const controller = new AbortController(); request.current = controller; setBusy('submit'); setError('');
+    const timer = setTimeout(() => controller.abort(), 8000);
     try {
-      const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input), cache: 'no-store', credentials: 'omit', redirect: 'error', signal: controller.signal });
-      if (!response.ok) throw new Error(response.status === 401 || response.status === 403 ? 'Authorization is unavailable. Use only the explicit loopback local/test contributor simulator.' : response.status === 409 ? 'This key conflicts with a changed draft. Edit and review a new intent; the earlier intake has not been deleted.' : response.status === 429 ? 'Too many requests. Wait one minute, then retry the unchanged recommendation.' : 'The intake is unavailable. Retry the unchanged recommendation with the same key.');
-      const result = BoardingRecommendationReceiptSchema.parse(await response.json());
+      const response = await fetch(endpoint + '/resolve', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(parsed.data), cache: 'no-store', credentials: 'omit', redirect: 'error', signal: controller.signal });
+      if (!response.ok) throw new Error(response.status === 401 || response.status === 403 ? 'Authorization is unavailable. Use only the explicit loopback local/test contributor simulator.' : response.status === 409 ? 'This selection or intent changed. Check public matches again; no owner facts were changed.' : response.status === 429 ? 'Too many requests. Wait one minute, then retry the unchanged recommendation.' : 'The intake is unavailable. Retry the unchanged recommendation with the same key.');
+      const result = BoardingResolutionReceiptSchema.parse(await response.json());
+      if (result.canonicalBoardingId !== null && result.canonicalBoardingId !== choice) throw new Error();
       if (request.current === controller) setReceipt(result);
-    } catch (failure) { if (request.current === controller) setError(failure instanceof Error && /^(Authorization|This key|Too many|The intake)/.test(failure.message) ? failure.message : 'The intake is unavailable. Retry the unchanged recommendation with the same key.'); }
+    } catch (failure) { if (request.current === controller) setError(failure instanceof Error && /^(Authorization|This selection|Too many|The intake)/.test(failure.message) ? failure.message : 'The intake is unavailable. Retry the unchanged recommendation with the same key.'); }
     finally { clearTimeout(timer); if (request.current === controller) setBusy(''); }
   }
   return <div className="recommendation-page"><a className="skip-link" href="#recommendation-main">Skip to recommendation</a>
@@ -75,9 +94,9 @@ export function BoardingRecommendation({ endpoint }: { endpoint: string | null }
         </form></div>
         <section className="recommendation-review" aria-label="Recommendation preview and outcome"><h2 ref={reviewHeading} tabIndex={-1}>3. Review before sending.</h2>
           {!review ? <p>Your preview appears here after validation. Nothing is saved to browser storage or share links.</p> : <><Badge tone="warning">Community-submitted · not owner-verified</Badge><h3>{review.title}</h3><p>{review.description}</p><p>{review.locality ?? 'No locality shared'}</p><p>Reported facilities: {review.facilities.join(', ') || 'None supplied'} · unverified</p><p>No map pin, official fee, confirmed vacancy or verified contact. This preview is not a published advertisement.</p>
-            {!receipt && <Button onClick={() => void submit()} busy={busy === 'submit'} disabled={Boolean(busy)}>Submit held recommendation</Button>}<Button variant="quiet" onClick={() => { invalidate(); document.getElementById('recommendation-description')?.focus(); }}>Edit draft</Button></>}
+            {!receipt && <><BoardingDuplicateChoices result={duplicates} busy={Boolean(busy)} choice={choice} reason={reason} onChoice={value => { selectionChanged(); setChoice(value); }} onReason={value => { selectionChanged(); setReason(value); }} /><Button variant="secondary" onClick={() => void checkMatches(review)} disabled={Boolean(busy)}>Retry public matches</Button><Button onClick={() => void submit()} busy={busy === 'submit'} disabled={Boolean(busy) || !duplicates || !choice}>Submit held recommendation</Button></>}<Button variant="quiet" onClick={() => { invalidate(); document.getElementById('recommendation-description')?.focus(); }}>Edit draft</Button></>}
           {busy === 'submit' && <p role="status">Submitting a private held recommendation…</p>}{error && <p ref={errorRegion} tabIndex={-1} role="alert">{error}</p>}
-          {receipt && <section className="proposal-receipt" aria-label="Held recommendation receipt"><h2 ref={receiptHeading} tabIndex={-1}>{receipt.reviewState === 'NEEDS_EVIDENCE' ? 'Needs evidence.' : 'Held for review.'}</h2><Badge tone="warning">Synthetic · not published</Badge><p>No boarding listing, map pin, official information or owner permission was created. Matching and publication are unavailable in this demonstration.</p><p>Private intake receipt: <code>{receipt.contributionId}</code></p><p>Editing or clearing the form does not cancel a request already received by the server.</p><Link className="poi-return" href="/advertisements">Return to advertisements</Link></section>}
+          {receipt && <section className="proposal-receipt" aria-label="Held recommendation receipt"><h2 ref={receiptHeading} tabIndex={-1}>{receipt.reviewState === 'NEEDS_EVIDENCE' ? 'Needs evidence.' : 'Held for review.'}</h2><Badge tone="warning">Synthetic · not published</Badge><p>Your suggestion stays held and unverified. No new public listing, map pin, official information or owner permission was created.</p><p>Private intake receipt: <code>{receipt.contributionId}</code></p>{receipt.canonicalBoardingId && <p>Suggested existing boarding: <Link className="poi-return" href={`/boardings/${receipt.canonicalBoardingId}`}>View the current public advertisement</Link>. This link grants no management permission.</p>}<p>Editing or clearing the form does not cancel a request already received by the server.</p><Link className="poi-return" href="/advertisements">Return to advertisements</Link></section>}
         </section>
       </div>}
       <p className="poi-detail-footer">Unsent text stays in memory and clears on reload. No recommendation payload is put in localStorage, sessionStorage or a share URL. Submitted synthetic intake is retained privately; this is not an enrolled-student or ownership verification system.</p>
