@@ -36,3 +36,14 @@ Commit `9f758c66575886a5f65844b6d076dc5292470c42` on `feat/uni-045-risk-rules`, 
 - Component browser acceptance — job 135193351061
 
 Earlier failure iterations on this branch (`7a64f68`, `a252ca3`, `4be0f1a`, `4fe5999`, `140b5d2`, `699f1fe`, `2e21583`) are retained honestly as failed database runs. They fixed rollback ordering, deterministic explanation selection, fixture cleanup, the risk migration name and partial-schema intake safety. A pre-existing brittle `'0100'` UUID-substring assertion in `test-boarding-privacy` was replaced with the exact synthetic phone substring so a real contact leak is still detected without random-UUID flake.
+
+## Integration
+
+UNI-045 is fast-forward integrated into `dev`; no merge commit was created. The first dev CI attempt on the verified issue commit (`e3ebd65`) failed only because a pre-existing UNI-043 test asserted focus synchronously after an effect-driven focus change ([dev run 44419192117](https://github.com/Dulmina03/unihood/actions/runs/44419192117), `Workspace quality`). That test now awaits `toHaveFocus()` and was verified on `fix/uni-043-structured-review-focus-race` ([run 44421744107](https://github.com/Dulmina03/unihood/actions/runs/44421744107), all required jobs SUCCESS) before a fast-forward.
+
+Final synchronized dev tip `18e9de4c387d6f8f8414e9d8f1bf5a47ed7f3b8a` passed [dev run 44422998853](https://github.com/Dulmina03/unihood/actions/runs/44422998853), all required jobs SUCCESS:
+
+- Workspace quality — job 135220529350
+- Component browser acceptance — job 135220529715
+- Isolated PostGIS integration — job 135220529771
+
