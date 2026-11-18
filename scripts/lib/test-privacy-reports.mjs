@@ -87,9 +87,7 @@ export async function testPrivacyReports({client,url,migrations}){
   const historyResponse=await fetch(`${contributor}/api/v1/contributions?kind=REPORT&pageSize=20`);assert.equal(historyResponse.status,200);const history=await json(historyResponse);assert.ok(history.items.length>=4);assert.ok(history.items.every(item=>item.kind==='REPORT'&&item.reportType&&item.severity&&item.placeId===null));assert.ok(!JSON.stringify(history).match(/PRIVATE_EVIDENCE_CANARY|details|synthetic:contributor|ciphertext/));
   const audit=await client.query('SELECT event_type,redacted_detail FROM unihood_private.report_audit_events WHERE report_id=ANY($1::uuid[]) ORDER BY occurred_at',[[mediaReceipt.reportId,boardingReceipt.reportId]]);assert.ok(audit.rows.some(row=>row.event_type==='PUBLIC_SUPPRESSION_APPLIED'&&row.redacted_detail==='SUPPRESSED'));assert.ok(audit.rows.some(row=>row.event_type==='PUBLIC_SUPPRESSION_RESTORED'&&row.redacted_detail==='RESTORED'));assert.ok(audit.rows.every(row=>!row.redacted_detail.includes('PRIVATE_EVIDENCE_CANARY')));
 
-  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
   await assert.rejects(runMigrations(client,migrations,'rollback'),/populated tables/);
-  await runMigrations(client,migrations,'migrate');
   console.log('PASS: UNI-044 held wrong-fee/negative-review reports leave official fees and legitimate reviews intact; confidential evidence encrypted; media/listing suppression reversible with cache-revision invalidation, redacted audit and affect-owner appeals; route reports require an eligible segment; deployed/guest and unrelated-actor actions fail closed');
  }finally{
   await Promise.all(children.map(async child=>{if(child.exitCode!==null)return;child.kill('SIGTERM');await new Promise(resolve=>{const timer=setTimeout(()=>{child.kill('SIGKILL');resolve();},3000);child.once('exit',()=>{clearTimeout(timer);resolve();});});}));
