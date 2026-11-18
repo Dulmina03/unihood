@@ -6,6 +6,220 @@
     "description": "Only implemented routes are listed. Shared boarding schemas are contract foundations, not live workflows. Identity/owner verification remains deferred."
   },
   "paths": {
+    "/api/v1/contributions": {
+      "get": {
+        "operationId": "PoiCorrectionController_history__api_v1_contributions",
+        "summary": "Own minimal held contribution status/history only; no private payload, geometry, contact or other actors",
+        "x-unihood-authorization": "Contributing actor required; only explicit loopback synthetic simulation until final authentication. No identity headers or production bypass.",
+        "parameters": [
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ContributionHistoryQuery/properties/pageSize"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ContributionHistoryQuery/properties/page"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ContributionHistoryQuery/properties/kind"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ContributionHistoryQuery/properties/state"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated own recorded submissions; no fabricated moderation decisions",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContributionHistoryPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or future-dated synthetic input",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Contributing actor required; deployed mode closed",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not authorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Current public synthetic POI unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Changed idempotency intent or category unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Shared bounded simulator budget",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Unavailable; retry unchanged request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/contributions/correction": {
       "post": {
         "operationId": "PoiCorrectionController_create__api_v1_contributions_correction",
@@ -196,48 +410,24 @@
         }
       }
     },
-    "/api/v1/contributions": {
-      "get": {
-        "operationId": "PoiCorrectionController_history__api_v1_contributions",
-        "summary": "Own minimal held contribution status/history only; no private payload, geometry, contact or other actors",
+    "/api/v1/contributions/review": {
+      "post": {
+        "operationId": "ReviewController_create__api_v1_contributions_review",
+        "summary": "Hold a synthetic structured review; property-manager self-review conflicts are rejected server-side",
         "x-unihood-authorization": "Contributing actor required; only explicit loopback synthetic simulation until final authentication. No identity headers or production bypass.",
-        "parameters": [
-          {
-            "name": "pageSize",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/ContributionHistoryQuery/properties/pageSize"
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/ContributionHistoryQuery/properties/page"
-            }
-          },
-          {
-            "name": "kind",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/ContributionHistoryQuery/properties/kind"
-            }
-          },
-          {
-            "name": "state",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/ContributionHistoryQuery/properties/state"
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewInput"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
-            "description": "Paginated own recorded submissions; no fabricated moderation decisions",
+            "description": "Own held review receipt; never published or public-trust influencing",
             "headers": {
               "X-Request-Id": {
                 "description": "Server-generated correlation ID; inbound IDs are ignored.",
@@ -250,13 +440,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ContributionHistoryPage"
+                  "$ref": "#/components/schemas/ReviewReceipt"
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid or future-dated synthetic input",
+            "description": "Invalid or sensitive synthetic review input",
             "headers": {
               "X-Request-Id": {
                 "description": "Server-generated correlation ID; inbound IDs are ignored.",
@@ -294,7 +484,7 @@
             }
           },
           "403": {
-            "description": "Not authorized",
+            "description": "Property managers cannot review their own properties; not authorized",
             "headers": {
               "X-Request-Id": {
                 "description": "Server-generated correlation ID; inbound IDs are ignored.",
@@ -313,7 +503,7 @@
             }
           },
           "404": {
-            "description": "Current public synthetic POI unavailable",
+            "description": "Current public synthetic target unavailable",
             "headers": {
               "X-Request-Id": {
                 "description": "Server-generated correlation ID; inbound IDs are ignored.",
@@ -332,7 +522,7 @@
             }
           },
           "409": {
-            "description": "Changed idempotency intent or category unavailable",
+            "description": "Changed idempotency intent",
             "headers": {
               "X-Request-Id": {
                 "description": "Server-generated correlation ID; inbound IDs are ignored.",
@@ -7510,7 +7700,8 @@
         "enum": [
           "POI_CORRECTION",
           "POI_PROPOSAL",
-          "BOARDING_RECOMMENDATION"
+          "BOARDING_RECOMMENDATION",
+          "REVIEW"
         ]
       },
       "ContributionState": {
@@ -7538,7 +7729,8 @@
             "enum": [
               "POI_CORRECTION",
               "POI_PROPOSAL",
-              "BOARDING_RECOMMENDATION"
+              "BOARDING_RECOMMENDATION",
+              "REVIEW"
             ]
           },
           "state": {
@@ -7565,7 +7757,8 @@
             "enum": [
               "POI_CORRECTION",
               "POI_PROPOSAL",
-              "BOARDING_RECOMMENDATION"
+              "BOARDING_RECOMMENDATION",
+              "REVIEW"
             ]
           },
           "state": {
@@ -7609,6 +7802,32 @@
               }
             ]
           },
+          "reviewKind": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "GENERAL_OBSERVATION",
+                  "VERIFIED_STAY"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rating": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "dataKind": {
             "type": "string",
             "const": "SYNTHETIC"
@@ -7620,7 +7839,6 @@
           "state",
           "createdAt",
           "placeId",
-          "correctionKind",
           "dataKind"
         ],
         "additionalProperties": false
@@ -7645,7 +7863,8 @@
                   "enum": [
                     "POI_CORRECTION",
                     "POI_PROPOSAL",
-                    "BOARDING_RECOMMENDATION"
+                    "BOARDING_RECOMMENDATION",
+                    "REVIEW"
                   ]
                 },
                 "state": {
@@ -7689,6 +7908,32 @@
                     }
                   ]
                 },
+                "reviewKind": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "GENERAL_OBSERVATION",
+                        "VERIFIED_STAY"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "rating": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 5
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
                 "dataKind": {
                   "type": "string",
                   "const": "SYNTHETIC"
@@ -7700,7 +7945,6 @@
                 "state",
                 "createdAt",
                 "placeId",
-                "correctionKind",
                 "dataKind"
               ],
               "additionalProperties": false
@@ -8361,6 +8605,120 @@
           "publisherKind",
           "dataKind",
           "published"
+        ],
+        "additionalProperties": false
+      },
+      "ReviewInput": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "targetType": {
+            "type": "string",
+            "enum": [
+              "BOARDING",
+              "POI"
+            ]
+          },
+          "targetId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "reviewKind": {
+            "type": "string",
+            "enum": [
+              "GENERAL_OBSERVATION",
+              "VERIFIED_STAY"
+            ]
+          },
+          "rating": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "observation": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "pattern": "^[^\\u0000-\\u001f\\u007f\\u202a-\\u202e\\u2066-\\u2069]+$"
+          },
+          "sourceConfidence": {
+            "type": "string",
+            "enum": [
+              "COMMUNITY_SUBMITTED",
+              "SOURCE_CHECKED"
+            ]
+          },
+          "sourceLabel": {
+            "type": "string",
+            "enum": [
+              "SYNTHETIC",
+              "HELD_UNVERIFIED"
+            ]
+          },
+          "syntheticAcknowledged": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "key",
+          "targetType",
+          "targetId",
+          "reviewKind",
+          "sourceConfidence",
+          "sourceLabel",
+          "syntheticAcknowledged"
+        ],
+        "additionalProperties": false
+      },
+      "ReviewReceipt": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "contributionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "outcome": {
+            "type": "string",
+            "const": "HELD_REVIEW"
+          },
+          "reviewState": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "NEEDS_EVIDENCE"
+            ]
+          },
+          "published": {
+            "type": "boolean",
+            "const": false
+          },
+          "dataKind": {
+            "type": "string",
+            "const": "SYNTHETIC"
+          }
+        },
+        "required": [
+          "contributionId",
+          "outcome",
+          "reviewState",
+          "published",
+          "dataKind"
         ],
         "additionalProperties": false
       },

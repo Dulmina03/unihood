@@ -31,12 +31,13 @@ export class PoiCorrectionService{
   const actorId=await this.access.authorize(actor),input=ContributionHistoryQuerySchema.parse(value),page=Number(input.page??1),pageSize=Number(input.pageSize??20);
   // Only the requesting actor's minimal receipts. No payload, pending text,
   // residential geometry/contact, private match evidence or other actor ID.
-  const rows=await this.repository.query(`SELECT h.id,h.kind,h.state,to_char(h.created_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS "createdAt",h.place_id AS "placeId",h.correction_kind AS "correctionKind",'SYNTHETIC' AS "dataKind" FROM (
+  const rows=await this.repository.query(`SELECT h.id,h.kind,h.state,to_char(h.created_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS "createdAt",h.place_id AS "placeId",h.correction_kind AS "correctionKind",h.review_kind AS "reviewKind",h.rating,'SYNTHETIC' AS "dataKind" FROM (
    SELECT c.id,'POI_CORRECTION' AS kind,c.review_state AS state,c.created_at,
-    CASE WHEN EXISTS(SELECT 1 ${eligible.replaceAll('$1','c.place_id')}) THEN c.place_id ELSE NULL END AS place_id,c.correction_kind
+    CASE WHEN EXISTS(SELECT 1 ${eligible.replaceAll('$1','c.place_id')}) THEN c.place_id ELSE NULL END AS place_id,c.correction_kind,NULL::text AS review_kind,NULL::smallint AS rating
     FROM unihood_private.poi_correction_intake c WHERE c.actor_ref=$1
-   UNION ALL SELECT id,'POI_PROPOSAL',review_state,created_at,NULL::uuid,NULL::text FROM public.poi_pending_proposals WHERE actor_ref=$1 AND data_kind='SYNTHETIC'
-   UNION ALL SELECT i.id,'BOARDING_RECOMMENDATION',COALESCE(r.review_state,i.review_state),i.created_at,NULL::uuid,NULL::text FROM unihood_private.boarding_recommendation_intake i LEFT JOIN unihood_private.boarding_recommendation_resolutions r ON r.contribution_id=i.id WHERE i.actor_ref=$1
+   UNION ALL SELECT id,'POI_PROPOSAL',review_state,created_at,NULL::uuid,NULL::text,NULL::text,NULL::smallint FROM public.poi_pending_proposals WHERE actor_ref=$1 AND data_kind='SYNTHETIC'
+   UNION ALL SELECT i.id,'BOARDING_RECOMMENDATION',COALESCE(r.review_state,i.review_state),i.created_at,NULL::uuid,NULL::text,NULL::text,NULL::smallint FROM unihood_private.boarding_recommendation_intake i LEFT JOIN unihood_private.boarding_recommendation_resolutions r ON r.contribution_id=i.id WHERE i.actor_ref=$1
+   UNION ALL SELECT r.id,'REVIEW',r.review_state,r.created_at,r.target_id,NULL::text,r.review_kind,r.rating FROM unihood_private.review_intake r WHERE r.actor_ref=$1
   ) h WHERE ($2::text IS NULL OR h.kind=$2) AND ($3::text IS NULL OR h.state=$3) ORDER BY h.created_at DESC,h.kind,h.id LIMIT $4 OFFSET $5`,[actorId,input.kind??null,input.state??null,pageSize+1,(page-1)*pageSize]);
   return ContributionHistoryPageSchema.parse({items:rows.slice(0,pageSize),page:{page,pageSize,hasNextPage:rows.length>pageSize}});
  }
