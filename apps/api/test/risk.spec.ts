@@ -25,17 +25,17 @@ describe('UNI-045 server-derived risk signals',()=>{
  });
  it('persists only rule ids and fixed explanations inside the caller transaction',async()=>{
   const calls:{sql:string;args:unknown[]}[]=[];
-  const value=await recordRisk(async(sql,args)=>{calls.push({sql,args});return[];},'POI_PROPOSAL','40000000-0000-4000-8000-000000000001',signals);
+  const value=await recordRisk(async(sql,args)=>{calls.push({sql,args});return sql.includes('to_regclass')?[{name:'unihood_private.risk_evaluations'}]:[];},'POI_PROPOSAL','40000000-0000-4000-8000-000000000001',signals);
   expect(value.ruleVersion).toBe(RISK_RULE_VERSION);expect(value.decision).toBe('HOLD');
-  expect(calls).toHaveLength(1);expect(calls[0].sql).toContain('INSERT INTO unihood_private.risk_evaluations');
-  expect(calls[0].args[1]).toBe('POI_PROPOSAL');expect(calls[0].args[3]).toBe('risk-rules-v1');expect(calls[0].args[4]).toBe('HOLD');
-  expect(JSON.stringify(calls[0].args)).not.toMatch(/synthetic fictional context|555-0100|address/i);
+  const insert=calls.find(call=>call.sql.includes('INSERT INTO unihood_private.risk_evaluations'))!;expect(insert).toBeDefined();
+  expect(insert.args[1]).toBe('POI_PROPOSAL');expect(insert.args[3]).toBe('risk-rules-v1');expect(insert.args[4]).toBe('HOLD');
+  expect(JSON.stringify(insert.args)).not.toMatch(/synthetic fictional context|555-0100|address/i);
  });
  it('fails closed when the evaluation cannot be recorded',async()=>{
   await expect(recordRisk(async()=>{throw new Error('database unavailable');},'REVIEW','40000000-0000-4000-8000-000000000001',signals)).rejects.toThrow('database unavailable');
  });
- it('tolerates only the absent-schema code used by ordered partial migrations',async()=>{
-  const value=await recordRisk(async()=>{throw Object.assign(new Error('relation does not exist'),{code:'42P01'});},'POI_PROPOSAL','40000000-0000-4000-8000-000000000001',signals);
-  expect(value.decision).toBe('HOLD');
+ it('skips persistence without aborting intake when the ordered schema lacks the table',async()=>{
+  const calls:string[]=[];const value=await recordRisk(async sql=>{calls.push(sql);return[];},'POI_PROPOSAL','40000000-0000-4000-8000-000000000001',signals);
+  expect(value.decision).toBe('HOLD');expect(calls.filter(sql=>sql.includes('INSERT'))).toEqual([]);
  });
 });
