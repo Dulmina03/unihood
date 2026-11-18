@@ -30,6 +30,10 @@ Commit `0b3f684be4ac5f0011e5c8218d1f5cb9f4206291` on `feat/uni-044-privacy-repor
 
 Earlier failure iterations on this branch (`a1c5165`, `585e514`, `8bd0f3a`, `1495268`, `66fe47c`, `1b18e63`) are retained in history as failed database runs; the final design adds no public listing column and rolls the migration back without breaking running public queries. A transient UUID-containment flake in `test-boarding-privacy` was rerun, not suppressed.
 
+## Integration (actual)
+
+Fast-forward merged into `dev` and pushed as `c4edef588b431a6e44d626928e1a061504a8b28b`; [dev run 44385793415](https://github.com/Dulmina03/unihood/actions/runs/44385793415) independently passed all three required jobs for the same SHA: Workspace quality (job 135089877403), Component browser acceptance (job 135089877857), Isolated PostGIS integration (job 135089877909). No merge commit was created.
+
 ## Not run locally
 
 - **Isolated Docker/PostGIS `pnpm db:test` and real browser E2E database coverage: NOT RUN.** This machine has no Docker daemon and no `.env` credentials. The database assertions above were written and included in the repository gate but are unverified locally; remote CI is required before integration. No local database PASS is claimed.
