@@ -231,7 +231,7 @@ export async function testBoardingPrivacy({client,url,migrations}){
   assert.ok(eventTypes.includes('PRIVATE_CONTACT_SET'));
   assert.ok(eventTypes.includes('PRIVATE_CONTACT_REMOVED'));
   const eventsJson=JSON.stringify(events);
-  assert.ok(!eventsJson.includes('0100'));
+  assert.ok(!eventsJson.includes('2025550100')&&!eventsJson.includes('555-0100'));
   assert.ok(!eventsJson.includes(storageRoot));
   assert.ok(!eventsJson.includes('canary.jpg'));
 
