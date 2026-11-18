@@ -51,13 +51,14 @@ export async function testBoardingDuplicates({client,url,migrations,get}){
   await client.query('DROP TRIGGER synthetic_resolution_failure ON unihood_private.boarding_recommendation_resolutions; DROP FUNCTION public.synthetic_resolution_failure()');
 
   assert.equal((await get('/api/v1/boardings/map')).status,200);
-  await assert.rejects(runMigrations(client,migrations,'rollback'),/populated tables/);
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['015_poi_correction_intake']);await assert.rejects(runMigrations(client,migrations,'rollback'),/populated tables/);await runMigrations(client,migrations,'migrate');
   console.log('PASS: UNI-041 real curated nonspatial Unicode/typo candidates, hidden-locality exclusion, same-building distinct identities, canonical held associations, cross-actor/replay/race isolation, private pending grouping and current-eligibility suppression without owner authority or public mutation');
  }finally{
   await Promise.all(children.map(async child=>{if(child.exitCode!==null)return;child.kill('SIGTERM');await new Promise(resolve=>{const timer=setTimeout(()=>{child.kill('SIGKILL');resolve();},3000);child.once('exit',()=>{clearTimeout(timer);resolve();});});}));
   await client.query('DELETE FROM unihood_private.boarding_recommendation_resolutions');await client.query('DELETE FROM unihood_private.boarding_recommendation_intake');
   await client.query('DELETE FROM public.boarding_advertisement_previews WHERE boarding_id=ANY($1::uuid[])',[[a,b]]);await client.query('DELETE FROM public.listings WHERE boarding_id=ANY($1::uuid[])',[[a,b]]);await client.query('DELETE FROM unihood_private.boarding_locations WHERE boarding_id=ANY($1::uuid[])',[[a,b]]);await client.query('DELETE FROM unihood_private.boarding_building_links WHERE boarding_id=ANY($1::uuid[])',[[a,b]]);await client.query('DELETE FROM public.boarding_properties WHERE place_id=ANY($1::uuid[])',[[a,b]]);await client.query('DELETE FROM public.places WHERE id=ANY($1::uuid[])',[[a,b]]);await client.query('DELETE FROM public.buildings WHERE id=$1',[building]);
  }
+ assert.deepEqual(await runMigrations(client,migrations,'rollback'),['015_poi_correction_intake']);
  await client.query('CREATE VIEW public.synthetic_resolution_dependency AS SELECT contribution_id FROM unihood_private.boarding_recommendation_resolutions');await assert.rejects(runMigrations(client,migrations,'rollback'),error=>error.code==='2BP01');await client.query('DROP VIEW public.synthetic_resolution_dependency');assert.deepEqual(await runMigrations(client,migrations,'rollback'),['014_boarding_recommendation_resolutions']);await runMigrations(client,migrations,'migrate');assert.deepEqual(await runMigrations(client,migrations,'migrate'),[]);
  console.log('PASS: UNI-041 populated/dependency rollback guards, empty resolution down/up/repeat and canonical/private data and extension ownership preserved');
 }

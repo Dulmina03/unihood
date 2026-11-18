@@ -1,3 +1,4 @@
+import {PoiCorrectionInputSchema,ContributionHistoryQuerySchema} from '@unihood/contracts';
 import { BoardingDuplicateInputSchema, BoardingResolutionInputSchema } from '@unihood/contracts';
 import { OwnerVisibilityPreviewInputSchema } from '@unihood/contracts';
 // Test-only HTTP upstream. Never imported by runtime code or bundled in the app.
@@ -17,6 +18,14 @@ const proposalReceipts=new Map(); // Bounded synthetic test storage; not app run
 const server = createServer(async (request, response) => {
   const url = new URL(request.url, 'http://127.0.0.1');
   response.setHeader('Content-Type', 'application/json'); response.setHeader('Cache-Control', 'no-store');
+  // UNI-042 synthetic component resources only; not identity/database evidence.
+  if(['/api/v1/contributions','/api/v1/contributions/correction'].includes(url.pathname)){
+    const origin=request.headers.origin;if(['http://127.0.0.1:3180','http://127.0.0.1:3181'].includes(origin)){response.setHeader('Access-Control-Allow-Origin',origin);response.setHeader('Access-Control-Allow-Headers','Content-Type');response.setHeader('Access-Control-Allow-Methods','GET, POST');}
+    if(request.method==='OPTIONS'){response.statusCode=204;response.end();return;}
+    try{if(request.method==='GET'&&url.pathname==='/api/v1/contributions'){const query=ContributionHistoryQuerySchema.parse(Object.fromEntries(url.searchParams));response.end(JSON.stringify({items:[],page:{page:Number(query.page??1),pageSize:Number(query.pageSize??20),hasNextPage:false}}));return;}
+      let body='';for await(const chunk of request){body+=chunk;if(body.length>6000)throw new Error();}const input=PoiCorrectionInputSchema.parse(JSON.parse(body));response.end(JSON.stringify({contributionId:'40000000-0000-4000-8000-000000000042',placeId:input.placeId,outcome:'HELD_CORRECTION',reviewState:['MOVED','CLOSURE'].includes(input.change.kind)?'NEEDS_EVIDENCE':'PENDING',published:false,dataKind:'SYNTHETIC'}));return;
+    }catch{response.statusCode=400;response.end('{}');return;}
+  }
   // Explicit synthetic owner-check mock: no authorization/database evidence.
   if(/^\/api\/v1\/owner\/boardings\/00000000-0000-4000-8000-000000000001\/(?:draft-check|visibility-preview)$/.test(url.pathname)){
     const origin=request.headers.origin;if(['http://127.0.0.1:3180','http://127.0.0.1:3181'].includes(origin)){response.setHeader('Access-Control-Allow-Origin',origin);response.setHeader('Access-Control-Allow-Headers','Content-Type');response.setHeader('Access-Control-Allow-Methods','POST');}

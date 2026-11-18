@@ -1,3 +1,4 @@
+import {testPoiCorrections} from './lib/test-poi-corrections.mjs';
 import {testBoardingDuplicates} from './lib/test-boarding-duplicates.mjs';
 import {testBoardingRecommendations} from './lib/test-boarding-recommendations.mjs';
 import {testBoardingPrivacyMatrix} from './lib/test-boarding-privacy-matrix.mjs';
@@ -123,6 +124,7 @@ try {
   assert.deepEqual(await runMigrations(client, ordered, 'rollback'), ['900_order_probe']);
   console.log('PASS: ordered migration/reverse order; failing batch rolls back DDL/history; checksum drift rejected');
 
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['015_poi_correction_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['014_boarding_recommendation_resolutions']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['013_boarding_recommendation_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['012_boarding_media_contacts']);
@@ -156,6 +158,7 @@ try {
   console.log('PASS: repeatable synthetic seeds; production/remote refusal; local edits preserved on conflict');
 
   await testPublicPois({client,url,get,endpoint});
+  await testPoiCorrections({client,url,migrations,get});
   await testBoardingDuplicates({client,url,migrations,get,endpoint});
   await testBoardingRecommendations({client,url,migrations,get,endpoint});
   await testBoardingPrivacyMatrix({client,url,get,endpoint});
@@ -165,6 +168,7 @@ try {
   await testBoardingInventory({client,migrations,url,get,endpoint});
   await testBoardingMap({client,migrations,url,get,endpoint});
   await testBoardingAdvertisements({client,migrations,url,get});
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['015_poi_correction_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['014_boarding_recommendation_resolutions']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['013_boarding_recommendation_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['012_boarding_media_contacts']);

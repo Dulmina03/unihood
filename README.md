@@ -204,3 +204,5 @@ UNI-036 adds guarded synthetic [per-unit availability confirmation and expiry](d
 UNI-040 adds the [contribution hub and synthetic-only boarding recommendation demo](docs/api/boarding-recommendations.md) at `/contribute` and `/contribute/boarding`. Recommendations remain private and held; they never create a public pin, official fee/vacancy or owner authority. Use only the documented loopback contributor simulator and fictional inputs. [Verification](docs/verification/UNI-040/README.md).
 
 UNI-041 extends the synthetic boarding recommendation flow with privacy-safe public-text matches, explicit existing/distinct choices and held canonical associations. No location inference, public publication or owner authority is added. [API/demo](docs/api/boarding-recommendations.md) · [verification and limits](docs/verification/UNI-041/README.md).
+
+UNI-042: suggest a held correction from a synthetic public POI detail; inspect your own held status at `/contributions`. Public facts and boarding authority remain unchanged. [API/local demonstration](docs/api/poi-corrections.md) · [actual verification](docs/verification/UNI-042/README.md).

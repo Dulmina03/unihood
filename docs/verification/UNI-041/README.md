@@ -1,6 +1,6 @@
 # UNI-041 — privacy-safe boarding advertisement duplicate candidates
 
-18 November 2026 (Asia/Colombo). Implemented on `feat/uni-041-private-boarding-ad-duplicates`, clean verified dev base `c679b7d43339d545654c06d5a7205699fe96657c`. Active worktree `/tmp/unihood-dev-integration`; the original project working tree and its 99 earlier artifact changes remain preserved on UNI-039. Commit/push/exact issue CI/fast-forward integration/dev CI are not yet completed.
+18 November 2026 (Asia/Colombo). Implemented on `feat/uni-041-private-boarding-ad-duplicates`, clean verified dev base `c679b7d43339d545654c06d5a7205699fe96657c`. Active worktree `/tmp/unihood-dev-integration`; the original project working tree and its 99 earlier artifact changes remain preserved on UNI-039. Exact `e2cac75cc08ea7f8e4aea9cd216c817434a05a56` committed/pushed; [issue #73](https://github.com/Dulmina03/unihood/actions/runs/44240560557) and [dev #74](https://github.com/Dulmina03/unihood/actions/runs/44241820225) independently completed SUCCESS, all three required jobs in each: Workspace quality, Isolated PostGIS integration, Component browser acceptance. Fast-forward integrated and pushed into dev; exact workflow/branch/commit/job metadata retained in issue-run-73.json/dev-run-74.json. UNI-042 starts only after verified dev CI.
 
 ## Scope and specification boundaries
 

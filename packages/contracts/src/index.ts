@@ -27,3 +27,4 @@ export * from './boarding-details';
 export * from './boarding-recommendation';
 
 export * from './boarding-duplicates';
+export * from './poi-correction';
