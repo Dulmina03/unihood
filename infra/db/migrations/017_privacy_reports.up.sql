@@ -1,7 +1,6 @@
 -- UNI-044 confidential report cases, reversible takedown suppression and appeals.
 -- Evidence text is AES-GCM encrypted by the API; no plaintext evidence is stored.
 -- Public listing suppression is a non-identifying flag; confidential evidence stays private.
-ALTER TABLE public.listings ADD COLUMN public_suppressed boolean NOT NULL DEFAULT false;
 CREATE TABLE unihood_private.report_cases (
  id uuid PRIMARY KEY,
  reporter_ref text NOT NULL CHECK(reporter_ref IN ('synthetic:contributor','synthetic:owner-a','synthetic:price-manager-a')),
@@ -54,6 +53,9 @@ CREATE TABLE unihood_private.report_suppressions (
  target_type text NOT NULL CHECK(target_type IN ('BOARDING','MEDIA')),
  target_ref uuid NOT NULL,
  effect text NOT NULL CHECK(effect IN ('LISTING_HIDDEN','MEDIA_BLOCKED')),
+ listing_ref uuid,
+ prior_publication_status text,
+ prior_is_current boolean,
  state text NOT NULL DEFAULT 'ACTIVE' CHECK(state IN ('ACTIVE','RESTORED')),
  revision integer NOT NULL DEFAULT 1 CHECK(revision>0),
  created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP CHECK(isfinite(created_at)),

@@ -23,6 +23,7 @@ function setup(options:{visible?:boolean;suggest?:boolean;manage?:boolean;operat
   if(sql.includes('FROM public.places p JOIN public.public_place_locations'))return options.visible===false?[]:[{id:target}];
   if(sql.includes('FROM public.route_segments'))return options.route?[{id:target}]:[];
   if(sql.includes('FROM unihood_private.media_assets'))return options.visible===false?[]:[{id:target,boarding_id:target}];
+  if(sql.includes('FROM public.listings WHERE boarding_id=$1 AND is_current'))return options.visible===false?[]:[{id:target,publication_status:'PUBLISHED',is_current:true}];
   return[];
  };
  const repo={includeSynthetic:true,query,transaction:async(work:(q:Query)=>Promise<unknown>)=>work(query)} as unknown as UniversityRepository;
@@ -45,6 +46,7 @@ describe('UNI-044 confidential report service',()=>{
    const {service,calls}=setup();const receipt=await service.create(contributor,{...input,reportType:type,targetType});
    expect(receipt.status).toBe('SUPPRESSED');expect(receipt.outcome).toBe('SUPPRESSED_HELD_REPORT');expect(receipt.severity).toBe(severity);
    expect(calls.some(c=>c.sql.includes('INSERT INTO unihood_private.report_suppressions')&&String(c.args[4])===effect)).toBe(true);
+   if(effect==='LISTING_HIDDEN')expect(calls.some(c=>c.sql.includes("SET publication_status='DISPUTED',is_current=false")&&c.args[0]===target)).toBe(true);
    expect(calls.some(c=>c.sql.includes('public_projection_revisions SET revision=revision+1'))).toBe(true);
   }
   for(const type of ['WRONG_FEE','FAKE_OWNERSHIP','NEGATIVE_REVIEW','HARASSMENT']){const {service,calls}=setup();const receipt=await service.create(contributor,{...input,reportType:type});expect(receipt.status).not.toBe('SUPPRESSED');expect(calls.some(c=>c.sql.includes('report_suppressions'))).toBe(false);}

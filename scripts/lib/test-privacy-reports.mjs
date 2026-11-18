@@ -68,8 +68,10 @@ export async function testPrivacyReports({client,url,migrations}){
   assert.equal((await fetch(`${owner}/api/v1/boardings/${a}`)).status,200);
   const boardingExposure={key:randomUUID(),targetType:'BOARDING',targetId:a,reportType:'PRIVATE_DATA_EXPOSED',details:'Synthetic fictional private-data exposure in the public advertisement.',syntheticAcknowledged:true};
   const boardingReceipt=await json(await post(contributor,'/api/v1/reports',boardingExposure));assert.equal(boardingReceipt.status,'SUPPRESSED');
+  assert.deepEqual((await client.query("SELECT l.publication_status,l.is_current,s.prior_publication_status,s.prior_is_current FROM public.listings l JOIN unihood_private.report_suppressions s ON s.listing_ref=l.id WHERE s.report_id=$1",[boardingReceipt.reportId])).rows[0],{publication_status:'DISPUTED',is_current:false,prior_publication_status:'PUBLISHED',prior_is_current:true});
   assert.equal((await fetch(`${owner}/api/v1/boardings/${a}`)).status,404);
   const dismissed=await post(operator,`/api/v1/reports/${boardingReceipt.reportId}/operator`,{key:randomUUID(),action:'DISMISS_REPORT',syntheticAcknowledged:true});assert.equal(dismissed.status,200);assert.equal((await json(dismissed)).status,'DISMISSED');assert.equal((await fetch(`${owner}/api/v1/boardings/${a}`)).status,200);
+  assert.deepEqual((await client.query('SELECT publication_status,is_current FROM public.listings WHERE boarding_id=$1 AND is_current',[a])).rows[0],{publication_status:'PUBLISHED',is_current:true});
 
   const poiReport={key:randomUUID(),targetType:'POI',targetId:poi,reportType:'WRONG_VACANCY',details:'Synthetic fictional POI detail mismatch context only.',syntheticAcknowledged:true};
   const poiReceipt=await json(await post(contributor,'/api/v1/reports',poiReport));assert.equal(poiReceipt.status,'HELD');

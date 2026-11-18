@@ -12,4 +12,3 @@ DROP TABLE unihood_private.report_suppressions RESTRICT;
 DROP TABLE unihood_private.report_appeals RESTRICT;
 DROP TABLE unihood_private.report_cases RESTRICT;
 DROP TABLE unihood_private.public_projection_revisions RESTRICT;
-ALTER TABLE public.listings DROP COLUMN public_suppressed;

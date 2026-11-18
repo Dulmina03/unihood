@@ -8,9 +8,9 @@ Evidence uses `REPORT_ENCRYPTION_KEY_HEX`, a 32-byte hex key, a random 12-byte n
 
 ## Suppression and invalidation
 
-Only obvious `PRIVATE_DATA_EXPOSED` on a current synthetic boarding or quarantined media and `INAPPROPRIATE_MEDIA` on media create a `report_suppressions` row. Boarding suppression sets the non-identifying `public.listings.public_suppressed` flag consumed by the public boarding query; media suppression is enforced by the private owner-media list/content queries. Suppression is reversible and audited. Every apply/restore increments `unihood_private.public_projection_revisions('reports')`; this monotonic revision is the invalidation contract for public report-derived projections. This repository has no persistent public cache/derivative service, so the counter plus no-store reads is the implemented boundary.
+Only obvious `PRIVATE_DATA_EXPOSED` on a current synthetic boarding or quarantined media and `INAPPROPRIATE_MEDIA` on media create a `report_suppressions` row. Boarding suppression snapshots the current listing's publication status/current flag into the private suppression row, then marks that listing `DISPUTED` and non-current so existing public eligibility rules hide it; restoration writes the exact prior values back. No public column is added, so rolling the migration back cannot break running public queries. Media suppression is enforced by the private owner-media list/content queries. Suppression is reversible and audited. Every apply/restore increments `unihood_private.public_projection_revisions('reports')`; this monotonic revision is the invalidation contract for public report-derived projections. This repository has no persistent public cache/derivative service, so the counter plus no-store reads is the implemented boundary.
 
-No suppression changes official prices, vacancy, ownership, contact, publication status or legitimate reviews. Restoration is a state transition, not a destructive delete.
+No suppression changes official prices, vacancy, ownership, contact details or legitimate reviews; the only listing mutation is the reversible publication-status hold recorded with its prior values. Restoration is a state transition, not a destructive delete.
 
 ## Appeals and operators
 
