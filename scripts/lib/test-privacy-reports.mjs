@@ -89,6 +89,8 @@ export async function testPrivacyReports({client,url,migrations}){
   const historyResponse=await fetch(`${contributor}/api/v1/contributions?kind=REPORT&pageSize=20`);assert.equal(historyResponse.status,200);const history=await json(historyResponse);assert.ok(history.items.length>=4);assert.ok(history.items.every(item=>item.kind==='REPORT'&&item.reportType&&item.severity&&item.placeId===null));assert.ok(!JSON.stringify(history).match(/PRIVATE_EVIDENCE_CANARY|details|synthetic:contributor|ciphertext/));
   const audit=await client.query('SELECT event_type,redacted_detail FROM unihood_private.report_audit_events WHERE report_id=ANY($1::uuid[]) ORDER BY occurred_at',[[mediaReceipt.reportId,boardingReceipt.reportId]]);assert.ok(audit.rows.some(row=>row.event_type==='PUBLIC_SUPPRESSION_APPLIED'&&row.redacted_detail==='SUPPRESSED'));assert.ok(audit.rows.some(row=>row.event_type==='PUBLIC_SUPPRESSION_RESTORED'&&row.redacted_detail==='RESTORED'));assert.ok(audit.rows.every(row=>!row.redacted_detail.includes('PRIVATE_EVIDENCE_CANARY')));
 
+  await client.query('DELETE FROM unihood_private.risk_evaluations');
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
   await assert.rejects(runMigrations(client,migrations,'rollback'),/populated tables/);
   console.log('PASS: UNI-044 held wrong-fee/negative-review reports leave official fees and legitimate reviews intact; confidential evidence encrypted; media/listing suppression reversible with cache-revision invalidation, redacted audit and affect-owner appeals; route reports require an eligible segment; deployed/guest and unrelated-actor actions fail closed');
  }finally{
@@ -111,9 +113,7 @@ export async function testPrivacyReports({client,url,migrations}){
   await client.query('DELETE FROM public.public_place_locations WHERE place_id=$1',[poi]);
   await client.query('DELETE FROM public.places WHERE id=ANY($1::uuid[])',[[a,poi]]);
  }
- await client.query('DELETE FROM unihood_private.risk_evaluations');
- assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
-assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
+ assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
  await runMigrations(client,migrations,'migrate');
  assert.deepEqual(await runMigrations(client,migrations,'migrate'),[]);
  console.log('PASS: UNI-044 populated rollback refusal, empty rollback and idempotent re-migration');
