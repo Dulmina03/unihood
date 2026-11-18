@@ -34,4 +34,8 @@ describe('UNI-045 server-derived risk signals',()=>{
  it('fails closed when the evaluation cannot be recorded',async()=>{
   await expect(recordRisk(async()=>{throw new Error('database unavailable');},'REVIEW','40000000-0000-4000-8000-000000000001',signals)).rejects.toThrow('database unavailable');
  });
+ it('tolerates only the absent-schema code used by ordered partial migrations',async()=>{
+  const value=await recordRisk(async()=>{throw Object.assign(new Error('relation does not exist'),{code:'42P01'});},'POI_PROPOSAL','40000000-0000-4000-8000-000000000001',signals);
+  expect(value.decision).toBe('HOLD');
+ });
 });
