@@ -20,6 +20,16 @@ Appeals are available to the reporter or affected property manager without revea
 - `pnpm test:ui`: PASS — 124/124 Playwright cases across mobile and desktop, including 4 new UNI-044 cases. Six new screenshots and six zero-violation axe reports are in this directory.
 - New coverage: report/appeal/operator contracts; service authorization, idempotency and suppression effect matrix; HTTP deployment fail-closed, spoofed-header, validation and operator separation; component form, retry, receipt, status, appeal and endpoint exposure; real API database group `scripts/lib/test-privacy-reports.mjs` covering E2E-11 (fee unchanged), E2E-15 (negative review intact), E2E-16 (encrypted private evidence, media takedown/restoration, revision bump), reporter/evidence non-leak, unrelated-actor denial, route availability, redacted audit and populated-rollback refusal.
 
+## Remote CI (actual)
+
+Commit `0b3f684be4ac5f0011e5c8218d1f5cb9f4206291` on `feat/uni-044-privacy-reporting`, workflow run [44380335839](https://github.com/Dulmina03/unihood/actions/runs/44380335839), all required jobs SUCCESS:
+
+- Workspace quality — https://github.com/Dulmina03/unihood/actions/runs/44380335839/job/135070498888
+- Isolated PostGIS integration — https://github.com/Dulmina03/unihood/actions/runs/44380335839/job/135070499503 (includes `PASS: UNI-044 held wrong-fee/negative-review reports ...` and `PASS: UNI-044 populated rollback refusal, empty rollback and idempotent re-migration`)
+- Component browser acceptance — https://github.com/Dulmina03/unihood/actions/runs/44380335839/job/135070499664
+
+Earlier failure iterations on this branch (`a1c5165`, `585e514`, `8bd0f3a`, `1495268`, `66fe47c`, `1b18e63`) are retained in history as failed database runs; the final design adds no public listing column and rolls the migration back without breaking running public queries. A transient UUID-containment flake in `test-boarding-privacy` was rerun, not suppressed.
+
 ## Not run locally
 
 - **Isolated Docker/PostGIS `pnpm db:test` and real browser E2E database coverage: NOT RUN.** This machine has no Docker daemon and no `.env` credentials. The database assertions above were written and included in the repository gate but are unverified locally; remote CI is required before integration. No local database PASS is claimed.
