@@ -54,7 +54,7 @@ CREATE TABLE unihood_private.report_suppressions (
  target_type text NOT NULL CHECK(target_type IN ('BOARDING','MEDIA')),
  target_ref uuid NOT NULL,
  effect text NOT NULL CHECK(effect IN ('LISTING_HIDDEN','MEDIA_BLOCKED')),
- state text NOT NULL CHECK(state IN ('ACTIVE','RESTORED')),
+ state text NOT NULL DEFAULT 'ACTIVE' CHECK(state IN ('ACTIVE','RESTORED')),
  revision integer NOT NULL DEFAULT 1 CHECK(revision>0),
  created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP CHECK(isfinite(created_at)),
  restored_at timestamptz CHECK(restored_at IS NULL OR (isfinite(restored_at) AND restored_at>=created_at)),
