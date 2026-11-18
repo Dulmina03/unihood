@@ -175,6 +175,7 @@ export async function testUniversities({client, url, get, endpoint, migrations})
   cli('db:seed'); cli('db:seed');
   await client.query('DELETE FROM public.public_place_locations; DELETE FROM public.places; DELETE FROM public.poi_categories');
   assert.match(cli('db:rollback'), /017_privacy_reports/);
+  assert.match(cli('db:rollback'), /016_review_intake/);
   assert.match(cli('db:rollback'), /015_poi_correction_intake/);
   assert.match(cli('db:rollback'), /014_boarding_recommendation_resolutions/);
   assert.match(cli('db:rollback'), /013_boarding_recommendation_intake/);
