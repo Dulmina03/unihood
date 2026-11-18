@@ -6,6 +6,177 @@
     "description": "Only implemented routes are listed. Shared boarding schemas are contract foundations, not live workflows. Identity/owner verification remains deferred."
   },
   "paths": {
+    "/api/v1/contributions/boarding": {
+      "post": {
+        "operationId": "BoardingRecommendationController_create__api_v1_contributions_boarding",
+        "summary": "Local/test synthetic boarding recommendation intake; held only, no pin or official facts",
+        "x-unihood-authorization": "Contributing actor required; only explicit loopback synthetic simulation until final authentication. No identity headers or production bypass.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BoardingRecommendationInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Private own-intake receipt, never publication or canonical creation",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardingRecommendationReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unsupported fields or invalid synthetic draft",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Contributor required; production/staging remain denied",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Synthetic contribution not authorized",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Same idempotency key with changed draft",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Shared local contribution budget or concurrency limit",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Intake unavailable; retry unchanged key and draft",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/owner/boardings/{boardingId}/privacy/overview": {
       "get": {
         "operationId": "BoardingPrivacyController_overview__api_v1_owner_boardings__boardingId__privacy_overview",
@@ -6252,6 +6423,204 @@
   },
   "components": {
     "schemas": {
+      "BoardingRecommendationDraft": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 120,
+            "format": "starts_with",
+            "allOf": [
+              {
+                "pattern": "^[^\\u0000-\\u001f\\u007f\\u202a-\\u202e\\u2066-\\u2069]+$"
+              },
+              {
+                "pattern": "^Synthetic .*"
+              }
+            ]
+          },
+          "description": {
+            "type": "string",
+            "minLength": 15,
+            "maxLength": 400,
+            "pattern": "^[^\\u0000-\\u001f\\u007f\\u202a-\\u202e\\u2066-\\u2069]+$"
+          },
+          "locality": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Synthetic North Quarter",
+                  "Synthetic Garden District"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "facilities": {
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Study space",
+                "Shared kitchen",
+                "Laundry area",
+                "Wi-Fi"
+              ]
+            }
+          },
+          "privacyAcknowledged": {
+            "type": "boolean",
+            "const": true
+          },
+          "mediaGuidanceAcknowledged": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "locality",
+          "facilities",
+          "privacyAcknowledged",
+          "mediaGuidanceAcknowledged"
+        ],
+        "additionalProperties": false
+      },
+      "BoardingRecommendationInput": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "draft": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 10,
+                "maxLength": 120,
+                "format": "starts_with",
+                "allOf": [
+                  {
+                    "pattern": "^[^\\u0000-\\u001f\\u007f\\u202a-\\u202e\\u2066-\\u2069]+$"
+                  },
+                  {
+                    "pattern": "^Synthetic .*"
+                  }
+                ]
+              },
+              "description": {
+                "type": "string",
+                "minLength": 15,
+                "maxLength": 400,
+                "pattern": "^[^\\u0000-\\u001f\\u007f\\u202a-\\u202e\\u2066-\\u2069]+$"
+              },
+              "locality": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "Synthetic North Quarter",
+                      "Synthetic Garden District"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "facilities": {
+                "maxItems": 4,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "Study space",
+                    "Shared kitchen",
+                    "Laundry area",
+                    "Wi-Fi"
+                  ]
+                }
+              },
+              "privacyAcknowledged": {
+                "type": "boolean",
+                "const": true
+              },
+              "mediaGuidanceAcknowledged": {
+                "type": "boolean",
+                "const": true
+              }
+            },
+            "required": [
+              "title",
+              "description",
+              "locality",
+              "facilities",
+              "privacyAcknowledged",
+              "mediaGuidanceAcknowledged"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "key",
+          "draft"
+        ],
+        "additionalProperties": false
+      },
+      "BoardingRecommendationReceipt": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "contributionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "outcome": {
+            "type": "string",
+            "const": "HELD_RECOMMENDATION"
+          },
+          "reviewState": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "NEEDS_EVIDENCE"
+            ]
+          },
+          "publisherKind": {
+            "type": "string",
+            "const": "COMMUNITY_RECOMMENDATION"
+          },
+          "dataKind": {
+            "type": "string",
+            "const": "SYNTHETIC"
+          },
+          "published": {
+            "type": "boolean",
+            "const": false
+          }
+        },
+        "required": [
+          "contributionId",
+          "outcome",
+          "reviewState",
+          "publisherKind",
+          "dataKind",
+          "published"
+        ],
+        "additionalProperties": false
+      },
       "OwnerContactReceipt": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",

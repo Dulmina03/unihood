@@ -240,9 +240,11 @@ export async function testBoardingPrivacy({client,url,migrations}){
   assert.equal((await fetch(base+`/api/v1/owner/boardings/${b}/privacy/contact`)).status,403);
   assert.equal((await fetch(base+`/api/v1/owner/boardings/${b}/privacy/media`)).status,403);
 
-  // 9. Populated rollback refusal
+  // 9. Remove only the empty later leaf before testing populated 012 refusal.
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['013_boarding_recommendation_intake']);
   await assert.rejects(runMigrations(client,migrations,'rollback'),/populated tables/);
 
+  await runMigrations(client,migrations,'migrate');
   console.log('PASS: real private media upload, EXIF/XMP stripping, WebP storage, staging recovery, contact AES-GCM encryption, corrupted tag recovery, audit event logging and property capability boundaries');
  }finally{
   if(child&&child.exitCode===null){
@@ -263,7 +265,8 @@ export async function testBoardingPrivacy({client,url,migrations}){
  }
 
  // Test migration 012 rollback and re-migrate on empty tables
- assert.deepEqual(await runMigrations(client,migrations,'rollback'),['012_boarding_media_contacts']);
+ assert.deepEqual(await runMigrations(client,migrations,'rollback'),['013_boarding_recommendation_intake']);
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['012_boarding_media_contacts']);
  await runMigrations(client,migrations,'migrate');
  assert.deepEqual(await runMigrations(client,migrations,'migrate'),[]);
  console.log('PASS: 012_boarding_media_contacts rollback and re-migrate clean and idempotent');

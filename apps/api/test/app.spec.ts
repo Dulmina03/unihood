@@ -26,7 +26,7 @@ describe('bootstrap HTTP boundary', () => {
     ready = true;
     await request(app.getHttpServer()).get(path).expect(200).expect({ status: 'ready', service: 'unihood-api', checks: { database: 'ready' } });
   });
-  it.each(['/api/v1/boardings', '/api/v1/contributions/boarding', '/api/v1/property-claims'])('does not expose a write route: %s', async (path) => {
-    await request(app.getHttpServer()).post(path).set('X-Role', 'owner').send({}).expect(404);
+  it.each(['/api/v1/boardings', '/api/v1/contributions/boarding', '/api/v1/property-claims'])('keeps unavailable or protected writes closed: %s', async (path) => {
+    await request(app.getHttpServer()).post(path).set('X-Role', 'owner').send({}).expect(path === '/api/v1/contributions/boarding' ? 401 : 404);
   });
 });

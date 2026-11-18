@@ -1,0 +1,15 @@
+# Boarding recommendation intake — UNI-040
+
+`POST /api/v1/contributions/boarding` is the specification §7.4 route, protected through the existing issued contributor capability. Only explicit loopback local/test actors and synthetic data are accepted. Staging/production/unknown environments, guests, forged identity headers and cross-site/forwarded requests are denied. This capability grants no property manager permission.
+
+The shared strict input has `key` (UUID) and `draft`: a Synthetic-prefixed title, bounded description, nullable closed synthetic broad locality, unique allowlisted facilities, `privacyAcknowledged: true` and `mediaGuidanceAcknowledged: true`. Unknown fields are rejected, including coordinates/pins, official prices, confirmed vacancy, owner flags, contacts, media URLs, actor IDs and publication state.
+
+Success 200/no-store returns only contribution ID, HELD_RECOMMENDATION outcome, PENDING/NEEDS_EVIDENCE review state, COMMUNITY_RECOMMENDATION publisher, SYNTHETIC provenance and `published: false`. It is a private receipt, not a public listing/share URL. Same actor/key/canonicalized draft replays; a changed draft returns 409. Facility order does not change intent. A different actor cannot retrieve another actor's intake through the same key. Requests share the existing bounded local contribution budget and a three-active-request transport cap.
+
+Migration 013 stores private held intake with no geometry, official fact or canonical publication columns. All drafts are held, regardless of text signals. Contact/address/link signals request evidence; their absence never proves content safe. No canonical boarding/listing, owner membership or public media is created. No routine admin UI, enrollment proof, final authentication or real publication is implied. UNI-041 implements privacy-safe duplicate association and UNI-045 later risk/publication rules.
+
+`/contribute` and `/contribute/boarding` reuse the design system. The latter uses public `/boardings` title search only; it is not duplicate clearance or a private lookup. No media upload is offered: community permissions do not authorize owner private quarantine. Drafts remain in memory, clear on reload and are excluded from browser storage/share URLs. A request already received by the server is not cancelled by clearing local inputs.
+
+Local demonstration: use the existing synthetic `.env.example` setup, run migrations with the normal safe runner, then explicitly configure the loopback API as `APP_ENV=local`, `ENABLE_SYNTHETIC_ACTORS=true`, `SYNTHETIC_ACTOR=contributor`, `API_HOST=127.0.0.1`, with the development Node environment. Start `pnpm dev`; open `/contribute`, choose Recommend Boarding, use the fictional example, acknowledge privacy/media guidance, review and submit. This actor cannot edit official fees/vacancies/map consent. Do not enable protected write simulation on a public server or enter real private information. Final account/owner proof remains Phase 7.
+
+See [actual verification and limitations](../verification/UNI-040/README.md) and [Phase 4 progress](../progress/PHASE-04.md). No remote result is implied by this document.

@@ -1,0 +1,31 @@
+# UNI-040 — contribution hub and Recommend Boarding
+
+18 November 2026 (Asia/Colombo). In progress on `feat/uni-040-community-boarding-ads`, clean verified base `466d4e0fc893ea3070145802fd7e2acb515a5adb`. Active worktree `/tmp/unihood-dev-integration`; original repository working tree remains preserved on UNI-039.
+
+## Scope
+
+UI-15 `/contribute` separates public POI suggestions from residential boarding recommendations. UI-16 `/contribute/boarding` offers public title search, fictional title/description, optional closed broad locality, unverified reported facilities, explicit privacy/media guidance, review, idempotent held submission and minimal private receipt. Unsent drafts stay in memory; no localStorage/sessionStorage/share payload. No exact pin, owner claim, official price, confirmed vacancy, private contact or media upload is accepted. Existing owner private media permissions are not reused for contributors.
+
+Specified endpoint `POST /api/v1/contributions/boarding` uses the existing issued local/test contributor capability, strict shared Zod contracts and accurate OpenAPI metadata. Production/staging/unknown environment and forged identity/origin/forwarding fail closed. Paired migration 013 stores only private synthetic intake with actor-scoped idempotency. All submissions are held; privacy/contact/link signals can require evidence but never certify safe text. No public listing, canonical property, owner permission or official fact is created. UNI-041 supplies privacy-safe duplicate attachment; UNI-045 supplies later publication risk rules. The existing public title search is not duplicate clearance. Registration remains Phase 7.
+
+## Verification state
+
+Local checks observed so far:
+
+- Frozen lockfile install, repository policy, checksum-verified actionlint, lint and typecheck: PASS. Offline install in the new worktree lacked cached tarballs; frozen online installation succeeded without dependency changes.
+- Final complete `pnpm test`: 501/501 PASS (13 root, 102 contracts, 191 API, 195 web).
+- API production build and actual OpenAPI export: PASS; saved document matched the live HTTP baseline. Supported Webpack production build: PASS. Historical local Turbopack limitations are retained; no fresh default-Turbopack success is claimed.
+- Four new targeted component browser cases: PASS (18.5 seconds), mobile/desktop consent, retry-key stability, focus, storage exclusion, private source labels, 320/768px reflow and zero axe violations.
+- `TEST_LANDING_WEB=1 pnpm db:test`: 46 printed result groups PASS, including new real concurrent intake/replay/actor isolation, strict no-official-field writes, private ACL, populated/dependency rollback and empty down/up/repeat; all earlier privacy, media, vacancy, POI, seed and extension-ownership checks retained.
+- `pnpm test:e2e`: 18/18 PASS (2.0 minutes), existing real guest journeys preserved plus mobile/desktop form submission and replay through the existing owned contributor simulator and actual PostGIS, without intake interception. Guest APIs remain actor-disabled; map resources remain synthetic mocks. Cleanup confirmed owned services stopped and no persistent DB targeted.
+- Full `pnpm test:ui`: 106/106 PASS (6.4 minutes). Two additional long-name/source-label cases were then added without runtime changes; all six scoped mobile/desktop cases passed (23.2 seconds). Thus 108 distinct browser cases were covered across the full and scoped runs; this is not a claim of one local 108-case full-suite run. Exact-commit hosted CI will run the configured full 108 cases.
+- 16 selected PNGs and eight zero-violation axe reports retained, covering hub, review, receipt and long unverified names at 390×844/1440×900; 320/768/1440 reflow tested. Agent inspected desktop hub and desktop/mobile review composition. New UI is a task-focused editorial form using existing Campus Teal tokens/components; no boarding photography or map is introduced. Mobile flow is intentionally stacked and requires vertical scrolling. No human visual/AT/physical-device approval is inferred.
+- No UNI-040 commit/push, remote CI or integration has occurred yet.
+
+Actual first attempts: initial lint/typecheck and API/Webpack builds passed. Initial API regression found two obsolete assertions expecting 404 for the previously absent contribution endpoint; the implemented guarded endpoint correctly returns 401. They are being updated to assert denial while retaining all other absent-route and authorization checks. The first isolated database attempt found the root rollback probe still expected migration 012 as newest; the paired 013 leaf is being explicitly added ahead of every legacy rollback assertion. No applied SQL, rollback safety guard, timeout or failing check is removed.
+
+## Evidence and limitations
+
+Browser screenshot/axe evidence and final counts pending. Synthetic browser mocks and actual API/PostGIS evidence must be reported separately. No human visual approval, real student/enrollment status, property authority, media scanning or publication is implied. Detailed Phase 1 manual accessibility stays DEFERRED to Phase 6, not PASS; historical CI failures and local Turbopack limitations remain recorded.
+
+Browser first attempt: four new cases failed. The hub kicker had measured teal-on-mint contrast 4.26:1, corrected using the existing navy token. Error tests also matched Next.js’s global route announcer; assertions are now scoped to the main content alert. Axe rules/timeouts remain intact. The retained media-populated rollback probe needed the empty 013 leaf removed before testing 012 refusal, then re-migrated before subsequent checks. The non-web isolated database suite passed after preserving these assertions. Final browser/full integration checks remain pending.

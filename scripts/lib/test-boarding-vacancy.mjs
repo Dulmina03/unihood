@@ -46,6 +46,7 @@ export async function testBoardingVacancy({client,url,migrations,get,endpoint}){
   await assert.rejects(client.query(sql,[a,other,1]),e=>e.code==='23503');await assert.rejects(client.query(sql,[a,unitId,null]),e=>e.code==='23514');await assert.rejects(client.query(sql,[a,unitId,7]),e=>e.code==='23514');
   await client.query("UPDATE public.boarding_properties SET authorization_status='UNVERIFIED' WHERE place_id=$1",[a]);assert.equal((await get(`/api/v1/boardings/${a}/units`)).status,404);await client.query("UPDATE public.boarding_properties SET authorization_status='LOCAL_TEST_AUTHORIZED' WHERE place_id=$1",[a]);
   console.log('PASS: real confirmation concurrency/replay/target isolation, composite FK/count constraints, insert+version atomic rollback, retained 21-revision paginated history and authority suppression; no public actor evidence');
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['013_boarding_recommendation_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['012_boarding_media_contacts']);
   await assert.rejects(runMigrations(client,migrations,'rollback'),/populated tables/);assert.equal((await client.query('SELECT count(*)::int AS n FROM public.boarding_vacancy_confirmations WHERE unit_id=$1',[unitId])).rows[0].n,21);
   console.log('PASS: populated confirmation rollback refuses without erasing history or unit versions');

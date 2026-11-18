@@ -200,3 +200,5 @@ UNI-034 connects [owner-consented synthetic public boarding entrances](docs/api/
 UNI-035 adds guarded synthetic [room inventory and official LKR fee history](docs/api/boarding-inventory.md), with public current room facts and no vacancy or location inference. [Actual verification](docs/verification/UNI-035/README.md).
 
 UNI-036 adds guarded synthetic [per-unit availability confirmation and expiry](docs/api/boarding-vacancy.md), with server timestamps, retained history and automatic UNKNOWN for stale facts. [Actual verification](docs/verification/UNI-036/README.md).
+
+UNI-040 adds the [contribution hub and synthetic-only boarding recommendation demo](docs/api/boarding-recommendations.md) at `/contribute` and `/contribute/boarding`. Recommendations remain private and held; they never create a public pin, official fee/vacancy or owner authority. Use only the documented loopback contributor simulator and fictional inputs. [Verification](docs/verification/UNI-040/README.md).

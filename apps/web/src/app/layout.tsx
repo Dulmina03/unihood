@@ -1,3 +1,4 @@
+import './contributions.css';
 import type { Metadata } from 'next';
 import '@fontsource/fraunces/latin-500.css';
 import '@fontsource/fraunces/latin-400-italic.css';

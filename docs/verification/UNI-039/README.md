@@ -50,3 +50,7 @@ Earlier attempts retained: default-sandbox root tests failed because their loopb
 All fixtures are explicitly synthetic; browser upstream and MapLibre resources are mocked. Real API/PostGIS evidence is separate from browser-fixture evidence. No live provider uptime, real campus accuracy, production authorization or ownership proof is established. Existing historical CI failures #7/#8/#9 and historical local Turbopack limitations remain in prior records; the supported local production build uses Webpack. Automated screenshots/axe are not human visual or assistive-technology approval. Detailed Phase 1 manual accessibility remains DEFERRED to Phase 6, not PASS. New manual screen-reader/physical-device checks were not run by this issue.
 
 Next exact roadmap issue after successful integration and verified dev CI: **UNI-040 — Contribution hub and Recommend Boarding student flow (no exact pin field anywhere)**. It has not started.
+
+## Evidence follow-up integration
+
+Documentation-only `466d4e0fc893ea3070145802fd7e2acb515a5adb` independently passed [issue #69](https://github.com/Dulmina03/unihood/actions/runs/44205325746) and [dev #70](https://github.com/Dulmina03/unihood/actions/runs/44206715204), all three required jobs SUCCESS, `.github/workflows/ci.yml`, exact full SHA verified. Fast-forward integrated/pushed with no merge commits. Metadata: `issue-run-69.json`, `dev-run-70.json`. UNI-040 started only after the final dev result was observed.
