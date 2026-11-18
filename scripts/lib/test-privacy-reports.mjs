@@ -102,6 +102,7 @@ export async function testPrivacyReports({client,url,migrations}){
   if(reviewId)await client.query('DELETE FROM unihood_private.review_intake WHERE id=$1',[reviewId]);
   await client.query('DELETE FROM public.boarding_official_prices WHERE unit_id=$1',[unit]);
   await client.query('DELETE FROM public.boarding_units WHERE id=$1',[unit]);
+  await client.query('DELETE FROM unihood_private.boarding_privacy_events WHERE boarding_id=$1',[a]);
   await client.query('DELETE FROM unihood_private.boarding_media WHERE boarding_id=$1',[a]);
   await client.query("DELETE FROM unihood_private.media_assets WHERE uploader_ref='synthetic:owner-a'");
   await client.query('DELETE FROM public.boarding_advertisement_previews WHERE boarding_id=$1',[a]);
