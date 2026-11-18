@@ -32,7 +32,9 @@ export async function testBoardingRecommendations({ client, url, migrations, get
     assert.equal((await get('/api/v1/boardings/' + receipts[0].contributionId)).status, 404);
     const after = (await client.query('SELECT (SELECT count(*) FROM public.places)::int AS places,(SELECT count(*) FROM public.listings)::int AS listings')).rows[0]; assert.deepEqual(after, before);
     assert.equal((await fetch(contributor + '/api/v1/boardings/00000000-0000-4000-8000-000000000001/prices', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })).status, 403);
-    assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
+    await client.query('DELETE FROM unihood_private.risk_evaluations');
+    assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
+assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['016_review_intake']);
     assert.deepEqual(await runMigrations(client,migrations,'rollback'),['015_poi_correction_intake']);
     assert.deepEqual(await runMigrations(client, migrations, 'rollback'), ['014_boarding_recommendation_resolutions']);
@@ -46,7 +48,9 @@ export async function testBoardingRecommendations({ client, url, migrations, get
     await Promise.all(children.map(async child => { if (child.exitCode !== null) return; child.kill('SIGTERM'); await new Promise(resolve => { const timer = setTimeout(() => { child.kill('SIGKILL'); resolve(); }, 3000); child.once('exit', () => { clearTimeout(timer); resolve(); }); }); }));
     await client.query('DELETE FROM unihood_private.boarding_recommendation_intake');
   }
-  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
+  await client.query('DELETE FROM unihood_private.risk_evaluations');
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
+assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['016_review_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['015_poi_correction_intake']);
   assert.deepEqual(await runMigrations(client, migrations, 'rollback'), ['014_boarding_recommendation_resolutions']);

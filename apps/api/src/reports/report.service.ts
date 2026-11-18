@@ -4,6 +4,8 @@ import {PublicIdSchema,ReportAppealInputSchema,ReportAppealReceiptSchema,ReportI
 import {PERMISSION_SERVICE} from '../identity/tokens';
 import {UniversityRepository} from '../universities/university.repository';
 import {encryptReportEvidence,reportKey} from './report-crypto';
+import {baseSignals,contentSignals,observedRecently} from '../risk/risk-signals';
+import {recordRisk} from '../risk/risk-evaluation';
 type Query=(sql:string,values:unknown[])=>Promise<Record<string,unknown>[]>;
 type Row=Record<string,unknown>;
 const actorRefs=['synthetic:contributor','synthetic:owner-a','synthetic:price-manager-a'];
@@ -47,6 +49,14 @@ export class ReportService{
    if(listing)await query("UPDATE public.listings SET publication_status='DISPUTED',is_current=false WHERE id=$1",[listing.id]);await this.bump(query);await this.audit(query,reportId,'PUBLIC_SUPPRESSION_APPLIED',actorId,'SUPPRESSED');}
    if(status==='ESCALATED')await this.audit(query,reportId,'REPORT_ESCALATED',actorId,'ESCALATED');
    await this.audit(query,reportId,'REPORT_RECEIVED',actorId,'RECEIVED');
+   const conflicting=Number((await query("SELECT count(*)::int AS n FROM unihood_private.report_cases WHERE target_type=$1 AND target_ref=$2 AND id<>$3 AND status IN ('HELD','SUPPRESSED','ESCALATED')",[input.targetType,input.targetId,reportId]))[0]?.n??0);
+   const recent=Number((await query("SELECT count(*)::int AS n FROM unihood_private.report_cases WHERE reporter_ref=$1 AND created_at>CURRENT_TIMESTAMP-INTERVAL '24 hours'",[actorId]))[0]?.n??0);
+   const signals=baseSignals('REPORT',input.targetType,{...contentSignals(input.details),sensitivePrivateText:input.reportType==='PRIVATE_DATA_EXPOSED',ownershipClaim:input.reportType==='FAKE_OWNERSHIP'});
+   await recordRisk(query,'REPORT',reportId,{...signals,
+    evidence:{sourceConfidence:'COMMUNITY_SUBMITTED',hasEvidenceNote:true,evidenceRequired:true,observedWithinDays:observedRecently(input.observedOn)},
+    conflicts:{...signals.conflicts,activeSuppression:effect!=='NONE',conflictingReports:conflicting},
+    submissionPattern:{recentSameActor:recent,recentDistinctActors:recent},
+    sensitiveReport:severity==='P0'});
    return this.receipt({id:reportId,severity,status,public_effect:effect});
   });
  }

@@ -5,6 +5,8 @@ import { normalizePoiName,PoiSubmissionInputSchema,PoiSubmissionResultSchema,typ
 import { PERMISSION_SERVICE } from '../identity/tokens';
 import { UniversityRepository } from '../universities/university.repository';
 import { PoiMatcherService } from './poi-matcher.service';
+import { baseSignals,contentSignals } from '../risk/risk-signals';
+import { recordRisk } from '../risk/risk-evaluation';
 @Injectable()
 export class PoiSubmissionService {
  constructor(@Inject(UniversityRepository) private readonly repository:Pick<UniversityRepository,'transaction'|'includeSynthetic'>,
@@ -74,6 +76,12 @@ export class PoiSubmissionService {
     await query('UPDATE public.poi_pending_proposals SET source_note=$2,review_state=$3,risk_flags=$4::text[] WHERE id=$1',[id,parsed.sourceNote,reviewState,review.flags]);
    }
    if(parsed.source)await query('INSERT INTO public.poi_pending_source_refs(proposal_id,provider,external_id,license_tag) VALUES($1,$2,$3,$4)',[id,parsed.source.provider,parsed.source.externalId,parsed.source.licenseTag]);
+   const recent=Number((await query("SELECT count(*)::int AS n FROM public.poi_pending_proposals WHERE actor_ref=$1 AND created_at>CURRENT_TIMESTAMP-INTERVAL '24 hours'",[actorId]))[0]?.n??0);
+   const signals=baseSignals('POI_PROPOSAL','POI',contentSignals(parsed.draft.name,JSON.stringify(parsed.resolution),parsed.sourceNote));
+   await recordRisk(query,'POI_PROPOSAL',id,{...signals,
+    publicationKindEligible:true,
+    evidence:{sourceConfidence:parsed.source?'SOURCE_CHECKED':'COMMUNITY_SUBMITTED',hasEvidenceNote:parsed.sourceNote!==undefined,evidenceRequired:false,observedWithinDays:null},
+    submissionPattern:{recentSameActor:recent,recentDistinctActors:recent}});
    return save({outcome:'PENDING_REVIEW',proposalId:id,requiresReview:true,...(reviewState?{reviewState}:{})});
   }).catch(error=>{if(error instanceof ConflictException)throw error;throw new ServiceUnavailableException();});
  }

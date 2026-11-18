@@ -3,6 +3,8 @@ import {createHash,randomUUID} from 'node:crypto';
 import {ReviewInputSchema,ReviewReceiptSchema,type ActorContext,type PermissionService} from '@unihood/contracts';
 import {PERMISSION_SERVICE} from '../identity/tokens';
 import {UniversityRepository} from '../universities/university.repository';
+import {baseSignals,contentSignals} from '../risk/risk-signals';
+import {recordRisk} from '../risk/risk-evaluation';
 const eligible=`FROM public.places p WHERE p.id=$1 AND p.kind=$2 AND p.status='ACTIVE' AND p.merged_into IS NULL AND p.data_kind='SYNTHETIC'`;
 const sensitive=/(\+?\d[\d ().,-]{6,}\d)|\b(address|apartment|house number|latitude|longitude|coordinates|phone|contact|owner|rent|price|vacancy)\b|https?:\/\/|www\.|@/i;
 @Injectable()
@@ -25,6 +27,13 @@ export class ReviewService{
    const state=sensitive.test(input.observation??'')?'NEEDS_EVIDENCE':'PENDING';
    const id=randomUUID();
    await query(`INSERT INTO unihood_private.review_intake(id,actor_ref,idempotency_key,payload_hash,target_type,target_id,review_kind,rating,observation,review_state,source_confidence,source_label,created_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,CURRENT_TIMESTAMP)`,[id,actorId,key,hash,input.targetType,input.targetId,input.reviewKind,input.rating??null,input.observation??null,state,input.sourceConfidence,input.sourceLabel]);
+   const conflicting=Number((await query("SELECT count(*)::int AS n FROM unihood_private.report_cases WHERE target_type=$1 AND target_ref=$2 AND status IN ('HELD','SUPPRESSED','ESCALATED')",[input.targetType,input.targetId]))[0]?.n??0);
+   const recent=Number((await query("SELECT count(*)::int AS n FROM unihood_private.review_intake WHERE actor_ref=$1 AND target_id=$2 AND created_at>CURRENT_TIMESTAMP-INTERVAL '24 hours'",[actorId,input.targetId]))[0]?.n??0);
+   const signals=baseSignals('REVIEW',input.targetType,contentSignals(input.observation));
+   await recordRisk(query,'REVIEW',id,{...signals,
+    evidence:{sourceConfidence:input.sourceConfidence,hasEvidenceNote:Boolean(input.observation?.trim()),evidenceRequired:input.reviewKind==='VERIFIED_STAY',observedWithinDays:null},
+    conflicts:{...signals.conflicts,conflictingReports:conflicting},
+    submissionPattern:{recentSameActor:recent,recentDistinctActors:recent}});
    return receipt(id,state);
   });
  }

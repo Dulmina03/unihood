@@ -4,6 +4,7 @@ import {testBoardingRecommendations} from './lib/test-boarding-recommendations.m
 import {testBoardingPrivacyMatrix} from './lib/test-boarding-privacy-matrix.mjs';
 import {testBoardingPrivacy} from './lib/test-boarding-privacy.mjs';
 import {testPrivacyReports} from './lib/test-privacy-reports.mjs';
+import {testRiskRules} from './lib/test-risk-rules.mjs';
 import {testBoardingDetails} from './lib/test-boarding-details.mjs';
 import {testBoardingVacancy} from './lib/test-boarding-vacancy.mjs';
 import { testBoardingInventory } from './lib/test-boarding-inventory.mjs';
@@ -125,7 +126,9 @@ try {
   assert.deepEqual(await runMigrations(client, ordered, 'rollback'), ['900_order_probe']);
   console.log('PASS: ordered migration/reverse order; failing batch rolls back DDL/history; checksum drift rejected');
 
-  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
+  await client.query('DELETE FROM unihood_private.risk_evaluations');
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
+assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['016_review_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['015_poi_correction_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['014_boarding_recommendation_resolutions']);
@@ -168,11 +171,14 @@ try {
   await testBoardingDetails({client,url,get,endpoint});
   await testBoardingPrivacy({client,url,migrations,get,endpoint});
   await testPrivacyReports({client,url,migrations});
+  await testRiskRules({client,url,migrations});
   await testBoardingVacancy({client,url,migrations,get,endpoint});
   await testBoardingInventory({client,migrations,url,get,endpoint});
   await testBoardingMap({client,migrations,url,get,endpoint});
   await testBoardingAdvertisements({client,migrations,url,get});
-  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
+  await client.query('DELETE FROM unihood_private.risk_evaluations');
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
+assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['016_review_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['015_poi_correction_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['014_boarding_recommendation_resolutions']);

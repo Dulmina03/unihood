@@ -32,3 +32,21 @@ export type ReportStatus = z.infer<typeof ReportStatusSchema>;
 export type ReportTargetType = z.infer<typeof ReportTargetTypeSchema>;
 export type ReportPublicEffect = z.infer<typeof ReportPublicEffectSchema>;
 export type ReportAppealStatus = z.infer<typeof ReportAppealStatusSchema>;
+// UNI-045 deterministic workflow risk, versioned and separate from report severity
+// and source confidence. Votes/confirmations are never proof or authority.
+export const RiskRuleVersionSchema = z.literal('risk-rules-v1');
+export const RiskDecisionSchema = z.enum(['AUTO_PUBLISH', 'HOLD', 'NEEDS_EVIDENCE', 'ESCALATE']);
+export const RiskLevelSchema = z.enum(['LOW', 'ELEVATED', 'HIGH']);
+export const RiskRuleIdSchema = z.enum([
+  'RR-001-OWNER-CONTROLLED-FIELD', 'RR-002-OWNERSHIP-CLAIM', 'RR-003-SELF-INTEREST',
+  'RR-004-SENSITIVE-REPORT', 'RR-005-PRIVATE-TEXT', 'RR-006-CONTACT-OR-LINK',
+  'RR-007-EVIDENCE-INSUFFICIENT', 'RR-008-STALE-OBSERVATION', 'RR-009-MEDIA-UNMODERATED',
+  'RR-010-AGREEMENT-NOT-EVIDENCE', 'RR-011-COLLUSION-PATTERN', 'RR-012-REPORT-SUPPRESSION-ACTIVE',
+  'RR-013-DUPLICATE-OR-CONFLICT', 'RR-014-CONFLICTING-REPORTS', 'RR-015-REPEATED-SUBMISSIONS',
+  'RR-016-REPORT-CASE', 'RR-017-KIND-NOT-PUBLISHABLE', 'RR-018-PUBLICATION-GATE-CLOSED',
+  'RR-019-ROUTINE-LOW-RISK',
+]);
+export type RiskRuleVersion = z.infer<typeof RiskRuleVersionSchema>;
+export type RiskDecision = z.infer<typeof RiskDecisionSchema>;
+export type RiskLevel = z.infer<typeof RiskLevelSchema>;
+export type RiskRuleId = z.infer<typeof RiskRuleIdSchema>;

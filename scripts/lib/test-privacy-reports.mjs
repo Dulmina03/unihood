@@ -111,7 +111,9 @@ export async function testPrivacyReports({client,url,migrations}){
   await client.query('DELETE FROM public.public_place_locations WHERE place_id=$1',[poi]);
   await client.query('DELETE FROM public.places WHERE id=ANY($1::uuid[])',[[a,poi]]);
  }
- assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
+ await client.query('DELETE FROM unihood_private.risk_evaluations');
+ assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
+assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
  await runMigrations(client,migrations,'migrate');
  assert.deepEqual(await runMigrations(client,migrations,'migrate'),[]);
  console.log('PASS: UNI-044 populated rollback refusal, empty rollback and idempotent re-migration');

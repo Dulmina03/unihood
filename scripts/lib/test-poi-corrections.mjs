@@ -45,7 +45,9 @@ export async function testPoiCorrections({client,url,migrations,get}){
   assert.deepEqual((await client.query('SELECT p.canonical_name,p.category,p.status,p.updated_at,ST_AsText(l.entrance_geo) AS geo FROM public.places p JOIN public.public_place_locations l ON l.place_id=p.id WHERE p.id=$1',[place])).rows,before);
   await client.query('DELETE FROM public.public_place_locations WHERE place_id=$1',[place]);const replay=await post(contributor,input);assert.equal(replay.status,200);assert.equal((await replay.json()).placeId,null);const suppressed=await(await history(contributor)).json();assert.ok(suppressed.items.every(row=>row.placeId===null));
   assert.equal((await client.query('SELECT ST_AsText(exact_geo) AS geo FROM unihood_private.boarding_locations WHERE boarding_id=$1',[boarding])).rows[0].geo,'POINT(43.654321 42.123456)');
-  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
+  await client.query('DELETE FROM unihood_private.risk_evaluations');
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
+assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['016_review_intake']);
   await assert.rejects(runMigrations(client,migrations,'rollback'),/populated tables/);
   await runMigrations(client,migrations,'migrate');
@@ -54,7 +56,9 @@ export async function testPoiCorrections({client,url,migrations,get}){
   await Promise.all(children.map(async child=>{if(child.exitCode!==null)return;child.kill('SIGTERM');await new Promise(resolve=>{const timer=setTimeout(()=>{child.kill('SIGKILL');resolve();},3000);child.once('exit',()=>{clearTimeout(timer);resolve();});});}));
   await client.query('DELETE FROM unihood_private.poi_correction_intake WHERE place_id=$1',[place]);await client.query('DELETE FROM public.poi_pending_proposals WHERE id=$1',[pendingId]);await client.query('DELETE FROM unihood_private.boarding_recommendation_intake WHERE id=$1',[boardingIntake]);await client.query('DELETE FROM public.public_place_locations WHERE place_id=$1',[place]);await client.query('DELETE FROM public.places WHERE id=$1',[place]);await client.query('DELETE FROM unihood_private.boarding_locations WHERE boarding_id=$1',[boarding]);await client.query('DELETE FROM public.boarding_properties WHERE place_id=$1',[boarding]);await client.query('DELETE FROM public.places WHERE id=$1',[boarding]);
  }
- await client.query('CREATE VIEW public.synthetic_correction_dependency AS SELECT id FROM unihood_private.poi_correction_intake');assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
+ await client.query('DELETE FROM unihood_private.risk_evaluations');
+ await client.query('CREATE VIEW public.synthetic_correction_dependency AS SELECT id FROM unihood_private.poi_correction_intake');assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
+assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['016_review_intake']);await assert.rejects(runMigrations(client,migrations,'rollback'),error=>error.code==='2BP01');await client.query('DROP VIEW public.synthetic_correction_dependency');assert.deepEqual(await runMigrations(client,migrations,'rollback'),['015_poi_correction_intake']);await runMigrations(client,migrations,'migrate');assert.deepEqual(await runMigrations(client,migrations,'migrate'),[]);
  console.log('PASS: UNI-042 private ACL/data boundaries and populated/dependency refusal, empty rollback/re-migration repeatability, prior schema and extension ownership preserved');
 }
