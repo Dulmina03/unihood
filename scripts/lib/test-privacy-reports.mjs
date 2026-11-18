@@ -13,6 +13,7 @@ const key='0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
 export async function testPrivacyReports({client,url,migrations}){
  const storageRoot=await mkdtemp(join(tmpdir(),'unihood-report-test-'));await chmod(storageRoot,0o700);
  const children=[];
+ let reviewId=null;
  const start=async fixture=>{const probe=createServer();await new Promise(r=>probe.listen(0,'127.0.0.1',r));const port=probe.address().port;await new Promise(r=>probe.close(r));const child=spawn(process.execPath,['apps/api/dist/main.js'],{stdio:'ignore',env:{...process.env,DATABASE_URL:url,APP_ENV:'test',NODE_ENV:'test',API_HOST:'127.0.0.1',API_PORT:String(port),ENABLE_SYNTHETIC_ACTORS:'true',SYNTHETIC_ACTOR:fixture,REPORT_ENCRYPTION_KEY_HEX:key,MEDIA_STORAGE_ROOT:storageRoot}});children.push(child);const base=`http://127.0.0.1:${port}`;for(let i=0;i<40;i++){try{if((await fetch(base+'/health',{signal:AbortSignal.timeout(1000)})).ok)return base;}catch{}if(i===39||child.exitCode!==null)throw new Error('Privacy report test API startup failed');await delay(250);}};
  const post=(base,path,body)=>fetch(base+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:AbortSignal.timeout(8000)});
  const json=async(response)=>await response.json();
@@ -24,7 +25,7 @@ export async function testPrivacyReports({client,url,migrations}){
   await client.query("INSERT INTO public.boarding_units(id,boarding_id,label,room_type,capacity) VALUES($1,$2,'Synthetic Report Unit','SHARED_ROOM',1)",[unit,a]);
   await client.query("INSERT INTO public.boarding_official_prices(id,boarding_id,unit_id,revision,currency,period,basis,rent_minor,deposit_minor,utility_terms,meal_terms,effective_at,author_ref,change_reason) VALUES($1,$2,$3,1,'LKR','MONTH','ROOM',1800000,0,'NOT_SHARED','NOT_SHARED','2026-11-01T00:00:00Z','synthetic:owner-a','INITIAL')",[randomUUID(),a,unit]);
   const priceBefore=(await client.query('SELECT rent_minor,deposit_minor,revision,recorded_at FROM public.boarding_official_prices WHERE unit_id=$1 ORDER BY revision DESC',[unit])).rows[0];
-  const reviewId=randomUUID();
+  reviewId=randomUUID();
   await client.query("INSERT INTO unihood_private.review_intake(id,actor_ref,idempotency_key,payload_hash,target_type,target_id,review_kind,rating,observation,review_state,source_confidence,source_label) VALUES($1,'synthetic:contributor',$2,$3,'BOARDING',$4,'GENERAL_OBSERVATION',2,'Synthetic negative observation remains legitimate community feedback.','PENDING','COMMUNITY_SUBMITTED','SYNTHETIC')",[reviewId,randomUUID(),'a'.repeat(64),a]);
   const reviewBefore=(await client.query('SELECT review_state,observation FROM unihood_private.review_intake WHERE id=$1',[reviewId])).rows[0];
 
@@ -98,7 +99,7 @@ export async function testPrivacyReports({client,url,migrations}){
   await client.query('DELETE FROM unihood_private.report_appeals');
   await client.query('DELETE FROM unihood_private.report_cases');
   await client.query('DELETE FROM public.route_segments');
-  await client.query('DELETE FROM unihood_private.review_intake WHERE id=$1',[reviewId]);
+  if(reviewId)await client.query('DELETE FROM unihood_private.review_intake WHERE id=$1',[reviewId]);
   await client.query('DELETE FROM public.boarding_official_prices WHERE unit_id=$1',[unit]);
   await client.query('DELETE FROM public.boarding_units WHERE id=$1',[unit]);
   await client.query('DELETE FROM unihood_private.boarding_media WHERE boarding_id=$1',[a]);
@@ -106,6 +107,7 @@ export async function testPrivacyReports({client,url,migrations}){
   await client.query('DELETE FROM public.boarding_advertisement_previews WHERE boarding_id=$1',[a]);
   await client.query('DELETE FROM public.listings WHERE boarding_id=$1',[a]);
   await client.query('DELETE FROM public.boarding_properties WHERE place_id=$1',[a]);
+  await client.query('DELETE FROM public.public_place_locations WHERE place_id=$1',[poi]);
   await client.query('DELETE FROM public.places WHERE id=ANY($1::uuid[])',[[a,poi]]);
  }
  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
