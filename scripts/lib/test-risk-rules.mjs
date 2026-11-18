@@ -87,7 +87,7 @@ export async function testRiskRules({client,url,migrations}){
   await client.query('DELETE FROM unihood_private.report_cases');
   await client.query('DELETE FROM unihood_private.review_intake');
   await client.query('DELETE FROM unihood_private.boarding_recommendation_intake');
-  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_evaluations']);
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
   await runMigrations(client,migrations,'migrate');assert.deepEqual(await runMigrations(client,migrations,'migrate'),[]);
   console.log('PASS: UNI-045 versioned explainable risk rules hold routine contributions behind the closed publication gate, require evidence for private/contact content, escalate sensitive reports without overriding suppression, reject official/self-review attempts, keep replays idempotent and preserve populated history on rollback');
  }finally{
