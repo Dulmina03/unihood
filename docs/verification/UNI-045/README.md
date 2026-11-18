@@ -15,7 +15,7 @@ UNI-044 suppression and appeal states remain authoritative; a sensitive report c
 - `pnpm lint`: PASS (`eslint . --max-warnings=0`).
 - `pnpm typecheck`: PASS (contracts built; all workspace typechecks).
 - `pnpm check:repo`, `pnpm check:workflows`: PASS.
-- Workspace tests: PASS — contracts 131, API 241, web 218; 13 root runner tests.
+- Workspace tests: PASS — contracts 131, API 242, web 218; 13 root runner tests.
 - `pnpm build`: PASS (API/contracts/web).
 - `pnpm test:ui`: PASS — 128/128 Playwright cases across mobile and desktop, including 4 new UNI-045 history cases with zero-violation axe reports.
 - Evidence: `risk-history-{mobile,desktop}.png`, full-page captures and axe JSON in this directory. Automated results do not imply human approval.
@@ -27,6 +27,12 @@ UNI-044 suppression and appeal states remain authoritative; a sensitive report c
 - **Isolated Docker/PostGIS `pnpm db:test` and browser E2E: NOT RUN locally.** No Docker daemon and no `.env`; remote CI is required and no local database PASS is claimed.
 - Human visual/accessibility and real-device checks: NOT PERFORMED. Automated checks do not imply human approval. Detailed Phase 1 manual accessibility remains DEFERRED to Phase 6.
 
-## Remote CI and integration
+## Remote CI (actual)
 
-Pending exact issue commit CI and fast-forward dev verification; this record will be updated with actual run URLs only after they pass.
+Commit `9f758c66575886a5f65844b6d076dc5292470c42` on `feat/uni-045-risk-rules`, workflow run [44415147169](https://github.com/Dulmina03/unihood/actions/runs/44415147169), all required jobs SUCCESS:
+
+- Workspace quality — job 135193350893
+- Isolated PostGIS integration — job 135193350473 (includes `PASS: UNI-045 ...` and `PASS: UNI-044 populated rollback refusal`)
+- Component browser acceptance — job 135193351061
+
+Earlier failure iterations on this branch (`7a64f68`, `a252ca3`, `4be0f1a`, `4fe5999`, `140b5d2`, `699f1fe`, `2e21583`) are retained honestly as failed database runs. They fixed rollback ordering, deterministic explanation selection, fixture cleanup, the risk migration name and partial-schema intake safety. A pre-existing brittle `'0100'` UUID-substring assertion in `test-boarding-privacy` was replaced with the exact synthetic phone substring so a real contact leak is still detected without random-UUID flake.
