@@ -116,7 +116,7 @@ export function evaluateRisk(raw: unknown): RiskEvaluation {
 }
 
 export function riskSummary(evaluation: RiskEvaluation) {
-  const primary = [...evaluation.reasons].sort((left, right) => rank[right.decision] - rank[left.decision] || left.rule.localeCompare(right.rule))[0];
+  const primary = [...evaluation.reasons].sort((left, right) => rank[right.decision] - rank[left.decision] || right.rule.localeCompare(left.rule))[0];
   return {
     riskDecision: evaluation.decision,
     riskLevel: evaluation.riskLevel,
