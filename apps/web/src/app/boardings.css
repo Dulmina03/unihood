@@ -20,3 +20,15 @@
 .essential-distance{font-size:14px;color:var(--foreground);margin:0}
 .essential-provenance{font-size:11px;color:var(--text-muted);margin:4px 0 0}
 @media(max-width:600px){.boarding-essentials{padding:20px}.essentials-grid{grid-template-columns:1fr}}
+.boarding-request-actions{display:flex;flex-direction:column;gap:12px;margin-block-start:20px}
+.boarding-request-actions .uh-button{width:100%;justify-content:space-between}
+.boarding-request-form{display:flex;flex-direction:column;gap:16px;margin-block-start:12px}
+.boarding-request-facts,.boarding-request-receipt dl{display:grid;gap:10px;margin:0;padding:16px;border:1px solid var(--divider);border-radius:14px;background:var(--surface)}
+.boarding-request-facts>div,.boarding-request-receipt dl>div{display:grid;grid-template-columns:minmax(120px,0.8fr) 1.4fr;gap:12px;font-size:13px}
+.boarding-request-facts dt,.boarding-request-receipt dt{color:var(--text-muted);font-weight:600}
+.boarding-request-facts dd,.boarding-request-receipt dd{margin:0;overflow-wrap:anywhere}
+.boarding-request-receipt{display:flex;flex-direction:column;gap:14px}
+.boarding-request-receipt h3{font:600 20px/1.25 var(--font-display);color:var(--navy-900);margin:0}
+.boarding-request-receipt h3:focus-visible{outline:3px solid var(--teal-600);outline-offset:4px}
+.boarding-request-receipt code{font-size:12px;overflow-wrap:anywhere}
+@media(max-width:600px){.boarding-request-facts>div,.boarding-request-receipt dl>div{grid-template-columns:1fr;gap:2px}}
