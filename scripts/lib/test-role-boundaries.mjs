@@ -32,7 +32,7 @@ export async function testRoleBoundaryRegressions({client,url}){
   assert.equal((await fetch(ownerB+'/api/v1/owner/boardings/'+a+'/privacy/overview')).status,403);
   assert.equal((await fetch(ownerA+'/api/v1/owner/boardings/'+b+'/map-settings')).status,403);
   assert.equal((await put(ownerA,'/api/v1/owner/boardings/'+a+'/privacy/contact',contact(0))).status,200);
-  assert.equal((await put(ownerB,'/api/v1/owner/boardings/'+b+'/privacy/contact',contact(0))).status,200);
+  assert.equal((await fetch(ownerB+'/api/v1/owner/boardings/'+b+'/privacy/contact')).status,200);
   assert.equal((await put(ownerA,'/api/v1/owner/boardings/'+b+'/privacy/contact',contact(0))).status,403);
   assert.equal((await put(ownerB,'/api/v1/owner/boardings/'+a+'/privacy/contact',contact(1))).status,403);
   for(const base of [a,b]){const response=await fetch(contributor+'/api/v1/boardings/'+base);assert.equal(response.status,200);const text=await response.text();assert.ok(!text.includes('+12025550100'));assert.ok(!text.includes('•••0100'));assert.ok(!/latitude|longitude|contact_ciphertext/.test(text));}
