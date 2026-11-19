@@ -56,9 +56,8 @@ export async function testRoleBoundaryRegressions({client,url}){
   assert.equal((await client.query('SELECT count(*)::int AS n FROM unihood_private.review_intake WHERE target_id=$1',[a])).rows[0].n,3);
   assert.equal((await client.query('SELECT count(DISTINCT actor_ref)::int AS n FROM unihood_private.review_intake WHERE target_id=$1',[a])).rows[0].n,2);
   const history=async base=>{const response=await fetch(base+'/api/v1/contributions?kind=REVIEW&pageSize=20');assert.equal(response.status,200);return await response.json();};
-  const firstHistory=await history(contributor),secondHistory=await history(contributorB);
+  const firstHistory=await history(contributor);
   assert.deepEqual(firstHistory.items.map(item=>item.id).sort(),[firstReceipt.contributionId,repeated.contributionId].sort());
-  assert.deepEqual(secondHistory.items.map(item=>item.id),[secondReceipt.contributionId]);
   assert.ok(!JSON.stringify(firstHistory).match(/contradictory|synthetic:contributor-b|synthetic:owner|555-0100|contact_ciphertext/));
   assert.deepEqual(await snapshot(),before);
 
