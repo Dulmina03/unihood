@@ -46,4 +46,10 @@ Current boarding publication is synthetic-only, so deployed environments return 
 
 ## Feature CI
 
-Recorded in the follow-up evidence commit for this branch.
+Implementation commit `bf5d381c3cda4c568920816a115dfca3f073370b` passed feature CI [44602000247](https://github.com/Dulmina03/unihood/actions/runs/44602000247), all three required jobs for the exact commit:
+
+- `Workspace quality` — `check:repo`, `check:workflows`, lint, typecheck, tests and build.
+- `Isolated PostGIS integration` — isolated tmpfs database, API and landing regression, including the new routing group.
+- `Component browser acceptance` — synthetic component suite and Phase 1 guest E2E against isolated PostGIS.
+
+The branch is **not merged into `dev`** and no `dev`/`main` CI is claimed for this issue.
