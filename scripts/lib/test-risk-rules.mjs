@@ -79,6 +79,7 @@ export async function testRiskRules({client,url,migrations}){
   assert.equal((await client.query("SELECT count(*)::int AS n FROM unihood_private.risk_evaluations WHERE decision='AUTO_PUBLISH'")).rows[0].n,0);
 
   // Populated history is preserved; an empty rollback/re-migrate is repeatable.
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['019_boarding_requests']);
   await assert.rejects(runMigrations(client,migrations,'rollback'),/populated history/);
   for(const [kind,id] of contributions)await client.query('DELETE FROM unihood_private.risk_evaluations WHERE contribution_kind=$1 AND contribution_id=$2',[kind,id]);
   await client.query('DELETE FROM unihood_private.report_audit_events');
@@ -87,7 +88,6 @@ export async function testRiskRules({client,url,migrations}){
   await client.query('DELETE FROM unihood_private.report_cases');
   await client.query('DELETE FROM unihood_private.review_intake');
   await client.query('DELETE FROM unihood_private.boarding_recommendation_intake');
-  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['019_boarding_requests']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
   await runMigrations(client,migrations,'migrate');assert.deepEqual(await runMigrations(client,migrations,'migrate'),[]);
   console.log('PASS: UNI-045 versioned explainable risk rules hold routine contributions behind the closed publication gate, require evidence for private/contact content, escalate sensitive reports without overriding suppression, reject official/self-review attempts, keep replays idempotent and preserve populated history on rollback');
