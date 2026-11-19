@@ -1,4 +1,4 @@
-import {BadRequestException,ConflictException,ForbiddenException,NotFoundException} from '@nestjs/common';
+import {ConflictException,ForbiddenException,NotFoundException} from '@nestjs/common';
 import {createHash} from 'node:crypto';
 import {BoardingRequestService} from '../src/requests/boarding-request.service';
 import type {UniversityRepository} from '../src/universities/university.repository';
@@ -39,7 +39,7 @@ describe('UNI-046 mock boarding request service',()=>{
  });
  it('accepts a location request for area-only/hidden owner ads but rejects an already-public map',async()=>{
   for(const visibility of ['AREA_ONLY','HIDDEN'] as const){const {service}=setup({visibility});await expect(service.create(contributor,{...input,kind:'REQUEST_LOCATION'})).resolves.toMatchObject({kind:'REQUEST_LOCATION',locationDisclosed:false});}
-  const {service}=setup({visibility:'PUBLIC_MAP'});await expect(service.create(contributor,{...input,kind:'REQUEST_LOCATION'})).rejects.toBeInstanceOf(BadRequestException);
+  const {service}=setup({visibility:'PUBLIC_MAP'});await expect(service.create(contributor,{...input,kind:'REQUEST_LOCATION'})).rejects.toBeInstanceOf(NotFoundException);
  });
  it('rejects missing/community advertisements and non-contributor actors',async()=>{
   const {service}=setup({visible:false});await expect(service.create(contributor,input)).rejects.toBeInstanceOf(NotFoundException);

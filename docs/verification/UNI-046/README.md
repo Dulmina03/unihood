@@ -6,7 +6,7 @@ Verified base: clean `dev` `8564852664d822e63ec21779eccc64fe9bdc6975`. Worktree 
 
 - Strict contracts in `packages/contracts/src/boarding-request.ts`: two explicit kinds, synthetic acknowledgement, pending receipt and requester status view. No private owner/contact/coordinate fields exist in the schemas.
 - Migration `019_boarding_requests` stores only actor reference, boarding id, kind, request key, payload hash, fixed pending status, synthetic marker and timestamps in `unihood_private`; public grants are revoked and populated rollback refuses.
-- Protected API `POST /api/v1/boarding-requests` and actor-scoped `GET /api/v1/boarding-requests/{requestId}`. Eligibility rereads current curated public projections; only owner official advertisements are eligible, and location requests are refused for already-public maps.
+- Protected API `POST /api/v1/boarding-requests` and actor-scoped `GET /api/v1/boarding-requests/{requestId}`. Eligibility rereads current curated public projections; only owner official advertisements are eligible, and location requests are refused for already-public maps (outside this private-detail feed).
 - Owner-advertisement UI adds Contact owner and Request location interactions, a responsive dialog, simulation disclosure, acknowledgement, loading/error/retry, duplicate messaging, private-free receipt, pending status check and focus restoration. Community advertisements show no request actions.
 - No owner phone/email, coordinates, directions, fees, vacancies, visibility or publication is exposed or modified. `ownerNotified` and `locationDisclosed` are always false.
 

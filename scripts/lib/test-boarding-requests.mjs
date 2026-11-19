@@ -49,7 +49,7 @@ export async function testBoardingRequests({client,url,migrations}){
 
   await client.query("UPDATE public.boarding_properties SET visibility='PUBLIC_MAP',public_map_consent=true,map_consent_at=CURRENT_TIMESTAMP WHERE place_id=$1",[a]);
   await client.query("UPDATE public.boarding_advertisement_previews SET visibility='PUBLIC_MAP' WHERE boarding_id=$1",[a]);
-  assert.equal((await post(contributor,request('REQUEST_LOCATION'))).status,400);
+  assert.equal((await post(contributor,request('REQUEST_LOCATION'))).status,404);
   await client.query("UPDATE public.boarding_advertisement_previews SET visibility='HIDDEN' WHERE boarding_id=$1",[a]);
   await client.query("UPDATE public.boarding_properties SET visibility='HIDDEN',public_map_consent=false,map_consent_at=NULL WHERE place_id=$1",[a]);
   assert.equal((await client.query('SELECT count(*)::int AS n FROM unihood_private.boarding_requests')).rows[0].n,2);

@@ -1,4 +1,4 @@
-import {BadRequestException,ConflictException,ForbiddenException,Injectable,Inject,NotFoundException} from '@nestjs/common';
+import {ConflictException,ForbiddenException,Injectable,Inject,NotFoundException} from '@nestjs/common';
 import {createHash,randomUUID} from 'node:crypto';
 import {
   BOARDING_REQUEST_POLICY_VERSION,
@@ -46,8 +46,7 @@ export class BoardingRequestService {
        AND (a.visibility='HIDDEN' OR (b.locality_consent AND b.general_locality=a.locality))`,
       [boardingId],
     );
-    if (!rows.length) throw new NotFoundException();
-    if (kind === 'REQUEST_LOCATION' && rows[0].visibility === 'PUBLIC_MAP') throw new BadRequestException();
+    if (!rows.length || kind === 'REQUEST_LOCATION' && rows[0].visibility === 'PUBLIC_MAP') throw new NotFoundException();
   }
 
   private statusView(row: Row): BoardingRequestStatusView {

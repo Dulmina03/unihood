@@ -26,7 +26,7 @@ The API rereads current public projection records on every request. It never tru
 
 - Only `OWNER_OFFICIAL` advertisements with `PUBLISHED`, current listings and local-test authorization are eligible. Community recommendations return `404`.
 - `CONTACT_OWNER` records intent only. No owner contact data is returned or stored.
-- `REQUEST_LOCATION` is available for `AREA_ONLY` and `HIDDEN` owner advertisements. An already `PUBLIC_MAP` advertisement returns `400` because no private location exists to request.
+- `REQUEST_LOCATION` is available for `AREA_ONLY` and `HIDDEN` owner advertisements. An already `PUBLIC_MAP` advertisement is not part of this private-detail feed and returns `404`; no exact point is read or re-disclosed.
 - Visibility, publication status, fees and vacancies are never updated by a request.
 
 ## Receipt and privacy

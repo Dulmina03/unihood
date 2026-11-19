@@ -1416,7 +1416,7 @@
             }
           },
           "400": {
-            "description": "Invalid request, unavailable action or location already public",
+            "description": "Invalid request or schema extension",
             "headers": {
               "X-Request-Id": {
                 "description": "Server-generated correlation ID; inbound IDs are ignored.",
@@ -1606,7 +1606,7 @@
             }
           },
           "400": {
-            "description": "Invalid request, unavailable action or location already public",
+            "description": "Invalid request or schema extension",
             "headers": {
               "X-Request-Id": {
                 "description": "Server-generated correlation ID; inbound IDs are ignored.",

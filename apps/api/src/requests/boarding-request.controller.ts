@@ -8,7 +8,7 @@ import {ApiContract} from '../openapi/operation';
 import {BoardingRequestService} from './boarding-request.service';
 
 const errors = {
-  '400': {schema:'ErrorResponse',description:'Invalid request, unavailable action or location already public'},
+  '400': {schema:'ErrorResponse',description:'Invalid request or schema extension'},
   '401': {schema:'ErrorResponse',description:'Contributing actor required; deployed mode closed'},
   '403': {schema:'ErrorResponse',description:'Only the local synthetic contributor may send mock requests'},
   '404': {schema:'ErrorResponse',description:'Owner advertisement or requester-owned request unavailable'},
