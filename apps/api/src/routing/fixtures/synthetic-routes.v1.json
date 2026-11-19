@@ -1,0 +1,60 @@
+{
+  "fixtureVersion": "uni-050-synthetic-routes-v1",
+  "dataKind": "SYNTHETIC",
+  "sourceLabel": "UNI-050 synthetic routing fixture; fictional coordinates, distances and times; not a real route, place or safety assessment",
+  "cases": [
+    {
+      "gateId": "30000000-0000-4000-8000-000000000001",
+      "boardingId": "00000000-0000-4000-8000-000000000001",
+      "timeContext": "DAY",
+      "status": "AVAILABLE",
+      "options": [
+        {
+          "routeId": "synthetic-primary-day-a",
+          "label": "Synthetic daytime option A",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [[0, 0], [0.0002, 0.0002], [0.0005, 0.0004], [0.0008, 0.0006]]
+          },
+          "distanceMeters": 112,
+          "durationSeconds": 95
+        },
+        {
+          "routeId": "synthetic-primary-day-b",
+          "label": "Synthetic daytime option B",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [[0, 0], [0.0001, 0.0003], [0.0004, 0.0005], [0.0008, 0.0006]]
+          },
+          "distanceMeters": 126,
+          "durationSeconds": 107
+        }
+      ]
+    },
+    {
+      "gateId": "30000000-0000-4000-8000-000000000001",
+      "boardingId": "00000000-0000-4000-8000-000000000001",
+      "timeContext": "NIGHT",
+      "status": "AVAILABLE",
+      "options": [
+        {
+          "routeId": "synthetic-primary-night-a",
+          "label": "Synthetic night-time option",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [[0, 0], [0.0003, 0.0002], [0.0006, 0.0004], [0.0008, 0.0006]]
+          },
+          "distanceMeters": 118,
+          "durationSeconds": 101
+        }
+      ]
+    },
+    {
+      "gateId": "30000000-0000-4000-8000-000000000002",
+      "boardingId": "00000000-0000-4000-8000-000000000001",
+      "timeContext": "DAY",
+      "status": "UNAVAILABLE",
+      "reason": "NO_ROUTE"
+    }
+  ]
+}

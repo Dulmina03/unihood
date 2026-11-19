@@ -32,3 +32,4 @@ export * from './risk';
 export * from './boarding-request';
 export * from './review';
 export * from './report';
+export * from './route';
