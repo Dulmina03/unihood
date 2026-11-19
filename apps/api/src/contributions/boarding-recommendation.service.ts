@@ -12,7 +12,7 @@ export class BoardingRecommendationService {
   async authorize(actor: ActorContext) {
     const actorId = actor.actorId;
     if (!this.repository.includeSynthetic || actor.authStatus !== 'LOCAL_TEST_ACTOR' || !actorId ||
-      !['synthetic:contributor', 'synthetic:owner-a', 'synthetic:price-manager-a'].includes(actorId) ||
+      !['synthetic:contributor', 'synthetic:contributor-b', 'synthetic:owner-a', 'synthetic:price-manager-a'].includes(actorId) ||
       !await this.permissions.canSuggestPlace(actor) || actor.actorId !== actorId) throw new ForbiddenException();
     return actorId;
   }
