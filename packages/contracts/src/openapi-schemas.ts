@@ -11,6 +11,7 @@ import { BoardingMapPinSchema,BoardingMapPageSchema,BoardingMapQuerySchema,Board
 import { OwnerVisibilityPreviewInputSchema,OwnerVisibilityPreviewSchema } from './owner-visibility-preview';
 import { OwnerWizardDraftSchema,OwnerDraftCheckSchema } from './owner-draft';
 import { PublicBoardingListingSchema, PublicBoardingListingPageSchema } from './boarding-model';
+import {BoardingRequestInputSchema,BoardingRequestReceiptSchema,BoardingRequestStatusViewSchema,BoardingRequestKindSchema,BoardingRequestStatusSchema} from './boarding-request';
 import { PublicPoiProposalInputSchema, PublicPoiProposalResultSchema } from './poi-proposal';
 import { DuplicateCheckInputSchema, DuplicateCheckResultSchema } from './duplicate-check';
 import { PublicPoiDetailSchema, PublicPoiSchema, PoiCategorySchema, PoiPageSchema, PoiCategoryPageSchema, PoiListQuerySchema, PoiCategoryQuerySchema } from './place';
@@ -28,6 +29,7 @@ export const PublicSchemaRegistry = {
   BoardingDuplicateInput: BoardingDuplicateInputSchema, BoardingDuplicateCandidate: BoardingDuplicateCandidateSchema, BoardingDuplicateResult: BoardingDuplicateResultSchema, BoardingResolution: BoardingResolutionSchema, BoardingResolutionInput: BoardingResolutionInputSchema, BoardingResolutionReceipt: BoardingResolutionReceiptSchema,
   BoardingRecommendationDraft: BoardingRecommendationDraftSchema, BoardingRecommendationInput: BoardingRecommendationInputSchema, BoardingRecommendationReceipt: BoardingRecommendationReceiptSchema,
   ReviewInput: ReviewInputSchema, ReviewReceipt: ReviewReceiptSchema,
+  BoardingRequestInput:BoardingRequestInputSchema,BoardingRequestReceipt:BoardingRequestReceiptSchema,BoardingRequestStatusView:BoardingRequestStatusViewSchema,BoardingRequestKind:BoardingRequestKindSchema,BoardingRequestStatus:BoardingRequestStatusSchema,
   ReportInput:ReportInputSchema,ReportReceipt:ReportReceiptSchema,ReportAppealInput:ReportAppealInputSchema,ReportAppealReceipt:ReportAppealReceiptSchema,ReportStatusView:ReportStatusViewSchema,ReportOperatorInput:ReportOperatorInputSchema,ReportOperatorReceipt:ReportOperatorReceiptSchema,
   OwnerContactReceipt:OwnerContactReceiptSchema,OwnerMediaUploadBody:OwnerMediaUploadBodySchema,MediaBinary:MediaBinarySchema,OwnerMediaItem:OwnerMediaItemSchema,OwnerMediaPage:OwnerMediaPageSchema,OwnerMediaReceipt:OwnerMediaReceiptSchema,OwnerPrivateContactInput:OwnerPrivateContactInputSchema,OwnerPrivateContact:OwnerPrivateContactSchema,OwnerPrivacyOverview:OwnerPrivacyOverviewSchema,OwnerPrivacyEventPage:OwnerPrivacyEventPageSchema,PrivacyRevisionInput:PrivacyRevisionInputSchema,
   OwnerUnitVacancyInput:OwnerUnitVacancyInputSchema,OwnerVacancyInput:OwnerVacancyInputSchema,UnitVacancy:UnitVacancySchema,OwnerVacancyHistoryPage:OwnerVacancyHistoryPageSchema,
