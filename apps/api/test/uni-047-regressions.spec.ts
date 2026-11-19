@@ -13,7 +13,6 @@ import {
 
 const local = {socket: {remoteAddress: '127.0.0.1', localAddress: '127.0.0.1'}, headers: {host: '127.0.0.1:3001'}};
 const env = {APP_ENV: 'test', NODE_ENV: 'test', ENABLE_SYNTHETIC_ACTORS: 'true', SYNTHETIC_ACTOR: 'owner-a'};
-const actorFor = async (fixture: string) => new SyntheticActors(syntheticConfig({...env, SYNTHETIC_ACTOR: fixture})).resolveRequestActor(local);
 const methods = ['canManageProperty', 'canPublishExactBoardingLocation', 'canSetOfficialPrice', 'canConfirmVacancy', 'canManageMedia', 'canManageContact'] as const;
 
 describe('UNI-047 multi-owner and multi-contributor boundaries', () => {

@@ -28,6 +28,6 @@ No migration, public authorization mechanism, owner transfer, admin dashboard or
 - Human visual and assistive-technology checks were **NOT RUN**. Automated axe, keyboard and responsive-width checks are not a substitute for human review.
 - No real contributor, owner, identity-provider, notification or final claim-authorization flow exists; this issue adds regression evidence only.
 
-## Remote CI (pending)
+## Remote CI (in progress)
 
-Not yet run at the time of this local record. Exact feature and integration run URLs and job results will be appended only after they pass.
+First feature run [44491567782](https://github.com/Dulmina03/unihood/actions/runs/44491567782) on `f3c82ef1ac1cd74378057b57c6d165e1cd942c0c` failed honestly: Workspace quality found an unused test helper after the fixture refactor, and Isolated PostGIS integration passed the new assertions but its cleanup deleted only standard fixture listings before `boarding_properties`, leaving the owner-demo listing referenced. Component browser acceptance passed all jobs. Both local defects were fixed by removing the helper and deleting listings by boarding id; exact-commit results will be appended only after the replacement run passes.

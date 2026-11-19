@@ -86,7 +86,7 @@ export async function testRoleBoundaryRegressions({client,url}){
   console.log('PASS: UNI-047 multi-contributor reviews/reports stay independent, held and private; two owners control disjoint advertisements; false ownership claims cannot gain contact, location, management, price, visibility or publication authority; votes are not proof; UNI-046 requests remain mock-only');
  }finally{
   for(const child of children)child.kill('SIGTERM');
-  const ids=[a,...fixtures.map(row=>row.id)],listings=fixtures.map(row=>row.listingId);
+  const ids=[a,...fixtures.map(row=>row.id)];
   await client.query('DELETE FROM unihood_private.boarding_requests WHERE boarding_id=ANY($1::uuid[])',[ids]);
   await client.query('DELETE FROM unihood_private.risk_evaluations');
   await client.query('DELETE FROM unihood_private.report_audit_events');
@@ -97,7 +97,7 @@ export async function testRoleBoundaryRegressions({client,url}){
   await client.query('DELETE FROM unihood_private.boarding_contacts WHERE boarding_id=ANY($1::uuid[])',[ids]);
   await client.query('DELETE FROM unihood_private.boarding_locations WHERE boarding_id=ANY($1::uuid[])',[ids]);
   await client.query('DELETE FROM public.boarding_advertisement_previews WHERE boarding_id=ANY($1::uuid[])',[ids]);
-  await client.query('DELETE FROM public.listings WHERE id=ANY($1::uuid[])',[listings]);
+  await client.query('DELETE FROM public.listings WHERE boarding_id=ANY($1::uuid[])',[ids]);
   await client.query('DELETE FROM public.boarding_properties WHERE place_id=ANY($1::uuid[])',[ids]);
   await client.query('DELETE FROM public.public_place_locations WHERE place_id=ANY($1::uuid[])',[ids]);
   await client.query('DELETE FROM public.places WHERE id=ANY($1::uuid[])',[ids]);
