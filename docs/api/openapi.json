@@ -1380,6 +1380,386 @@
         }
       }
     },
+    "/api/v1/boarding-requests": {
+      "post": {
+        "operationId": "BoardingRequestController_create__api_v1_boarding_requests",
+        "summary": "Record an owner-ad contact or location mock request without notifying, disclosing or changing publication",
+        "x-unihood-authorization": "Issued local/test contributing capability only; production/staging disabled. No owner notification, contact disclosure or location disclosure.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BoardingRequestInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Pending synthetic receipt; owner not notified and no location disclosed",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardingRequestReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request, unavailable action or location already public",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Contributing actor required; deployed mode closed",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Only the local synthetic contributor may send mock requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owner advertisement or requester-owned request unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request key reused with different intent",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Shared bounded simulator budget",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Unavailable; retry unchanged request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/boarding-requests/{requestId}": {
+      "get": {
+        "operationId": "BoardingRequestController_status__api_v1_boarding_requests__requestId_",
+        "summary": "Read only the requesting contributor’s mock request status; no owner private facts",
+        "x-unihood-authorization": "Issued local/test contributing capability only; production/staging disabled. No owner notification, contact disclosure or location disclosure.",
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PublicId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pending synthetic status; never owner notification or location access",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardingRequestStatusView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request, unavailable action or location already public",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Contributing actor required; deployed mode closed",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Only the local synthetic contributor may send mock requests",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owner advertisement or requester-owned request unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request key reused with different intent",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Shared bounded simulator budget",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Unavailable; retry unchanged request",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/contributions/boarding/duplicates": {
       "post": {
         "operationId": "BoardingDuplicatesController_check__api_v1_contributions_boarding_duplicates",
@@ -9781,6 +10161,187 @@
           "dataKind"
         ],
         "additionalProperties": false
+      },
+      "BoardingRequestInput": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "requestKey": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "boardingId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "CONTACT_OWNER",
+              "REQUEST_LOCATION"
+            ]
+          },
+          "syntheticAcknowledged": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "requestKey",
+          "boardingId",
+          "kind",
+          "syntheticAcknowledged"
+        ],
+        "additionalProperties": false
+      },
+      "BoardingRequestReceipt": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "boardingId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "CONTACT_OWNER",
+              "REQUEST_LOCATION"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "const": "MOCK_PENDING"
+          },
+          "policyVersion": {
+            "type": "string",
+            "const": "boarding-request-mock-v1"
+          },
+          "synthetic": {
+            "type": "boolean",
+            "const": true
+          },
+          "ownerNotified": {
+            "type": "boolean",
+            "const": false
+          },
+          "locationDisclosed": {
+            "type": "boolean",
+            "const": false
+          },
+          "dataKind": {
+            "type": "string",
+            "const": "SYNTHETIC"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          },
+          "duplicate": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "requestId",
+          "boardingId",
+          "kind",
+          "status",
+          "policyVersion",
+          "synthetic",
+          "ownerNotified",
+          "locationDisclosed",
+          "dataKind",
+          "createdAt",
+          "duplicate"
+        ],
+        "additionalProperties": false
+      },
+      "BoardingRequestStatusView": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "boardingId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "CONTACT_OWNER",
+              "REQUEST_LOCATION"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "const": "MOCK_PENDING"
+          },
+          "policyVersion": {
+            "type": "string",
+            "const": "boarding-request-mock-v1"
+          },
+          "synthetic": {
+            "type": "boolean",
+            "const": true
+          },
+          "ownerNotified": {
+            "type": "boolean",
+            "const": false
+          },
+          "locationDisclosed": {
+            "type": "boolean",
+            "const": false
+          },
+          "dataKind": {
+            "type": "string",
+            "const": "SYNTHETIC"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          }
+        },
+        "required": [
+          "requestId",
+          "boardingId",
+          "kind",
+          "status",
+          "policyVersion",
+          "synthetic",
+          "ownerNotified",
+          "locationDisclosed",
+          "dataKind",
+          "createdAt"
+        ],
+        "additionalProperties": false
+      },
+      "BoardingRequestKind": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "string",
+        "enum": [
+          "CONTACT_OWNER",
+          "REQUEST_LOCATION"
+        ]
+      },
+      "BoardingRequestStatus": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "string",
+        "const": "MOCK_PENDING"
       },
       "ReportInput": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",

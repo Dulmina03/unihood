@@ -47,6 +47,7 @@ export async function testBoardingVacancy({client,url,migrations,get,endpoint}){
   await client.query("UPDATE public.boarding_properties SET authorization_status='UNVERIFIED' WHERE place_id=$1",[a]);assert.equal((await get(`/api/v1/boardings/${a}/units`)).status,404);await client.query("UPDATE public.boarding_properties SET authorization_status='LOCAL_TEST_AUTHORIZED' WHERE place_id=$1",[a]);
   console.log('PASS: real confirmation concurrency/replay/target isolation, composite FK/count constraints, insert+version atomic rollback, retained 21-revision paginated history and authority suppression; no public actor evidence');
   await client.query('DELETE FROM unihood_private.risk_evaluations');
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['019_boarding_requests']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
 assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['016_review_intake']);

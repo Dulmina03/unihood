@@ -242,6 +242,7 @@ export async function testBoardingPrivacy({client,url,migrations}){
 
   // 9. Remove only the empty later leaf before testing populated 012 refusal.
   await client.query('DELETE FROM unihood_private.risk_evaluations');
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['019_boarding_requests']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
 assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['016_review_intake']);
@@ -272,6 +273,7 @@ assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy
 
  // Test migration 012 rollback and re-migrate on empty tables
  await client.query('DELETE FROM unihood_private.risk_evaluations');
+ assert.deepEqual(await runMigrations(client,migrations,'rollback'),['019_boarding_requests']);
  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
 assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['016_review_intake']);

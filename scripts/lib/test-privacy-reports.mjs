@@ -90,6 +90,7 @@ export async function testPrivacyReports({client,url,migrations}){
   const audit=await client.query('SELECT event_type,redacted_detail FROM unihood_private.report_audit_events WHERE report_id=ANY($1::uuid[]) ORDER BY occurred_at',[[mediaReceipt.reportId,boardingReceipt.reportId]]);assert.ok(audit.rows.some(row=>row.event_type==='PUBLIC_SUPPRESSION_APPLIED'&&row.redacted_detail==='SUPPRESSED'));assert.ok(audit.rows.some(row=>row.event_type==='PUBLIC_SUPPRESSION_RESTORED'&&row.redacted_detail==='RESTORED'));assert.ok(audit.rows.every(row=>!row.redacted_detail.includes('PRIVATE_EVIDENCE_CANARY')));
 
   await client.query('DELETE FROM unihood_private.risk_evaluations');
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['019_boarding_requests']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
   await assert.rejects(runMigrations(client,migrations,'rollback'),/populated tables/);
   console.log('PASS: UNI-044 held wrong-fee/negative-review reports leave official fees and legitimate reviews intact; confidential evidence encrypted; media/listing suppression reversible with cache-revision invalidation, redacted audit and affect-owner appeals; route reports require an eligible segment; deployed/guest and unrelated-actor actions fail closed');

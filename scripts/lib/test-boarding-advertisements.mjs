@@ -33,6 +33,7 @@ export async function testBoardingAdvertisements({client,url,migrations,get}){
   await client.query("UPDATE public.listings SET publication_status='DISPUTED',is_current=false WHERE id=$1",[listingIds[1]]);assert.equal((await read('/api/v1/boardings/'+ids[1])).status,404);
   await client.query("UPDATE public.places SET status='ARCHIVED' WHERE id=$1",[ids[2]]);assert.equal((await read('/api/v1/boardings/'+ids[2])).status,404);
   await client.query('DELETE FROM unihood_private.risk_evaluations');
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['019_boarding_requests']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
 assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['016_review_intake']);
