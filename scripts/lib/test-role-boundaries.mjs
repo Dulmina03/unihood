@@ -20,6 +20,7 @@ export async function testRoleBoundaryRegressions({client,url}){
  try{
   assert.equal(await seedBoardingAdvertisements(client,url,{APP_ENV:'test',NODE_ENV:'test'},true),1);
   assert.equal(await seedBoardingAdvertisements(client,url,{APP_ENV:'test',NODE_ENV:'test'}),4);
+  await client.query("UPDATE public.places SET source_label='UNI-034 closed synthetic owner fixture' WHERE id=$1",[b]);
   const contributor=await start('contributor'),contributorB=await start('contributor-b'),ownerA=await start('owner-a'),ownerB=await start('owner-b');
   const before=await snapshot();
   assert.deepEqual(before,{publication_status:'PUBLISHED',is_current:true,visibility:'HIDDEN',preview_visibility:'HIDDEN'});
