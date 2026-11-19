@@ -6,6 +6,7 @@ import {testBoardingPrivacy} from './lib/test-boarding-privacy.mjs';
 import {testPrivacyReports} from './lib/test-privacy-reports.mjs';
 import {testRiskRules} from './lib/test-risk-rules.mjs';
 import {testBoardingRequests} from './lib/test-boarding-requests.mjs';
+import {testRoleBoundaryRegressions} from './lib/test-role-boundaries.mjs';
 import {testBoardingDetails} from './lib/test-boarding-details.mjs';
 import {testBoardingVacancy} from './lib/test-boarding-vacancy.mjs';
 import { testBoardingInventory } from './lib/test-boarding-inventory.mjs';
@@ -175,6 +176,7 @@ assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy
   await testPrivacyReports({client,url,migrations});
   await testRiskRules({client,url,migrations});
   await testBoardingRequests({client,url,migrations});
+  await testRoleBoundaryRegressions({client,url});
   await testBoardingVacancy({client,url,migrations,get,endpoint});
   await testBoardingInventory({client,migrations,url,get,endpoint});
   await testBoardingMap({client,migrations,url,get,endpoint});

@@ -8,7 +8,7 @@ import {baseSignals,contentSignals,observedRecently} from '../risk/risk-signals'
 import {recordRisk} from '../risk/risk-evaluation';
 type Query=(sql:string,values:unknown[])=>Promise<Record<string,unknown>[]>;
 type Row=Record<string,unknown>;
-const actorRefs=['synthetic:contributor','synthetic:owner-a','synthetic:price-manager-a'];
+const actorRefs=['synthetic:contributor','synthetic:contributor-b','synthetic:owner-a','synthetic:price-manager-a'];
 const severityOf=(type:string)=>type==='PRIVATE_DATA_EXPOSED'||type==='FAKE_OWNERSHIP'||type==='HARASSMENT'?'P0':type==='INAPPROPRIATE_MEDIA'||type==='WRONG_FEE'||type==='WRONG_VACANCY'||type==='STALE_INFORMATION'||type==='CLOSURE'?'P1':'P2';
 const automaticEffect=(type:string,targetType:string)=>type==='PRIVATE_DATA_EXPOSED'&&targetType==='BOARDING'?'LISTING_HIDDEN':(type==='PRIVATE_DATA_EXPOSED'||type==='INAPPROPRIATE_MEDIA')&&targetType==='MEDIA'?'MEDIA_BLOCKED':'NONE';
 const date=`to_char(created_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS created_at`;

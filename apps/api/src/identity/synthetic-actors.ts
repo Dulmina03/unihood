@@ -3,6 +3,7 @@ import type { ActorContext, IdentityProvider, PermissionService } from '@unihood
 
 export const SYNTHETIC_PROPERTY_A = '00000000-0000-4000-8000-000000000001';
 export const SYNTHETIC_PROPERTY_B = '00000000-0000-4000-8000-000000000002';
+export const SYNTHETIC_SECOND_OWNER_PROPERTY = '71000000-0000-4000-8000-000000000002';
 export type SyntheticConfig = Readonly<{enabled: boolean; fixture: string | undefined}>;
 export function syntheticConfig(env: NodeJS.ProcessEnv): SyntheticConfig {
   const local = env.APP_ENV === 'local' && (env.NODE_ENV === undefined || env.NODE_ENV === 'development');
@@ -37,8 +38,8 @@ export class SyntheticActors implements IdentityProvider, PermissionService {
   private readonly issued = new WeakMap<ActorContext, Grants>();
   constructor(private readonly config: SyntheticConfig = syntheticConfig(process.env)) {}
   async resolveRequestActor(request: unknown): Promise<ActorContext> {
-    if (!this.config.enabled || !localRequest(request) || !['contributor', 'owner-a', 'price-manager-a', 'operator'].includes(this.config.fixture ?? '')) return guest();
-    const fixture = this.config.fixture, properties = fixture === 'contributor' || fixture === 'operator' ? [] : [{boardingId: SYNTHETIC_PROPERTY_A, permissions: fixture === 'owner-a' ? [...ownerPermissions] : ['MANAGE_PROPERTY', 'SET_OFFICIAL_PRICE']}];
+    if (!this.config.enabled || !localRequest(request) || !['contributor', 'contributor-b', 'owner-a', 'owner-b', 'price-manager-a', 'operator'].includes(this.config.fixture ?? '')) return guest();
+    const fixture = this.config.fixture, properties = fixture === 'contributor' || fixture === 'contributor-b' || fixture === 'operator' ? [] : fixture === 'owner-b' ? [{boardingId: SYNTHETIC_SECOND_OWNER_PROPERTY, permissions: [...ownerPermissions]}] : [{boardingId: SYNTHETIC_PROPERTY_A, permissions: fixture === 'owner-a' ? [...ownerPermissions] : ['MANAGE_PROPERTY', 'SET_OFFICIAL_PRICE']}];
     const actor: ActorContext = {actorId: `synthetic:${fixture}`, authStatus: 'LOCAL_TEST_ACTOR', memberships: structuredClone(properties)};
     // Privileges come from this instance's private issuance record, never mutable caller-supplied fields.
     this.issued.set(actor, {actorId: actor.actorId!, contribute: fixture !== 'operator', properties});
