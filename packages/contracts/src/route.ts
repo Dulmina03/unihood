@@ -193,3 +193,47 @@ export function parsePedestrianRoutingRequest(input: unknown): PedestrianRouting
 export function parsePedestrianRoutingResult(input: unknown): PedestrianRoutingResult {
   return PedestrianRoutingResultSchema.parse(input);
 }
+
+// UNI-051 public route read. The provider boundary above is unchanged; this is a
+// separate wire contract so query strings never reach provider configuration.
+// Wire booleans stay strings like every other public query contract.
+export const RoutePublicQuerySchema = z.strictObject({
+  gateId: PublicIdSchema,
+  boardingId: PublicIdSchema,
+  timeContext: RouteTimeContextSchema,
+  includeAlternatives: z.enum(['true', 'false']).optional(),
+});
+export type RoutePublicQuery = z.infer<typeof RoutePublicQuerySchema>;
+
+// A public option is exactly the provider option: synthetic-only provenance with
+// null verification and bounded geometry/metrics. No separate coordinates exist.
+export const PublicRouteOptionSchema = PedestrianRouteOptionSchema;
+export type PublicRouteOption = PedestrianRouteOption;
+
+// Only provider-domain absence is a public 200 outcome. Disabled/timeout/error/
+// invalid/cancelled outcomes become the shared SERVICE_UNAVAILABLE envelope.
+export const PublicRouteUnavailableReasonSchema = z.enum(['NO_ROUTE', 'UNSUPPORTED_TIME_CONTEXT']);
+export type PublicRouteUnavailableReason = z.infer<typeof PublicRouteUnavailableReasonSchema>;
+
+export const PublicRouteResponseSchema = z.discriminatedUnion('status', [
+  z.strictObject({
+    gateId: PublicIdSchema,
+    boardingId: PublicIdSchema,
+    timeContext: RouteTimeContextSchema,
+    status: z.literal('AVAILABLE'),
+    sourceVersion,
+    options: z.array(PublicRouteOptionSchema).min(1).max(3),
+  }),
+  z.strictObject({
+    gateId: PublicIdSchema,
+    boardingId: PublicIdSchema,
+    timeContext: RouteTimeContextSchema,
+    status: z.literal('UNAVAILABLE'),
+    reason: PublicRouteUnavailableReasonSchema,
+  }),
+]);
+export type PublicRouteResponse = z.infer<typeof PublicRouteResponseSchema>;
+
+export function parsePublicRouteResponse(input: unknown): PublicRouteResponse {
+  return PublicRouteResponseSchema.parse(input);
+}

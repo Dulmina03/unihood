@@ -23,6 +23,7 @@ import * as enums from './enums';
 import { ErrorResponseSchema, PaginationQuerySchema, PageMetaSchema } from './rest';
 import { PublicBoardingResponseSchema, PublicBoardingPageSchema, OwnerPublicMapSchema } from './boarding-public';
 import { BoardingAdvertisementQuerySchema,PublicBoardingAdvertisementSchema,BoardingAdvertisementPageSchema } from './boarding-advertisement';
+import { RoutePublicQuerySchema, PublicRouteResponseSchema } from './route';
 // No actor identities/memberships, private location/media or persistence entities belong in OpenAPI components.
 export const PublicSchemaRegistry = {
   PoiCorrectionChange:PoiCorrectionChangeSchema,PoiCorrectionInput:PoiCorrectionInputSchema,PoiCorrectionReceipt:PoiCorrectionReceiptSchema,ContributionKind:ContributionKindSchema,ContributionState:ContributionStateSchema,ContributionHistoryQuery:ContributionHistoryQuerySchema,ContributionHistoryItem:ContributionHistoryItemSchema,ContributionHistoryPage:ContributionHistoryPageSchema,
@@ -39,6 +40,7 @@ export const PublicSchemaRegistry = {
   OwnerVisibilityPreviewInput:OwnerVisibilityPreviewInputSchema,OwnerVisibilityPreview:OwnerVisibilityPreviewSchema,
   OwnerWizardDraft:OwnerWizardDraftSchema,OwnerDraftCheck:OwnerDraftCheckSchema,
   BoardingAdvertisementQuery:BoardingAdvertisementQuerySchema, PublicBoardingAdvertisement:PublicBoardingAdvertisementSchema, BoardingAdvertisementPage:BoardingAdvertisementPageSchema,
+  RoutePublicQuery:RoutePublicQuerySchema, PublicRouteResponse:PublicRouteResponseSchema,
   PublicBoardingListing:PublicBoardingListingSchema, PublicBoardingListingPage:PublicBoardingListingPageSchema,
   PublicPoiProposalInput:PublicPoiProposalInputSchema, PublicPoiProposalResult:PublicPoiProposalResultSchema,
   DuplicateCheckInput: DuplicateCheckInputSchema, DuplicateCheckResult: DuplicateCheckResultSchema,

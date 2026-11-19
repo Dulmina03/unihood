@@ -1,7 +1,7 @@
 import { z } from 'zod';
 export type RuntimeSchema<T> = z.ZodType<T>;
 export const PublicIdSchema = z.uuid();
-export const PublicFieldSchema = z.enum(['request', 'id', 'title', 'q', 'page', 'pageSize', 'sort', 'visibility', 'publisherKind']);
+export const PublicFieldSchema = z.enum(['request', 'id', 'title', 'q', 'page', 'pageSize', 'sort', 'visibility', 'publisherKind', 'gateId', 'boardingId', 'timeContext', 'includeAlternatives']);
 export const ValidationReasonSchema = z.enum(['INVALID_VALUE', 'UNKNOWN_FIELD']);
 export const ErrorCodeSchema = z.enum(['BAD_REQUEST', 'VALIDATION_FAILED', 'UNAUTHORIZED', 'FORBIDDEN', 'NOT_FOUND', 'CONFLICT', 'UNPROCESSABLE_ENTITY', 'RATE_LIMITED', 'PAYLOAD_TOO_LARGE', 'FEATURE_NOT_AVAILABLE', 'SERVICE_UNAVAILABLE', 'INTERNAL_ERROR']);
 export const ErrorDetailSchema = z.strictObject({field: PublicFieldSchema, reason: ValidationReasonSchema});

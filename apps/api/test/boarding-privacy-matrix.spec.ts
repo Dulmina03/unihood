@@ -497,14 +497,19 @@ describe('UNI-039 comparison authority and unavailable future surfaces', () => {
     } finally { await app.close(); }
   });
 
-  it('has no route, generic essentials or private lookup shortcut before their roadmap issues', async () => {
+  it('has no generic essentials or private lookup shortcut and rejects client-supplied route coordinates', async () => {
     const { app, calls } = await createTestApp();
     try {
-      for (const path of ['/routes', '/essentials', '/search']) {
+      for (const path of ['/essentials', '/search']) {
         const response = await request(app.getHttpServer()).get(`/api/v1${path}?boardingId=${propB}&lat=42.123456`).expect(404);
         expect(JSON.stringify(response.body)).not.toMatch(/42\.123456|unihood_private/);
       }
-      expect(calls).toEqual([]);
+      // UNI-051 exists but never accepts client coordinates or private geometry.
+      const rejected = await request(app.getHttpServer()).get(`/api/v1/routes?gateId=${propA}&boardingId=${propB}&timeContext=DAY&lat=42.123456`).expect(400);
+      expect(JSON.stringify(rejected.body)).not.toMatch(/42\.123456|unihood_private/);
+      const ineligible = await request(app.getHttpServer()).get(`/api/v1/routes?gateId=${propA}&boardingId=${propB}&timeContext=DAY`).expect(404);
+      expect(JSON.stringify(ineligible.body)).not.toMatch(/42\.123456|unihood_private|visibility|consent|PUBLIC_MAP/);
+      expect(calls.every((call) => !/unihood_private|exact_geo|address_enc|boarding_locations/.test(call.sql))).toBe(true);
     } finally { await app.close(); }
   });
 });

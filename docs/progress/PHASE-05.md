@@ -1,6 +1,26 @@
 # Phase 5 — walking routes, neighborhood profiles and advanced discovery
 
-Status: **UNI-050 implemented; exact-commit feature CI passed.** No later Phase 5 issue is implemented by this record.
+Status: **UNI-051 implemented on a feature branch; feature verification pending human review.** No later Phase 5 issue is implemented by this record.
+
+## UNI-051 — public campus gate → owner public boarding entrance routes
+
+Implemented from verified `dev` `fd50dd528a124a994e4efadbb8f34ab3e795728a` on `feat/uni-051-public-pedestrian-routes`.
+
+Scope is the public read API only:
+
+- `GET /api/v1/routes` with strict `gateId`, `boardingId`, `timeContext` and optional wire-string `includeAlternatives` (default `true`);
+- one bounded eligibility statement resolving the public gate point and the consented public boarding entrance together;
+- the strict `/boardings/map` policy mirrored verbatim, including the advertisement-preview join; the weaker comparison/nearby-essentials queries are not used;
+- provider invocation only after both endpoints resolve, so an ineligible or unknown pair causes zero provider calls;
+- typed `NO_ROUTE`/`UNSUPPORTED_TIME_CONTEXT` HTTP 200 results and `SERVICE_UNAVAILABLE` for disabled/timeout/provider-error/invalid-response/cancellation;
+- explicit public projection with synthetic provenance and no private coordinates or internals;
+- `PublicRouteQuery`, `PublicRouteResponse` contracts, route validation field names, OpenAPI regeneration, unit/HTTP and real PostGIS integration tests.
+
+No Next.js proxy or `/routes` screen, live provider, credential, migration, route table or `route_segments` change, rate limiter, verified boarding publication authority, gate-to-boarding campus rule, authentication change or shared exception-filter change is included. Tiered eligibility remains unchanged.
+
+Rate limiting is deferred to **UNI-062**; the Next.js proxy and route card UI are deferred to the relevant UI work (UNI-054).
+
+Local verification is recorded in [UNI-051 verification](../verification/UNI-051/README.md). Current boarding publication is synthetic-only, so deployed environments return 404 for every boarding destination until a legitimate publication path exists; this is a data/product limitation, not a weakened check.
 
 ## UNI-050 — pedestrian routing provider adapter and local deterministic fixtures
 
@@ -24,4 +44,4 @@ Local verification: lint, typecheck, workspace tests, production build, reposito
 
 ## Remaining roadmap
 
-UNI-051 public campus-gate → owner-entrance routes, UNI-052 provider walking access for nearby essentials, UNI-053 route segments and day/night structured observations, UNI-054 route card design without safety promises, UNI-055 transparent neighborhood comparison, and UNI-056 privacy/confidence/stale/cancellation/timeout/alternate/no-route tests remain future work.
+UNI-052 provider walking access for nearby essentials, UNI-053 route segments and day/night structured observations, UNI-054 route card design without safety promises, UNI-055 transparent neighborhood comparison, and UNI-056 privacy/confidence/stale/cancellation/timeout/alternate/no-route tests remain future work.

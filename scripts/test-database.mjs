@@ -11,6 +11,7 @@ import {testBoardingDetails} from './lib/test-boarding-details.mjs';
 import {testBoardingVacancy} from './lib/test-boarding-vacancy.mjs';
 import { testBoardingInventory } from './lib/test-boarding-inventory.mjs';
 import { testBoardingMap } from './lib/test-boarding-map.mjs';
+import { testPedestrianRoutes } from './lib/test-pedestrian-routes.mjs';
 import { testBoardingFoundation } from './lib/test-boarding-foundation.mjs';
 import { testPoiProposalApi } from './lib/test-poi-proposal-api.mjs';
 import { testPoiSubmissions } from './lib/test-poi-submissions.mjs';
@@ -181,6 +182,7 @@ try {
   await testBoardingVacancy({client,url,migrations,get,endpoint});
   await testBoardingInventory({client,migrations,url,get,endpoint});
   await testBoardingMap({client,migrations,url,get,endpoint});
+  await testPedestrianRoutes({client,url,get});
   await testBoardingAdvertisements({client,migrations,url,get});
   await client.query('DELETE FROM unihood_private.risk_evaluations');
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['020_multi_actor_fixtures']);
