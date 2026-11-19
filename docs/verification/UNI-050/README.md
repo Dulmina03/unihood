@@ -45,3 +45,5 @@ Feature run [44563407334](https://github.com/Dulmina03/unihood/actions/runs/4456
 - Workspace quality: PASS — repository/workflow checks, lint, typecheck, tests and build.
 - Isolated PostGIS integration: PASS — Compose validation and isolated tmpfs database/API/landing regression.
 - Component browser acceptance: PASS — synthetic component suite and Phase 1 guest E2E against isolated PostGIS.
+
+Evidence commit `61973a495659911fd5f107c3f13d24a8596d94fa` also passed exact-commit feature CI ([44565810596](https://github.com/Dulmina03/unihood/actions/runs/44565810596)) on all three jobs. It was fast-forward integrated into `dev`; dev CI [44567615226](https://github.com/Dulmina03/unihood/actions/runs/44567615226) passed all three required jobs for the same exact commit.
