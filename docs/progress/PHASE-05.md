@@ -1,6 +1,6 @@
 # Phase 5 — walking routes, neighborhood profiles and advanced discovery
 
-Status: **UNI-050 implemented; exact-commit CI pending.** No later Phase 5 issue is implemented by this record.
+Status: **UNI-050 implemented; exact-commit feature CI passed.** No later Phase 5 issue is implemented by this record.
 
 ## UNI-050 — pedestrian routing provider adapter and local deterministic fixtures
 
@@ -20,7 +20,7 @@ Scope is the provider boundary only:
 
 No `/api/v1/routes` endpoint, `/routes` UI, route-condition report workflow, route database table, migration, seed change, live provider, production credential or publication/authorization change is included. The provider is not an authorization boundary; UNI-051 must reject `AREA_ONLY`, `HIDDEN`, unconsented and unauthorized destinations before invocation.
 
-Local verification: lint, typecheck, workspace tests, production build, repository checks and workflow checks passed. Isolated Docker/PostGIS and browser suites were **NOT RUN** locally because this issue changes neither database schema nor web UI. Actual results remain in [UNI-050 verification](../verification/UNI-050/README.md).
+Local verification: lint, typecheck, workspace tests, production build, repository checks and workflow checks passed. Isolated Docker/PostGIS and browser suites were **NOT RUN** locally because this issue changes neither database schema nor web UI. Feature CI [44563407334](https://github.com/Dulmina03/unihood/actions/runs/44563407334) passed all three required jobs for exact commit `37c2171714e62f5b709efd69597cf8bc67d306fb`. Actual results remain in [UNI-050 verification](../verification/UNI-050/README.md).
 
 ## Remaining roadmap
 

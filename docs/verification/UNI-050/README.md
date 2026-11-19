@@ -38,6 +38,10 @@ The API test run emits Jest's non-failing JSON-import deprecation warning for th
 - Live routing provider, real route quality, provider licensing/attribution/quota and external network behavior: **NOT RUN** and not implemented.
 - Human visual/accessibility review: not applicable to this backend-only issue.
 
-## Remote CI
+## Remote CI (PASS)
 
-Feature branch exact-commit CI will be recorded only after all required jobs pass. This section is updated with the actual run URL, full SHA and every required job result; no pending, skipped or cancelled result is treated as PASS.
+Feature run [44563407334](https://github.com/Dulmina03/unihood/actions/runs/44563407334) on `37c2171714e62f5b709efd69597cf8bc67d306fb` completed successfully for the exact commit; every required job passed:
+
+- Workspace quality: PASS — repository/workflow checks, lint, typecheck, tests and build.
+- Isolated PostGIS integration: PASS — Compose validation and isolated tmpfs database/API/landing regression.
+- Component browser acceptance: PASS — synthetic component suite and Phase 1 guest E2E against isolated PostGIS.
