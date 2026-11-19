@@ -95,6 +95,7 @@ export async function testRoleBoundaryRegressions({client,url}){
   await client.query('DELETE FROM unihood_private.report_appeals');
   await client.query('DELETE FROM unihood_private.report_cases');
   await client.query('DELETE FROM unihood_private.review_intake');
+  await client.query('DELETE FROM unihood_private.boarding_privacy_events WHERE boarding_id=ANY($1::uuid[])',[ids]);
   await client.query('DELETE FROM unihood_private.boarding_contacts WHERE boarding_id=ANY($1::uuid[])',[ids]);
   await client.query('DELETE FROM unihood_private.boarding_locations WHERE boarding_id=ANY($1::uuid[])',[ids]);
   await client.query('DELETE FROM public.boarding_advertisement_previews WHERE boarding_id=ANY($1::uuid[])',[ids]);
