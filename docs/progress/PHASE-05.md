@@ -1,6 +1,6 @@
 # Phase 5 — walking routes, neighborhood profiles and advanced discovery
 
-Status: **UNI-051 implemented on a feature branch; feature verification pending human review.** No later Phase 5 issue is implemented by this record.
+Status: **UNI-051 integrated into `dev` after feature and `dev` CI verification.** No later Phase 5 issue is implemented by this record.
 
 ## UNI-051 — public campus gate → owner public boarding entrance routes
 
@@ -20,7 +20,7 @@ No Next.js proxy or `/routes` screen, live provider, credential, migration, rout
 
 Rate limiting is deferred to **UNI-062**; the Next.js proxy and route card UI are deferred to the relevant UI work (UNI-054).
 
-Local verification is recorded in [UNI-051 verification](../verification/UNI-051/README.md); implementation commit `bf5d381c3cda4c568920816a115dfca3f073370b` passed feature CI [#44602000247](https://github.com/Dulmina03/unihood/actions/runs/44602000247) all three required jobs. A pre-integration audit resolved client-disconnect handling: cancellation now ends silently through an additive `RequestCancelledException` filter guard instead of a 503 response attempt, and the implementation was re-verified locally. The issue is **not integrated into `dev`**. Current boarding publication is synthetic-only, so deployed environments return 404 for every boarding destination until a legitimate publication path exists; this is a data/product limitation, not a weakened check.
+Local verification is recorded in [UNI-051 verification](../verification/UNI-051/README.md); implementation commit `bf5d381c3cda4c568920816a115dfca3f073370b` passed feature CI [#44602000247](https://github.com/Dulmina03/unihood/actions/runs/44602000247) all three required jobs. A pre-integration audit resolved client-disconnect handling: cancellation now ends silently through an additive `RequestCancelledException` filter guard instead of a 503 response attempt, and the implementation was re-verified locally (feature CI [#44611871577](https://github.com/Dulmina03/unihood/actions/runs/44611871577)). `7e78feb848e35400a8890b2f8d5923da3880dfb4` was fast-forward merged into `dev`; `dev` CI [#44616616826](https://github.com/Dulmina03/unihood/actions/runs/44616616826) passed all three jobs for the exact commit. Current boarding publication is synthetic-only, so deployed environments return 404 for every boarding destination until a legitimate publication path exists; this is a data/product limitation, not a weakened check.
 
 ## UNI-050 — pedestrian routing provider adapter and local deterministic fixtures
 

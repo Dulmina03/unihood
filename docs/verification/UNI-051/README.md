@@ -1,6 +1,6 @@
 # UNI-051 verification — public pedestrian routes
 
-Branch `feat/uni-051-public-pedestrian-routes`, created from verified `dev` `fd50dd528a124a994e4efadbb8f34ab3e795728a`. This issue is **not integrated into `dev`**; the record below covers the feature branch only.
+Branch `feat/uni-051-public-pedestrian-routes`, created from verified `dev` `fd50dd528a124a994e4efadbb8f34ab3e795728a`. The issue is now fast-forward integrated into `dev`; the record below keeps the original feature-branch evidence followed by the pre-integration audit and `dev` verification.
 
 ## Scope implemented
 
@@ -52,7 +52,13 @@ Implementation commit `bf5d381c3cda4c568920816a115dfca3f073370b` passed feature 
 - `Isolated PostGIS integration` — isolated tmpfs database, API and landing regression, including the new routing group.
 - `Component browser acceptance` — synthetic component suite and Phase 1 guest E2E against isolated PostGIS.
 
-The branch is **not merged into `dev`** and no `dev`/`main` CI is claimed for this issue.
+The branch is merged into `dev` only after the exact-commit feature runs above passed; `main` is unchanged.
+
+## Integration
+
+`7e78feb848e35400a8890b2f8d5923da3880dfb4` was fast-forward merged into `dev` and pushed. `dev` CI [44616616826](https://github.com/Dulmina03/unihood/actions/runs/44616616826) passed for that exact commit, all three jobs.
+
+Recorded transient failure, not suppressed: the first attempt of run [44613889673](https://github.com/Dulmina03/unihood/actions/runs/44613889673) (same docs commit) failed `Workspace quality` on an unrelated UNI-042 web assertion — `apps/web/tests/poi-correction.test.tsx:14` expected focus on the "Correction held." heading and received `body`. No UNI-051 file was involved; `workspace quality` passed on rerun with the identical commit and the other two jobs passed on both attempts. Local `pnpm test` passed 222/222 web tests before and after.
 
 ## Pre-integration audit follow-up (19 November 2026)
 
