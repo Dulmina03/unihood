@@ -35,3 +35,11 @@ Feature commit `a7ee35c0f3fb3dbddfb827d0ef0e53c40a49be2f` on `feat/uni-046-conta
 - Component browser acceptance — job 135376255512
 
 Earlier feature runs (`44460860103`, `44466975395`, `44468662816`) failed only on database migration-order expectations while adding `019_boarding_requests` and are retained honestly. They were fixed by rolling back the empty request schema before populated-history refusal and by updating the CLI rollback assertion.
+
+## Integration
+
+UNI-046 is fast-forward integrated into `dev`; no merge commit was created. First synchronized dev tip `dad39ad096125374edcdc0dfba0609fcc37e4616` passed [dev run 44472965679](https://github.com/Dulmina03/unihood/actions/runs/44472965679), all required jobs SUCCESS:
+
+- Workspace quality — job 135386629371
+- Component browser acceptance — job 135386629610
+- Isolated PostGIS integration — job 135386629704
