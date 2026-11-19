@@ -114,9 +114,10 @@ export async function testUniversities({client, url, get, endpoint, migrations})
   assert.equal((await client.query("SELECT count(*)::int AS n FROM public.places WHERE data_kind<>'SYNTHETIC'")).rows[0].n, 0);
   await client.query('DELETE FROM public.place_aliases; DELETE FROM public.place_source_refs; DELETE FROM public.public_place_locations; DELETE FROM public.places; DELETE FROM public.buildings; DELETE FROM public.poi_categories');
   await client.query('DELETE FROM unihood_private.risk_evaluations');
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['020_multi_actor_fixtures']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['019_boarding_requests']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
-assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['016_review_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['015_poi_correction_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['014_boarding_recommendation_resolutions']);

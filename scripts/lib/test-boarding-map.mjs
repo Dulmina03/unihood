@@ -48,9 +48,10 @@ export async function testBoardingMap({client,url,migrations,get,endpoint:guestE
   assert.equal((await change(5,{visibility:'HIDDEN'})).status,503);assert.equal((await readMap()).items.length,1);settings=await (await fetch(endpoint+path)).json();assert.equal(settings.revision,5);
   await client.query('DROP TRIGGER synthetic_map_failure ON unihood_private.boarding_visibility_events; DROP FUNCTION public.synthetic_map_failure()');
   await client.query('DELETE FROM unihood_private.risk_evaluations');
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['020_multi_actor_fixtures']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['019_boarding_requests']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
-assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['016_review_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['015_poi_correction_intake']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['014_boarding_recommendation_resolutions']);

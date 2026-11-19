@@ -56,6 +56,7 @@ export async function testBoardingRequests({client,url,migrations}){
 
   await assert.rejects(runMigrations(client,migrations,'rollback'),/populated mock request history/);
   await client.query('DELETE FROM unihood_private.boarding_requests');
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['020_multi_actor_fixtures']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['019_boarding_requests']);
   await runMigrations(client,migrations,'migrate');assert.deepEqual(await runMigrations(client,migrations,'migrate'),[]);
   console.log('PASS: UNI-046 owner contact/location mock requests stay pending, synthetic and requester-scoped; duplicates and key reuse are bounded; community/public-map eligibility and hidden visibility cannot be bypassed; no owner contact or coordinate disclosure occurs; populated rollback refuses');

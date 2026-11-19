@@ -79,6 +79,7 @@ export async function testRiskRules({client,url,migrations}){
   assert.equal((await client.query("SELECT count(*)::int AS n FROM unihood_private.risk_evaluations WHERE decision='AUTO_PUBLISH'")).rows[0].n,0);
 
   // Populated history is preserved; an empty rollback/re-migrate is repeatable.
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['020_multi_actor_fixtures']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['019_boarding_requests']);
   await assert.rejects(runMigrations(client,migrations,'rollback'),/populated history/);
   for(const [kind,id] of contributions)await client.query('DELETE FROM unihood_private.risk_evaluations WHERE contribution_kind=$1 AND contribution_id=$2',[kind,id]);

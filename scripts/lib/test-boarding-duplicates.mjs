@@ -52,9 +52,10 @@ export async function testBoardingDuplicates({client,url,migrations,get}){
 
   assert.equal((await get('/api/v1/boardings/map')).status,200);
   await client.query('DELETE FROM unihood_private.risk_evaluations');
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['020_multi_actor_fixtures']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['019_boarding_requests']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
-assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['016_review_intake']);assert.deepEqual(await runMigrations(client,migrations,'rollback'),['015_poi_correction_intake']);await assert.rejects(runMigrations(client,migrations,'rollback'),/populated tables/);await runMigrations(client,migrations,'migrate');
   console.log('PASS: UNI-041 real curated nonspatial Unicode/typo candidates, hidden-locality exclusion, same-building distinct identities, canonical held associations, cross-actor/replay/race isolation, private pending grouping and current-eligibility suppression without owner authority or public mutation');
  }finally{
@@ -63,9 +64,10 @@ assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy
   await client.query('DELETE FROM public.boarding_advertisement_previews WHERE boarding_id=ANY($1::uuid[])',[[a,b]]);await client.query('DELETE FROM public.listings WHERE boarding_id=ANY($1::uuid[])',[[a,b]]);await client.query('DELETE FROM unihood_private.boarding_locations WHERE boarding_id=ANY($1::uuid[])',[[a,b]]);await client.query('DELETE FROM unihood_private.boarding_building_links WHERE boarding_id=ANY($1::uuid[])',[[a,b]]);await client.query('DELETE FROM public.boarding_properties WHERE place_id=ANY($1::uuid[])',[[a,b]]);await client.query('DELETE FROM public.places WHERE id=ANY($1::uuid[])',[[a,b]]);await client.query('DELETE FROM public.buildings WHERE id=$1',[building]);
  }
  await client.query('DELETE FROM unihood_private.risk_evaluations');
- assert.deepEqual(await runMigrations(client,migrations,'rollback'),['019_boarding_requests']);
+ assert.deepEqual(await runMigrations(client,migrations,'rollback'),['020_multi_actor_fixtures']);
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['019_boarding_requests']);
  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['018_risk_rules']);
-assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
+  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['017_privacy_reports']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['016_review_intake']);
  assert.deepEqual(await runMigrations(client,migrations,'rollback'),['015_poi_correction_intake']);
  await client.query('CREATE VIEW public.synthetic_resolution_dependency AS SELECT contribution_id FROM unihood_private.boarding_recommendation_resolutions');await assert.rejects(runMigrations(client,migrations,'rollback'),error=>error.code==='2BP01');await client.query('DROP VIEW public.synthetic_resolution_dependency');assert.deepEqual(await runMigrations(client,migrations,'rollback'),['014_boarding_recommendation_resolutions']);await runMigrations(client,migrations,'migrate');assert.deepEqual(await runMigrations(client,migrations,'migrate'),[]);
