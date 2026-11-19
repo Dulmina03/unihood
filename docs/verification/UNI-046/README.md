@@ -26,6 +26,12 @@ Verified base: clean `dev` `8564852664d822e63ec21779eccc64fe9bdc6975`. Worktree 
 - Human visual and assistive-technology checks were **NOT RUN**. Automated axe and keyboard focus checks are not a substitute for a human review.
 - No real messaging, owner notification, contact delivery or location disclosure was tested because none is implemented.
 
-## Remote CI
+## Remote CI (actual)
 
-Pending exact feature commit CI and fast-forward dev verification; this record will be updated only with actual run URLs after they pass.
+Feature commit `a7ee35c0f3fb3dbddfb827d0ef0e53c40a49be2f` on `feat/uni-046-contact-location-requests` passed [feature run 44469814443](https://github.com/Dulmina03/unihood/actions/runs/44469814443), all required jobs SUCCESS:
+
+- Workspace quality — job 135376255703
+- Isolated PostGIS integration — job 135376255153 (includes `test-boarding-requests`)
+- Component browser acceptance — job 135376255512
+
+Earlier feature runs (`44460860103`, `44466975395`, `44468662816`) failed only on database migration-order expectations while adding `019_boarding_requests` and are retained honestly. They were fixed by rolling back the empty request schema before populated-history refusal and by updating the CLI rollback assertion.
