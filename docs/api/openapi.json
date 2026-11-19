@@ -7064,7 +7064,7 @@
             }
           },
           "503": {
-            "description": "Routing unavailable: disabled provider, timeout, provider error, invalid response or cancelled request",
+            "description": "Routing unavailable: disabled provider, timeout, provider error or invalid response",
             "headers": {
               "X-Request-Id": {
                 "description": "Server-generated correlation ID; inbound IDs are ignored.",

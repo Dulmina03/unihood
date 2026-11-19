@@ -16,7 +16,7 @@ const errors = {
   '400': { schema: 'ErrorResponse', description: 'Invalid route query parameters' },
   '404': { schema: 'ErrorResponse', description: 'Gate or boarding is not publicly eligible for routing' },
   '500': { schema: 'ErrorResponse', description: 'Internal error' },
-  '503': { schema: 'ErrorResponse', description: 'Routing unavailable: disabled provider, timeout, provider error, invalid response or cancelled request' },
+  '503': { schema: 'ErrorResponse', description: 'Routing unavailable: disabled provider, timeout, provider error or invalid response' },
 } as const;
 
 @Controller('api/v1')

@@ -20,7 +20,7 @@ No Next.js proxy or `/routes` screen, live provider, credential, migration, rout
 
 Rate limiting is deferred to **UNI-062**; the Next.js proxy and route card UI are deferred to the relevant UI work (UNI-054).
 
-Local verification is recorded in [UNI-051 verification](../verification/UNI-051/README.md); implementation commit `bf5d381c3cda4c568920816a115dfca3f073370b` passed feature CI [#44602000247](https://github.com/Dulmina03/unihood/actions/runs/44602000247) all three required jobs. The issue is **not integrated into `dev`**. Current boarding publication is synthetic-only, so deployed environments return 404 for every boarding destination until a legitimate publication path exists; this is a data/product limitation, not a weakened check.
+Local verification is recorded in [UNI-051 verification](../verification/UNI-051/README.md); implementation commit `bf5d381c3cda4c568920816a115dfca3f073370b` passed feature CI [#44602000247](https://github.com/Dulmina03/unihood/actions/runs/44602000247) all three required jobs. A pre-integration audit resolved client-disconnect handling: cancellation now ends silently through an additive `RequestCancelledException` filter guard instead of a 503 response attempt, and the implementation was re-verified locally. The issue is **not integrated into `dev`**. Current boarding publication is synthetic-only, so deployed environments return 404 for every boarding destination until a legitimate publication path exists; this is a data/product limitation, not a weakened check.
 
 ## UNI-050 — pedestrian routing provider adapter and local deterministic fixtures
 

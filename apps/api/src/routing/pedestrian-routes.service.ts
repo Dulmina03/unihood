@@ -7,6 +7,7 @@ import {
   type RoutePublicQuery,
 } from '@unihood/contracts';
 import { UniversityRepository } from '../universities/university.repository';
+import { RequestCancelledException } from '../http/request-cancelled.exception';
 import type { PedestrianRoutingProvider } from './pedestrian-routing.provider';
 import { PEDESTRIAN_ROUTING_PROVIDER } from './routing.tokens';
 
@@ -46,7 +47,7 @@ export class PedestrianRoutesService {
   ) {}
 
   async route(query: RoutePublicQuery, signal?: AbortSignal): Promise<PublicRouteResponse> {
-    if (signal?.aborted) throw new ServiceUnavailableException();
+    if (signal?.aborted) throw new RequestCancelledException();
 
     // Eligibility is resolved before any provider call, so an ineligible or
     // unknown endpoint can never reach the routing provider.
@@ -111,8 +112,11 @@ export class PedestrianRoutesService {
       });
     }
 
-    // Disabled, timeout, provider error, invalid response and cancellation are
-    // operational failures: the existing redacted 503 envelope is used.
+    // Cancellation means the client disconnected: end silently instead of attempting a response.
+    if (result.reason === 'CANCELLED') throw new RequestCancelledException();
+
+    // Disabled, timeout, provider error and invalid response are operational
+    // failures: the existing redacted 503 envelope is used.
     throw new ServiceUnavailableException();
   }
 
@@ -123,6 +127,7 @@ export class PedestrianRoutesService {
     try {
       return await this.provider.route(request, { signal });
     } catch {
+      if (signal?.aborted) throw new RequestCancelledException();
       throw new ServiceUnavailableException();
     }
   }

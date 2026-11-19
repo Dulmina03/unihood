@@ -70,11 +70,12 @@ The response never includes separate `origin`/`destination` coordinate objects, 
 | `AVAILABLE` | 200 | `PublicRouteResponse` with one to three options |
 | `NO_ROUTE`, `UNSUPPORTED_TIME_CONTEXT` | 200 | typed `UNAVAILABLE` with that reason |
 | unknown or ineligible gate/boarding | 404 | generic `NOT_FOUND` |
-| `PROVIDER_DISABLED`, `TIMEOUT`, `PROVIDER_ERROR`, `INVALID_RESPONSE`, `CANCELLED` | 503 | redacted `SERVICE_UNAVAILABLE` |
+| `PROVIDER_DISABLED`, `TIMEOUT`, `PROVIDER_ERROR`, `INVALID_RESPONSE` | 503 | redacted `SERVICE_UNAVAILABLE` |
+| `CANCELLED` or client disconnect | none | no response attempt; the request ends silently |
 | malformed query | 400 | `VALIDATION_FAILED` |
 | database failure or timeout | 503 | `SERVICE_UNAVAILABLE` |
 
-A disconnected client is handled at the response `close` signal: the provider context is cancelled and no fabricated or partial route is returned. Operational failures never expose raw exceptions, SQL details, coordinates, credentials or diagnostics.
+A disconnected client is handled at the response `close` signal: the provider context is cancelled, no fabricated or partial route is returned, and no response is written — a cancelled request ends silently instead of producing a 503 body. Operational failures never expose raw exceptions, SQL details, coordinates, credentials or diagnostics.
 
 `FEATURE_NOT_AVAILABLE` remains available in the shared error contract but is not emitted here; using it would require a shared exception-filter change outside this issue.
 

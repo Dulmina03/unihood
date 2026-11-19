@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { Catch, HttpException, type ArgumentsHost, type ExceptionFilter } from '@nestjs/common';
 import { ErrorResponseSchema, ReadinessResponseSchema } from '@unihood/contracts';
+import { RequestCancelledException } from './request-cancelled.exception';
 export const requestIdKey = Symbol('unihood.requestId');
 const errors = {
   400: ['BAD_REQUEST', 'The request is invalid.'], 401: ['UNAUTHORIZED', 'Authorization is required.'],
@@ -12,6 +13,8 @@ const errors = {
 @Catch()
 export class ApiExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost): void {
+    // An abandoned request has no reader; writing a status or body would be a pointless response attempt.
+    if (exception instanceof RequestCancelledException) return;
     const http = host.switchToHttp(), request = http.getRequest(), response = http.getResponse();
     const candidate = exception instanceof HttpException ? exception.getStatus() : 500;
     const status = Number.isInteger(candidate) && candidate >= 400 && candidate <= 599 ? candidate : 500;

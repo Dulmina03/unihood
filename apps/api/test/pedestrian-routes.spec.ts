@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
-import { ServiceUnavailableException, type INestApplication } from '@nestjs/common';
+import { ServiceUnavailableException, type ArgumentsHost, type INestApplication } from '@nestjs/common';
 import {
   ErrorResponseSchema,
   PublicRouteResponseSchema,
@@ -10,6 +10,8 @@ import {
 } from '@unihood/contracts';
 import { AppModule } from '../src/app.module';
 import { configureApp } from '../src/configure-app';
+import { ApiExceptionFilter } from '../src/http/api-exception.filter';
+import { RequestCancelledException } from '../src/http/request-cancelled.exception';
 import { UniversityRepository } from '../src/universities/university.repository';
 import { BoundedRoutingProvider } from '../src/routing/bounded-routing.provider';
 import { DisabledRoutingProvider } from '../src/routing/disabled-routing.provider';
@@ -234,13 +236,40 @@ describe('UNI-051 public pedestrian routes', () => {
     }
   });
 
-  it('does not call the provider, and returns no route data, when the request is already cancelled', async () => {
+  it('ends silently, without a response attempt or provider call, when the request is already cancelled', async () => {
     const current = await setup({ row: endpoint });
     try {
       const abort = new AbortController();
       abort.abort();
-      await expect(current.service.route({ gateId, boardingId, timeContext: 'DAY' }, abort.signal)).rejects.toBeInstanceOf(ServiceUnavailableException);
+      await expect(current.service.route({ gateId, boardingId, timeContext: 'DAY' }, abort.signal)).rejects.toBeInstanceOf(RequestCancelledException);
       expect(current.counted.calls).toBe(0);
+      const host = { switchToHttp: () => { throw new Error('NO_RESPONSE_ATTEMPT'); } } as unknown as ArgumentsHost;
+      expect(() => new ApiExceptionFilter().catch(new RequestCancelledException(), host)).not.toThrow();
     } finally { await current.app.close(); }
+  });
+
+  it('ends silently when the provider reports cancellation for an in-flight request', async () => {
+    const provider: PedestrianRoutingProvider = {
+      providerId: 'LOCAL_FIXTURE',
+      route: async () => ({ status: 'UNAVAILABLE', timeContext: 'DAY', providerId: 'LOCAL_FIXTURE', reason: 'CANCELLED' }),
+    };
+    const current = await setup({ row: endpoint, provider });
+    try {
+      await expect(current.service.route({ gateId, boardingId, timeContext: 'DAY' })).rejects.toBeInstanceOf(RequestCancelledException);
+      expect(current.counted.calls).toBe(1);
+    } finally { await current.app.close(); }
+  });
+
+  it('still writes the redacted 503 envelope for non-cancellation operational failures', () => {
+    const calls: string[] = [];
+    const response = {
+      setHeader: () => calls.push('header'),
+      status: () => ({ json: () => calls.push('body') }),
+    };
+    const host = {
+      switchToHttp: () => ({ getRequest: () => ({}), getResponse: () => response }),
+    } as unknown as ArgumentsHost;
+    new ApiExceptionFilter().catch(new ServiceUnavailableException(), host);
+    expect(calls).toEqual(['header', 'header', 'header', 'body']);
   });
 });
