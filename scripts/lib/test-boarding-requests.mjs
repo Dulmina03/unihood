@@ -54,7 +54,8 @@ export async function testBoardingRequests({client,url,migrations}){
   await client.query("UPDATE public.boarding_properties SET visibility='HIDDEN',public_map_consent=false,map_consent_at=NULL WHERE place_id=$1",[a]);
   assert.equal((await client.query('SELECT count(*)::int AS n FROM unihood_private.boarding_requests')).rows[0].n,2);
 
-  await assert.rejects(runMigrations(client,migrations,'rollback'),/populated mock request history/);
+  const boardingRequestsMigration=migrations.find(m=>m.id==='019_boarding_requests');
+  await assert.rejects(client.query(boardingRequestsMigration.down),/populated mock request history/);
   await client.query('DELETE FROM unihood_private.boarding_requests');
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['020_multi_actor_fixtures']);
   assert.deepEqual(await runMigrations(client,migrations,'rollback'),['019_boarding_requests']);
