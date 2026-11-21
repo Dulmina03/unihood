@@ -37,7 +37,7 @@ const sampleComparison = {
       hasExactEntrance: true,
       entrance: { lat: 6.795, lng: 79.901 },
       price: { currency: 'LKR' as const, rentMonthly: 20000, deposit: 40000, verifiedSource: 'OWNER' as const },
-      vacancy: { status: 'AVAILABLE' as const, confirmedAt: '2026-11-17T00:00:00.000Z', expiresAt: '2026-11-20T00:00:00.000Z' },
+      vacancy: { status: 'AVAILABLE' as const, confirmedAt: '2026-11-17T00:00:00.000Z', expiresAt: '2026-11-30T00:00:00.000Z' },
       unitsSummary: [{
         id: '75000000-0000-4000-8000-000000000001',
         label: 'Single Room',
