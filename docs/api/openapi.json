@@ -13710,6 +13710,114 @@
             "minimum": 0,
             "maximum": 100000
           },
+          "walkingAccess": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "const": "AVAILABLE"
+                  },
+                  "durationSeconds": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 21600
+                  },
+                  "walkingDistanceMeters": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 50000
+                  },
+                  "providerId": {
+                    "type": "string",
+                    "const": "LOCAL_FIXTURE"
+                  },
+                  "sourceVersion": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80,
+                    "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+                  },
+                  "provenance": {
+                    "type": "object",
+                    "properties": {
+                      "dataKind": {
+                        "type": "string",
+                        "const": "SYNTHETIC"
+                      },
+                      "provider": {
+                        "type": "string",
+                        "const": "LOCAL_FIXTURE"
+                      },
+                      "sourceVersion": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80,
+                        "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+                      },
+                      "sourceLabel": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 160
+                      },
+                      "verifiedAt": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "dataKind",
+                      "provider",
+                      "sourceVersion",
+                      "sourceLabel",
+                      "verifiedAt"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "status",
+                  "durationSeconds",
+                  "providerId",
+                  "sourceVersion",
+                  "provenance"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "const": "UNAVAILABLE"
+                  },
+                  "providerId": {
+                    "type": "string",
+                    "enum": [
+                      "LOCAL_FIXTURE",
+                      "DISABLED"
+                    ]
+                  },
+                  "reason": {
+                    "type": "string",
+                    "enum": [
+                      "PROVIDER_DISABLED",
+                      "NO_ROUTE",
+                      "TIMEOUT",
+                      "PROVIDER_ERROR",
+                      "INVALID_RESPONSE"
+                    ]
+                  }
+                },
+                "required": [
+                  "status",
+                  "providerId",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
           "provenance": {
             "type": "object",
             "properties": {
@@ -13740,6 +13848,7 @@
           "category",
           "location",
           "distanceMeters",
+          "walkingAccess",
           "provenance"
         ],
         "additionalProperties": false
@@ -13838,6 +13947,114 @@
                   "minimum": 0,
                   "maximum": 100000
                 },
+                "walkingAccess": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "const": "AVAILABLE"
+                        },
+                        "durationSeconds": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "maximum": 21600
+                        },
+                        "walkingDistanceMeters": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "maximum": 50000
+                        },
+                        "providerId": {
+                          "type": "string",
+                          "const": "LOCAL_FIXTURE"
+                        },
+                        "sourceVersion": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 80,
+                          "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+                        },
+                        "provenance": {
+                          "type": "object",
+                          "properties": {
+                            "dataKind": {
+                              "type": "string",
+                              "const": "SYNTHETIC"
+                            },
+                            "provider": {
+                              "type": "string",
+                              "const": "LOCAL_FIXTURE"
+                            },
+                            "sourceVersion": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 80,
+                              "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+                            },
+                            "sourceLabel": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 160
+                            },
+                            "verifiedAt": {
+                              "type": "null"
+                            }
+                          },
+                          "required": [
+                            "dataKind",
+                            "provider",
+                            "sourceVersion",
+                            "sourceLabel",
+                            "verifiedAt"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "status",
+                        "durationSeconds",
+                        "providerId",
+                        "sourceVersion",
+                        "provenance"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "const": "UNAVAILABLE"
+                        },
+                        "providerId": {
+                          "type": "string",
+                          "enum": [
+                            "LOCAL_FIXTURE",
+                            "DISABLED"
+                          ]
+                        },
+                        "reason": {
+                          "type": "string",
+                          "enum": [
+                            "PROVIDER_DISABLED",
+                            "NO_ROUTE",
+                            "TIMEOUT",
+                            "PROVIDER_ERROR",
+                            "INVALID_RESPONSE"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "status",
+                        "providerId",
+                        "reason"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                },
                 "provenance": {
                   "type": "object",
                   "properties": {
@@ -13868,6 +14085,7 @@
                 "category",
                 "location",
                 "distanceMeters",
+                "walkingAccess",
                 "provenance"
               ],
               "additionalProperties": false

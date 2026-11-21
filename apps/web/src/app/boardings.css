@@ -19,6 +19,9 @@
 .essential-name{font:600 16px/1.3 var(--font-body);color:var(--navy-900);margin:0}
 .essential-distance{font-size:14px;color:var(--foreground);margin:0}
 .essential-provenance{font-size:11px;color:var(--text-muted);margin:4px 0 0}
+.essential-walking-access{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--teal-600);margin:0}
+.essential-walking-access svg{width:12px;height:12px}
+.essential-walking-unavailable{color:var(--text-muted)}
 @media(max-width:600px){.boarding-essentials{padding:20px}.essentials-grid{grid-template-columns:1fr}}
 .boarding-request-actions{display:flex;flex-direction:column;gap:12px;margin-block-start:20px}
 .boarding-request-actions .uh-button{width:100%;justify-content:space-between}

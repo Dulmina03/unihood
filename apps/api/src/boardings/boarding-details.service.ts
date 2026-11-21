@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import {
   BoardingComparisonQuery,
   BoardingComparisonResponse,
@@ -8,10 +8,18 @@ import {
   BoardingComparisonItem,
 } from '@unihood/contracts';
 import { UniversityRepository } from '../universities/university.repository';
+import { PEDESTRIAN_ROUTING_PROVIDER } from '../routing/routing.tokens';
+import type { PedestrianRoutingProvider } from '../routing/pedestrian-routing.provider';
+
+const WALKING_ACCESS_BUDGET_MS = 2000;
+const WALKING_ACCESS_CONCURRENCY = 5;
 
 @Injectable()
 export class BoardingDetailsService {
-  constructor(private readonly repository: UniversityRepository) {}
+  constructor(
+    private readonly repository: UniversityRepository,
+    @Inject(PEDESTRIAN_ROUTING_PROVIDER) private readonly provider: PedestrianRoutingProvider,
+  ) {}
 
   async nearbyEssentials(id: string): Promise<BoardingNearbyEssentialsResponse> {
     const boarding = await this.repository.query(
@@ -54,16 +62,35 @@ export class BoardingDetailsService {
       [this.repository.includeSynthetic, entrance.lng, entrance.lat],
     );
 
+    // Provider walking access is resolved only after eligibility succeeds and the
+    // public POI set is resolved. Per-POI calls are bounded by concurrency and a
+    // shared overall budget; one unavailable POI never fails the whole endpoint.
+    const accessRequests = rows.map((r: Record<string, unknown>) => ({
+      origin: {
+        boardingId: id,
+        coordinate: { lat: entrance.lat, lng: entrance.lng },
+      },
+      destination: {
+        poiId: String(r.id),
+        coordinate: { lat: Number((r.location as Record<string, unknown>).lat), lng: Number((r.location as Record<string, unknown>).lng) },
+      },
+    }));
+    const accessResults = await this.provider.accessMany(accessRequests, {}, {
+      concurrency: WALKING_ACCESS_CONCURRENCY,
+      budgetMs: WALKING_ACCESS_BUDGET_MS,
+    });
+
     return BoardingNearbyEssentialsResponseSchema.parse({
       boardingId: id,
       visibility: 'PUBLIC_MAP',
       entrance,
-      items: rows.map((r: Record<string, unknown>) => ({
+      items: rows.map((r: Record<string, unknown>, index: number) => ({
         id: r.id,
         name: r.name,
         category: r.category,
         location: r.location,
         distanceMeters: r.distanceMeters,
+        walkingAccess: accessResults[index],
         provenance: r.provenance,
       })),
     });

@@ -36,7 +36,7 @@ export class BoardingDetailsController {
   @Get(':id/nearby-essentials')
   @Header('Cache-Control', 'no-store')
   @ApiContract({
-    summary: 'Factual nearby essentials for eligible precise public map boardings; strictly refuses area-only and hidden boardings to prevent proximity inference',
+    summary: 'Factual nearby essentials for eligible precise public map boardings with per-POI walking access from the public entrance; strictly refuses area-only and hidden boardings to prevent proximity inference',
     responses: {
       '200': { schema: 'BoardingNearbyEssentialsResponse', description: 'Nearby public POIs with straight-line distance from public entrance' },
       ...errors,

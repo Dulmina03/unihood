@@ -93,6 +93,21 @@ export function NearbyEssentials({ id, visibility }: { id: string; visibility: s
               <p className="essential-distance">
                 <strong>{item.distanceMeters} m</strong> away
               </p>
+              {item.walkingAccess.status === 'AVAILABLE' && (
+                <p className="essential-walking-access">
+                  <Icon name="pin" />
+                  <span>About {Math.round(item.walkingAccess.durationSeconds / 60)} min walk</span>
+                  {item.walkingAccess.walkingDistanceMeters && (
+                    <span> · {item.walkingAccess.walkingDistanceMeters} m</span>
+                  )}
+                </p>
+              )}
+              {item.walkingAccess.status === 'UNAVAILABLE' && (
+                <p className="essential-walking-access essential-walking-unavailable">
+                  <Icon name="lock" />
+                  <span>Walking route unavailable</span>
+                </p>
+              )}
               <p className="essential-provenance">
                 {item.provenance.sourceLabel}
               </p>

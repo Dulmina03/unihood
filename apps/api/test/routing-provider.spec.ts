@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { Test } from '@nestjs/testing';
 import type {
+  PedestrianAccessResult,
   PedestrianRoutingRequest,
   PedestrianRoutingResult,
 } from '@unihood/contracts';
@@ -161,6 +162,8 @@ describe('UNI-050 provider boundary and configuration', () => {
     const failing: PedestrianRoutingProvider = {
       providerId: 'LOCAL_FIXTURE',
       route: async () => { throw new Error('PRIVATE_UPSTREAM_CANARY'); },
+      access: async () => { throw new Error('PRIVATE_UPSTREAM_CANARY'); },
+      accessMany: async () => [],
     };
     const result = await new BoundedRoutingProvider(failing, 100).route(request);
     expect(unavailableReason(result)).toBe('PROVIDER_ERROR');
@@ -171,6 +174,8 @@ describe('UNI-050 provider boundary and configuration', () => {
     const stalled: PedestrianRoutingProvider = {
       providerId: 'LOCAL_FIXTURE',
       route: () => new Promise(() => {}),
+      access: () => new Promise(() => {}),
+      accessMany: async () => [],
     };
     const timeout = await new BoundedRoutingProvider(stalled, 10).route(request);
     expect(unavailableReason(timeout)).toBe('TIMEOUT');
@@ -191,6 +196,8 @@ describe('UNI-050 provider boundary and configuration', () => {
         sourceVersion: 'uni-050-synthetic-routes-v1',
         options: [],
       } as unknown as PedestrianRoutingResult),
+      access: async () => ({ status: 'AVAILABLE' as const } as unknown as PedestrianAccessResult),
+      accessMany: async () => [],
     };
     const result = await new BoundedRoutingProvider(malformed, 100).route(request);
     expect(unavailableReason(result)).toBe('INVALID_RESPONSE');

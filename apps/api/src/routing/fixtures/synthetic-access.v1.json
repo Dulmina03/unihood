@@ -1,0 +1,39 @@
+{
+  "fixtureVersion": "uni-052-synthetic-access-v1",
+  "dataKind": "SYNTHETIC",
+  "sourceLabel": "UNI-052 synthetic walking-access fixture; fictional walking times and distances; not a real route, place or safety assessment",
+  "cases": [
+    {
+      "boardingId": "00000000-0000-4000-8000-000000000001",
+      "poiId": "40000000-0000-4000-8000-000000000001",
+      "status": "AVAILABLE",
+      "durationSeconds": 180,
+      "walkingDistanceMeters": 220
+    },
+    {
+      "boardingId": "00000000-0000-4000-8000-000000000001",
+      "poiId": "40000000-0000-4000-8000-000000000002",
+      "status": "AVAILABLE",
+      "durationSeconds": 300,
+      "walkingDistanceMeters": 380
+    },
+    {
+      "boardingId": "00000000-0000-4000-8000-000000000001",
+      "poiId": "40000000-0000-4000-8000-000000000003",
+      "status": "UNAVAILABLE",
+      "reason": "NO_ROUTE"
+    },
+    {
+      "boardingId": "00000000-0000-4000-8000-000000000001",
+      "poiId": "40000000-0000-4000-8000-000000000004",
+      "status": "UNAVAILABLE",
+      "reason": "PROVIDER_ERROR"
+    },
+    {
+      "boardingId": "30000000-0000-4000-8000-000000000002",
+      "poiId": "40000000-0000-4000-8000-000000000001",
+      "status": "UNAVAILABLE",
+      "reason": "NO_ROUTE"
+    }
+  ]
+}

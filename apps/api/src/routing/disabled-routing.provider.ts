@@ -1,4 +1,4 @@
-import type { PedestrianRoutingRequest, PedestrianRoutingResult } from '@unihood/contracts';
+import type { PedestrianAccessRequest, PedestrianAccessResult, PedestrianRoutingRequest, PedestrianRoutingResult } from '@unihood/contracts';
 import type { PedestrianRoutingProvider } from './pedestrian-routing.provider';
 
 export class DisabledRoutingProvider implements PedestrianRoutingProvider {
@@ -11,5 +11,23 @@ export class DisabledRoutingProvider implements PedestrianRoutingProvider {
       providerId: this.providerId,
       reason: 'PROVIDER_DISABLED',
     };
+  }
+
+  async access(): Promise<PedestrianAccessResult> {
+    return {
+      status: 'UNAVAILABLE',
+      providerId: this.providerId,
+      reason: 'PROVIDER_DISABLED',
+    };
+  }
+
+  async accessMany(
+    requests: PedestrianAccessRequest[],
+  ): Promise<PedestrianAccessResult[]> {
+    return requests.map(() => ({
+      status: 'UNAVAILABLE',
+      providerId: this.providerId,
+      reason: 'PROVIDER_DISABLED',
+    }));
   }
 }

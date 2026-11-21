@@ -3,6 +3,28 @@ import { PublicIdSchema } from './rest';
 import { PublisherKindSchema, BoardingVisibilitySchema } from './enums';
 import { PublicEntranceSchema, OwnerPriceSchema, OwnerVacancySchema } from './boarding-public';
 import { PublicProvenanceSchema } from './university';
+import { PedestrianRouteProvenanceSchema } from './route';
+
+const walkingAccessAvailable = {
+  status: z.literal('AVAILABLE'),
+  durationSeconds: z.number().int().positive().max(21600),
+  walkingDistanceMeters: z.number().int().positive().max(50000).optional(),
+};
+
+export const WalkingAccessSchema = z.discriminatedUnion('status', [
+  z.strictObject({
+    ...walkingAccessAvailable,
+    providerId: z.literal('LOCAL_FIXTURE'),
+    sourceVersion: z.string().trim().min(1).max(80).regex(/^[a-z0-9]+(?:[._-][a-z0-9]+)*$/),
+    provenance: PedestrianRouteProvenanceSchema,
+  }),
+  z.strictObject({
+    status: z.literal('UNAVAILABLE'),
+    providerId: z.enum(['LOCAL_FIXTURE', 'DISABLED']),
+    reason: z.enum(['PROVIDER_DISABLED', 'NO_ROUTE', 'TIMEOUT', 'PROVIDER_ERROR', 'INVALID_RESPONSE']),
+  }),
+]);
+export type WalkingAccess = z.infer<typeof WalkingAccessSchema>;
 
 export const NearbyEssentialItemSchema = z.strictObject({
   id: PublicIdSchema,
@@ -13,6 +35,7 @@ export const NearbyEssentialItemSchema = z.strictObject({
   }),
   location: PublicEntranceSchema,
   distanceMeters: z.number().int().nonnegative().max(100000),
+  walkingAccess: WalkingAccessSchema,
   provenance: PublicProvenanceSchema.options[0],
 });
 export type NearbyEssentialItem = z.infer<typeof NearbyEssentialItemSchema>;

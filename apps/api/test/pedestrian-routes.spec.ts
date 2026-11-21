@@ -5,6 +5,8 @@ import { ServiceUnavailableException, type ArgumentsHost, type INestApplication 
 import {
   ErrorResponseSchema,
   PublicRouteResponseSchema,
+  type PedestrianAccessRequest,
+  type PedestrianAccessResult,
   type PedestrianRoutingRequest,
   type PedestrianRoutingResult,
 } from '@unihood/contracts';
@@ -35,6 +37,13 @@ class CountingProvider implements PedestrianRoutingProvider {
   route(request: PedestrianRoutingRequest, context?: PedestrianRoutingExecutionContext): Promise<PedestrianRoutingResult> {
     this.calls += 1;
     return this.inner.route(request, context);
+  }
+  access(request: PedestrianAccessRequest, context?: PedestrianRoutingExecutionContext): Promise<PedestrianAccessResult> {
+    this.calls += 1;
+    return this.inner.access(request, context);
+  }
+  accessMany(requests: PedestrianAccessRequest[], context?: PedestrianRoutingExecutionContext, options?: { concurrency?: number; budgetMs?: number }): Promise<PedestrianAccessResult[]> {
+    return this.inner.accessMany(requests, context, options);
   }
 }
 
@@ -218,9 +227,9 @@ describe('UNI-051 public pedestrian routes', () => {
   it('maps every operational provider outcome to the redacted 503 envelope', async () => {
     const cases: [string, PedestrianRoutingProvider][] = [
       ['disabled', new DisabledRoutingProvider()],
-      ['timeout', new BoundedRoutingProvider({ providerId: 'LOCAL_FIXTURE', route: () => new Promise(() => {}) }, 10)],
-      ['exception', new BoundedRoutingProvider({ providerId: 'LOCAL_FIXTURE', route: async () => { throw new Error('PRIVATE_UPSTREAM_CANARY'); } }, 50)],
-      ['invalid', new BoundedRoutingProvider({ providerId: 'LOCAL_FIXTURE', route: async () => ({ status: 'AVAILABLE', timeContext: 'DAY', providerId: 'LOCAL_FIXTURE', sourceVersion: 'v', options: [] } as unknown as PedestrianRoutingResult) }, 50)],
+      ['timeout', new BoundedRoutingProvider({ providerId: 'LOCAL_FIXTURE', route: () => new Promise(() => {}), access: () => new Promise(() => {}), accessMany: async () => [] }, 10)],
+      ['exception', new BoundedRoutingProvider({ providerId: 'LOCAL_FIXTURE', route: async () => { throw new Error('PRIVATE_UPSTREAM_CANARY'); }, access: async () => { throw new Error('PRIVATE_UPSTREAM_CANARY'); }, accessMany: async () => [] }, 50)],
+      ['invalid', new BoundedRoutingProvider({ providerId: 'LOCAL_FIXTURE', route: async () => ({ status: 'AVAILABLE', timeContext: 'DAY', providerId: 'LOCAL_FIXTURE', sourceVersion: 'v', options: [] } as unknown as PedestrianRoutingResult), access: async () => ({ status: 'AVAILABLE' as const } as unknown as PedestrianAccessResult), accessMany: async () => [] }, 50)],
     ];
     for (const [label, provider] of cases) {
       const current = await setup({ row: endpoint, provider });
@@ -252,6 +261,8 @@ describe('UNI-051 public pedestrian routes', () => {
     const provider: PedestrianRoutingProvider = {
       providerId: 'LOCAL_FIXTURE',
       route: async () => ({ status: 'UNAVAILABLE', timeContext: 'DAY', providerId: 'LOCAL_FIXTURE', reason: 'CANCELLED' }),
+      access: async () => ({ status: 'UNAVAILABLE', providerId: 'LOCAL_FIXTURE', reason: 'CANCELLED' }),
+      accessMany: async () => [],
     };
     const current = await setup({ row: endpoint, provider });
     try {
