@@ -17,6 +17,20 @@ const sampleEssentials = {
       category: { code: 'pharmacy', label: 'Pharmacy' },
       location: { lat: 6.796, lng: 79.902 },
       distanceMeters: 140,
+      walkingAccess: {
+        status: 'AVAILABLE' as const,
+        providerId: 'LOCAL_FIXTURE' as const,
+        sourceVersion: 'uni-052-synthetic-access-v1',
+        durationSeconds: 180,
+        walkingDistanceMeters: 220,
+        provenance: {
+          dataKind: 'SYNTHETIC' as const,
+          provider: 'LOCAL_FIXTURE' as const,
+          sourceVersion: 'uni-052-synthetic-access-v1',
+          sourceLabel: 'UNI-052 synthetic walking-access fixture',
+          verifiedAt: null,
+        },
+      },
       provenance: {
         dataKind: 'SYNTHETIC' as const,
         sourceLabel: 'UNI-021 synthetic fixture',

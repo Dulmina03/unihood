@@ -291,6 +291,20 @@ describe('comprehensive privacy matrix contracts (ADR-0001–0005 & §13.2)', ()
       sourceLabel: 'UNI-039 privacy matrix fixture',
       verifiedAt: null,
     };
+    const walkingAccessFixture = {
+      status: 'AVAILABLE' as const,
+      providerId: 'LOCAL_FIXTURE' as const,
+      sourceVersion: 'uni-052-synthetic-access-v1',
+      durationSeconds: 180,
+      walkingDistanceMeters: 220,
+      provenance: {
+        dataKind: 'SYNTHETIC' as const,
+        provider: 'LOCAL_FIXTURE' as const,
+        sourceVersion: 'uni-052-synthetic-access-v1',
+        sourceLabel: 'UNI-052 synthetic walking-access fixture',
+        verifiedAt: null,
+      },
+    };
 
     it('strictly requires PUBLIC_MAP and owner consent for Nearby Essentials response', () => {
       const validEssentials = {
@@ -303,6 +317,7 @@ describe('comprehensive privacy matrix contracts (ADR-0001–0005 & §13.2)', ()
           category: { code: 'PHARMACY', label: 'Pharmacy' },
           location: { lat: 6.796, lng: 79.903 },
           distanceMeters: 350,
+          walkingAccess: walkingAccessFixture,
           provenance: provenanceFixture,
         }],
       };
