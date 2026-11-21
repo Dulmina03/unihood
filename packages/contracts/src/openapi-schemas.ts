@@ -23,7 +23,7 @@ import * as enums from './enums';
 import { ErrorResponseSchema, PaginationQuerySchema, PageMetaSchema } from './rest';
 import { PublicBoardingResponseSchema, PublicBoardingPageSchema, OwnerPublicMapSchema } from './boarding-public';
 import { BoardingAdvertisementQuerySchema,PublicBoardingAdvertisementSchema,BoardingAdvertisementPageSchema } from './boarding-advertisement';
-import { RoutePublicQuerySchema, PublicRouteResponseSchema } from './route';
+import { RoutePublicQuerySchema, PublicRouteResponseSchema, PedestrianRouteSegmentsRequestSchema, PedestrianRouteSegmentsResultUnion, PedestrianRouteObservationsRequestSchema, PedestrianRouteObservationsResultUnion } from './route';
 // No actor identities/memberships, private location/media or persistence entities belong in OpenAPI components.
 export const PublicSchemaRegistry = {
   PoiCorrectionChange:PoiCorrectionChangeSchema,PoiCorrectionInput:PoiCorrectionInputSchema,PoiCorrectionReceipt:PoiCorrectionReceiptSchema,ContributionKind:ContributionKindSchema,ContributionState:ContributionStateSchema,ContributionHistoryQuery:ContributionHistoryQuerySchema,ContributionHistoryItem:ContributionHistoryItemSchema,ContributionHistoryPage:ContributionHistoryPageSchema,
@@ -41,6 +41,8 @@ export const PublicSchemaRegistry = {
   OwnerWizardDraft:OwnerWizardDraftSchema,OwnerDraftCheck:OwnerDraftCheckSchema,
   BoardingAdvertisementQuery:BoardingAdvertisementQuerySchema, PublicBoardingAdvertisement:PublicBoardingAdvertisementSchema, BoardingAdvertisementPage:BoardingAdvertisementPageSchema,
   RoutePublicQuery:RoutePublicQuerySchema, PublicRouteResponse:PublicRouteResponseSchema,
+  PedestrianRouteSegmentsRequest:PedestrianRouteSegmentsRequestSchema, PedestrianRouteSegmentsResultUnion:PedestrianRouteSegmentsResultUnion,
+  PedestrianRouteObservationsRequest:PedestrianRouteObservationsRequestSchema, PedestrianRouteObservationsResultUnion:PedestrianRouteObservationsResultUnion,
   PublicBoardingListing:PublicBoardingListingSchema, PublicBoardingListingPage:PublicBoardingListingPageSchema,
   PublicPoiProposalInput:PublicPoiProposalInputSchema, PublicPoiProposalResult:PublicPoiProposalResultSchema,
   DuplicateCheckInput: DuplicateCheckInputSchema, DuplicateCheckResult: DuplicateCheckResultSchema,

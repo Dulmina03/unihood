@@ -9,6 +9,10 @@ import {
   type PedestrianAccessResult,
   type PedestrianRoutingRequest,
   type PedestrianRoutingResult,
+  type PedestrianRouteSegmentsRequest,
+  type PedestrianRouteSegmentsResultUnion,
+  type PedestrianRouteObservationsRequest,
+  type PedestrianRouteObservationsResultUnion,
 } from '@unihood/contracts';
 import { AppModule } from '../src/app.module';
 import { configureApp } from '../src/configure-app';
@@ -44,6 +48,14 @@ class CountingProvider implements PedestrianRoutingProvider {
   }
   accessMany(requests: PedestrianAccessRequest[], context?: PedestrianRoutingExecutionContext, options?: { concurrency?: number; budgetMs?: number }): Promise<PedestrianAccessResult[]> {
     return this.inner.accessMany(requests, context, options);
+  }
+  segments(request: PedestrianRouteSegmentsRequest, context?: PedestrianRoutingExecutionContext): Promise<PedestrianRouteSegmentsResultUnion> {
+    this.calls += 1;
+    return this.inner.segments(request, context);
+  }
+  observations(request: PedestrianRouteObservationsRequest, context?: PedestrianRoutingExecutionContext): Promise<PedestrianRouteObservationsResultUnion> {
+    this.calls += 1;
+    return this.inner.observations(request, context);
   }
 }
 
@@ -227,9 +239,9 @@ describe('UNI-051 public pedestrian routes', () => {
   it('maps every operational provider outcome to the redacted 503 envelope', async () => {
     const cases: [string, PedestrianRoutingProvider][] = [
       ['disabled', new DisabledRoutingProvider()],
-      ['timeout', new BoundedRoutingProvider({ providerId: 'LOCAL_FIXTURE', route: () => new Promise(() => {}), access: () => new Promise(() => {}), accessMany: async () => [] }, 10)],
-      ['exception', new BoundedRoutingProvider({ providerId: 'LOCAL_FIXTURE', route: async () => { throw new Error('PRIVATE_UPSTREAM_CANARY'); }, access: async () => { throw new Error('PRIVATE_UPSTREAM_CANARY'); }, accessMany: async () => [] }, 50)],
-      ['invalid', new BoundedRoutingProvider({ providerId: 'LOCAL_FIXTURE', route: async () => ({ status: 'AVAILABLE', timeContext: 'DAY', providerId: 'LOCAL_FIXTURE', sourceVersion: 'v', options: [] } as unknown as PedestrianRoutingResult), access: async () => ({ status: 'AVAILABLE' as const } as unknown as PedestrianAccessResult), accessMany: async () => [] }, 50)],
+      ['timeout', new BoundedRoutingProvider({ providerId: 'LOCAL_FIXTURE', route: () => new Promise(() => {}), access: () => new Promise(() => {}), accessMany: async () => [], segments: () => new Promise(() => {}), observations: () => new Promise(() => {}) }, 10)],
+      ['exception', new BoundedRoutingProvider({ providerId: 'LOCAL_FIXTURE', route: async () => { throw new Error('PRIVATE_UPSTREAM_CANARY'); }, access: async () => { throw new Error('PRIVATE_UPSTREAM_CANARY'); }, accessMany: async () => [], segments: async () => { throw new Error('PRIVATE_UPSTREAM_CANARY'); }, observations: async () => { throw new Error('PRIVATE_UPSTREAM_CANARY'); } }, 50)],
+      ['invalid', new BoundedRoutingProvider({ providerId: 'LOCAL_FIXTURE', route: async () => ({ status: 'AVAILABLE', timeContext: 'DAY', providerId: 'LOCAL_FIXTURE', sourceVersion: 'v', options: [] } as unknown as PedestrianRoutingResult), access: async () => ({ status: 'AVAILABLE' as const } as unknown as PedestrianAccessResult), accessMany: async () => [], segments: async () => ({ status: 'AVAILABLE' as const } as unknown as PedestrianRouteSegmentsResultUnion), observations: async () => ({ status: 'AVAILABLE' as const } as unknown as PedestrianRouteObservationsResultUnion) }, 50)],
     ];
     for (const [label, provider] of cases) {
       const current = await setup({ row: endpoint, provider });
@@ -263,6 +275,8 @@ describe('UNI-051 public pedestrian routes', () => {
       route: async () => ({ status: 'UNAVAILABLE', timeContext: 'DAY', providerId: 'LOCAL_FIXTURE', reason: 'CANCELLED' }),
       access: async () => ({ status: 'UNAVAILABLE', providerId: 'LOCAL_FIXTURE', reason: 'CANCELLED' }),
       accessMany: async () => [],
+      segments: async () => ({ status: 'UNAVAILABLE', gateId: '', boardingId: '', timeContext: 'DAY', providerId: 'LOCAL_FIXTURE', reason: 'CANCELLED' }),
+      observations: async () => ({ status: 'UNAVAILABLE', gateId: '', boardingId: '', timeContext: 'DAY', providerId: 'LOCAL_FIXTURE', reason: 'CANCELLED' }),
     };
     const current = await setup({ row: endpoint, provider });
     try {

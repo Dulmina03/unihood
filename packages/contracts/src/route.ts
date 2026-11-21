@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { RouteTimeContextSchema } from './enums';
+import { RouteTimeContextSchema, SourceConfidenceSchema } from './enums';
 import { PublicIdSchema } from './rest';
 
 const label = z.string().trim().min(1).max(160);
@@ -317,3 +317,193 @@ export const SyntheticAccessFixtureSchema = z.strictObject({
   }
 });
 export type SyntheticAccessFixture = z.infer<typeof SyntheticAccessFixtureSchema>;
+
+// UNI-053 additive capability: route segments and day/night structured observation
+// reports. Segments break a pedestrian route into condition-labelled portions;
+// observations capture date, source/confidence and issue types per day/night context.
+// Observations are not a safety grade and never imply a safety assessment.
+// Coordinates are server-resolved only and never accepted from the client.
+export const RouteSegmentConditionTypeSchema = z.enum(['LIGHTING', 'FOOTPATH', 'TRAFFIC', 'FLOODING', 'OBSTRUCTIONS', 'ACTIVITY']);
+export type RouteSegmentConditionType = z.infer<typeof RouteSegmentConditionTypeSchema>;
+
+export const RouteSegmentConditionSchema = z.strictObject({
+  type: RouteSegmentConditionTypeSchema,
+  status: z.enum(['GOOD', 'POOR', 'UNKNOWN']),
+  confidence: SourceConfidenceSchema,
+  source: label.refine((value) => /synthetic/i.test(value), 'Synthetic condition source required'),
+  observedAt: z.string().datetime().nullable().optional(),
+});
+export type RouteSegmentCondition = z.infer<typeof RouteSegmentConditionSchema>;
+
+export const RouteSegmentSchema = z.strictObject({
+  segmentId: routeId,
+  routeId,
+  geometry: PedestrianRouteGeometrySchema,
+  distanceMeters: z.number().int().positive().max(50000),
+  durationSeconds: z.number().int().positive().max(21600),
+  conditions: z.array(RouteSegmentConditionSchema).min(1),
+  source: label.refine((value) => /synthetic/i.test(value), 'Synthetic segment source required'),
+  confidence: SourceConfidenceSchema,
+  timeContext: RouteTimeContextSchema,
+});
+export type RouteSegment = z.infer<typeof RouteSegmentSchema>;
+
+export const PedestrianRouteObservationSchema = z.strictObject({
+  observationId: routeId,
+  routeId,
+  timeContext: RouteTimeContextSchema,
+  observedAt: z.string().datetime(),
+  segments: z.array(RouteSegmentSchema).min(1),
+  overallNote: label.refine((value) => !/\b(?:safe|safest|safetyScore|safety grade)\b/i.test(value), 'Observation note must not be a safety grade'),
+  source: label.refine((value) => /synthetic/i.test(value), 'Synthetic observation source required'),
+  confidence: SourceConfidenceSchema,
+});
+export type PedestrianRouteObservation = z.infer<typeof PedestrianRouteObservationSchema>;
+
+export const PedestrianRouteSegmentsRequestSchema = z.strictObject({
+  gateId: PublicIdSchema,
+  boardingId: PublicIdSchema,
+  timeContext: RouteTimeContextSchema,
+});
+export type PedestrianRouteSegmentsRequest = z.infer<typeof PedestrianRouteSegmentsRequestSchema>;
+
+export const PedestrianRouteObservationsRequestSchema = z.strictObject({
+  gateId: PublicIdSchema,
+  boardingId: PublicIdSchema,
+  timeContext: RouteTimeContextSchema,
+});
+export type PedestrianRouteObservationsRequest = z.infer<typeof PedestrianRouteObservationsRequestSchema>;
+
+export const PedestrianRouteSegmentsResultSchema = z.strictObject({
+  status: z.literal('AVAILABLE'),
+  gateId: PublicIdSchema,
+  boardingId: PublicIdSchema,
+  timeContext: RouteTimeContextSchema,
+  providerId: z.literal('LOCAL_FIXTURE'),
+  sourceVersion,
+  segments: z.array(RouteSegmentSchema).min(1),
+});
+export type PedestrianRouteSegmentsResult = z.infer<typeof PedestrianRouteSegmentsResultSchema>;
+
+export const PedestrianRouteObservationsResultSchema = z.strictObject({
+  status: z.literal('AVAILABLE'),
+  gateId: PublicIdSchema,
+  boardingId: PublicIdSchema,
+  timeContext: RouteTimeContextSchema,
+  providerId: z.literal('LOCAL_FIXTURE'),
+  sourceVersion,
+  observations: z.array(PedestrianRouteObservationSchema).min(1),
+});
+export type PedestrianRouteObservationsResult = z.infer<typeof PedestrianRouteObservationsResultSchema>;
+
+export const PedestrianRouteSegmentsUnavailableSchema = z.strictObject({
+  status: z.literal('UNAVAILABLE'),
+  gateId: PublicIdSchema,
+  boardingId: PublicIdSchema,
+  timeContext: RouteTimeContextSchema,
+  providerId: z.enum(['LOCAL_FIXTURE', 'DISABLED']),
+  reason: RoutingUnavailableReasonSchema,
+});
+export type PedestrianRouteSegmentsUnavailable = z.infer<typeof PedestrianRouteSegmentsUnavailableSchema>;
+
+export const PedestrianRouteObservationsUnavailableSchema = z.strictObject({
+  status: z.literal('UNAVAILABLE'),
+  gateId: PublicIdSchema,
+  boardingId: PublicIdSchema,
+  timeContext: RouteTimeContextSchema,
+  providerId: z.enum(['LOCAL_FIXTURE', 'DISABLED']),
+  reason: RoutingUnavailableReasonSchema,
+});
+export type PedestrianRouteObservationsUnavailable = z.infer<typeof PedestrianRouteObservationsUnavailableSchema>;
+
+export const PedestrianRouteSegmentsResultUnion = z.discriminatedUnion('status', [
+  PedestrianRouteSegmentsResultSchema,
+  PedestrianRouteSegmentsUnavailableSchema,
+]);
+export type PedestrianRouteSegmentsResultUnion = z.infer<typeof PedestrianRouteSegmentsResultUnion>;
+
+export const PedestrianRouteObservationsResultUnion = z.discriminatedUnion('status', [
+  PedestrianRouteObservationsResultSchema,
+  PedestrianRouteObservationsUnavailableSchema,
+]);
+export type PedestrianRouteObservationsResultUnion = z.infer<typeof PedestrianRouteObservationsResultUnion>;
+
+export const SyntheticSegmentFixtureCaseSchema = z.strictObject({
+  gateId: PublicIdSchema,
+  boardingId: PublicIdSchema,
+  timeContext: RouteTimeContextSchema,
+  status: z.enum(['AVAILABLE', 'UNAVAILABLE']),
+  segments: z.array(RouteSegmentSchema).optional(),
+  reason: z.enum(['PROVIDER_DISABLED', 'NO_ROUTE', 'TIMEOUT', 'PROVIDER_ERROR', 'INVALID_RESPONSE']).optional(),
+}).refine((value) => {
+  if (value.status === 'AVAILABLE') {
+    return value.segments !== undefined && value.segments.length > 0;
+  }
+  return value.reason !== undefined;
+}, 'AVAILABLE cases require segments; UNAVAILABLE cases require a reason');
+export type SyntheticSegmentFixtureCase = z.infer<typeof SyntheticSegmentFixtureCaseSchema>;
+
+export const SyntheticObservationFixtureCaseSchema = z.strictObject({
+  gateId: PublicIdSchema,
+  boardingId: PublicIdSchema,
+  timeContext: RouteTimeContextSchema,
+  status: z.enum(['AVAILABLE', 'UNAVAILABLE']),
+  observations: z.array(PedestrianRouteObservationSchema).optional(),
+  reason: z.enum(['PROVIDER_DISABLED', 'NO_ROUTE', 'TIMEOUT', 'PROVIDER_ERROR', 'INVALID_RESPONSE']).optional(),
+}).refine((value) => {
+  if (value.status === 'AVAILABLE') {
+    return value.observations !== undefined && value.observations.length > 0;
+  }
+  return value.reason !== undefined;
+}, 'AVAILABLE cases require observations; UNAVAILABLE cases require a reason');
+export type SyntheticObservationFixtureCase = z.infer<typeof SyntheticObservationFixtureCaseSchema>;
+
+export const SyntheticSegmentFixtureSchema = z.strictObject({
+  fixtureVersion: sourceVersion,
+  dataKind: z.literal('SYNTHETIC'),
+  sourceLabel: label.refine((value) => /synthetic/i.test(value), 'Synthetic fixture label required'),
+  cases: z.array(SyntheticSegmentFixtureCaseSchema).min(1).max(1000),
+}).superRefine((value, context) => {
+  const keys = new Set<string>();
+  for (const [index, item] of value.cases.entries()) {
+    const key = `${item.gateId}\u0000${item.boardingId}\u0000${item.timeContext}`;
+    if (keys.has(key)) {
+      context.addIssue({
+        code: 'custom',
+        message: 'Fixture gate, boarding and time-context keys must be unique.',
+        path: ['cases', index],
+      });
+    }
+    keys.add(key);
+  }
+});
+export type SyntheticSegmentFixture = z.infer<typeof SyntheticSegmentFixtureSchema>;
+
+export const SyntheticObservationFixtureSchema = z.strictObject({
+  fixtureVersion: sourceVersion,
+  dataKind: z.literal('SYNTHETIC'),
+  sourceLabel: label.refine((value) => /synthetic/i.test(value), 'Synthetic fixture label required'),
+  cases: z.array(SyntheticObservationFixtureCaseSchema).min(1).max(1000),
+}).superRefine((value, context) => {
+  const keys = new Set<string>();
+  for (const [index, item] of value.cases.entries()) {
+    const key = `${item.gateId}\u0000${item.boardingId}\u0000${item.timeContext}`;
+    if (keys.has(key)) {
+      context.addIssue({
+        code: 'custom',
+        message: 'Fixture gate, boarding and time-context keys must be unique.',
+        path: ['cases', index],
+      });
+    }
+    keys.add(key);
+  }
+});
+export type SyntheticObservationFixture = z.infer<typeof SyntheticObservationFixtureSchema>;
+
+export function parsePedestrianRouteSegmentsResult(input: unknown): PedestrianRouteSegmentsResultUnion {
+  return PedestrianRouteSegmentsResultUnion.parse(input);
+}
+
+export function parsePedestrianRouteObservationsResult(input: unknown): PedestrianRouteObservationsResultUnion {
+  return PedestrianRouteObservationsResultUnion.parse(input);
+}

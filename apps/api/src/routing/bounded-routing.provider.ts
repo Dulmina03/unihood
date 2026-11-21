@@ -1,10 +1,16 @@
 import {
   parsePedestrianAccessResult,
+  parsePedestrianRouteObservationsResult,
+  parsePedestrianRouteSegmentsResult,
   parsePedestrianRoutingResult,
   type PedestrianAccessRequest,
   type PedestrianAccessResult,
   type PedestrianRoutingRequest,
   type PedestrianRoutingResult,
+  type PedestrianRouteObservationsRequest,
+  type PedestrianRouteObservationsResultUnion,
+  type PedestrianRouteSegmentsRequest,
+  type PedestrianRouteSegmentsResultUnion,
 } from '@unihood/contracts';
 import {
   ROUTING_TIMEOUT_MS,
@@ -126,6 +132,24 @@ export class BoundedRoutingProvider implements PedestrianRoutingProvider {
     return results;
   }
 
+  // UNI-053: route segments for a gate-to-boarding pair under a time context,
+  // wrapped with the same bounded-protection semantics as route().
+  async segments(
+    request: PedestrianRouteSegmentsRequest,
+    context: PedestrianRoutingExecutionContext = {},
+  ): Promise<PedestrianRouteSegmentsResultUnion> {
+    return this.singleSegments(request, context);
+  }
+
+  // UNI-053: day/night structured observation reports, wrapped with the same
+  // bounded-protection semantics as route().
+  async observations(
+    request: PedestrianRouteObservationsRequest,
+    context: PedestrianRoutingExecutionContext = {},
+  ): Promise<PedestrianRouteObservationsResultUnion> {
+    return this.singleObservations(request, context);
+  }
+
   private async single(
     request: PedestrianRoutingRequest,
     context: PedestrianRoutingExecutionContext,
@@ -173,6 +197,112 @@ export class BoundedRoutingProvider implements PedestrianRoutingProvider {
       if (timedOut) return this.unavailable(request, 'TIMEOUT');
       if (cancelled) return this.unavailable(request, 'CANCELLED');
       return this.unavailable(request, 'PROVIDER_ERROR');
+    } finally {
+      clearTimeout(timer);
+      context.signal?.removeEventListener('abort', onAbort);
+    }
+  }
+
+  private async singleSegments(
+    request: PedestrianRouteSegmentsRequest,
+    context: PedestrianRoutingExecutionContext,
+  ): Promise<PedestrianRouteSegmentsResultUnion> {
+    if (context.signal?.aborted || this.provider.providerId === 'DISABLED') {
+      return this.unavailableSegments(request, this.provider.providerId === 'DISABLED' ? 'PROVIDER_DISABLED' : 'CANCELLED');
+    }
+
+    const subController = new AbortController();
+    let timedOut = false;
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      timedOut = true;
+      subController.abort();
+    }, this.timeoutMs);
+    timer.unref?.();
+
+    const onAbort = () => {
+      cancelled = true;
+      subController.abort();
+    };
+    context.signal?.addEventListener('abort', onAbort, { once: true });
+
+    try {
+      const result = await Promise.race<PedestrianRouteSegmentsResultUnion | typeof timeoutMarker>([
+        this.provider.segments(request, { signal: subController.signal }),
+        new Promise<typeof timeoutMarker>((resolve) => {
+          subController.signal.addEventListener('abort', () => resolve(timeoutMarker), { once: true });
+        }),
+      ]);
+
+      if (timedOut) return this.unavailableSegments(request, 'TIMEOUT');
+      if (cancelled) return this.unavailableSegments(request, 'CANCELLED');
+      if (result === timeoutMarker) return this.unavailableSegments(request, 'TIMEOUT');
+
+      let parsed: PedestrianRouteSegmentsResultUnion;
+      try {
+        parsed = parsePedestrianRouteSegmentsResult(result);
+      } catch {
+        return this.unavailableSegments(request, 'INVALID_RESPONSE');
+      }
+      if (parsed.providerId !== this.provider.providerId) return this.unavailableSegments(request, 'INVALID_RESPONSE');
+      return parsed;
+    } catch {
+      if (timedOut) return this.unavailableSegments(request, 'TIMEOUT');
+      if (cancelled) return this.unavailableSegments(request, 'CANCELLED');
+      return this.unavailableSegments(request, 'PROVIDER_ERROR');
+    } finally {
+      clearTimeout(timer);
+      context.signal?.removeEventListener('abort', onAbort);
+    }
+  }
+
+  private async singleObservations(
+    request: PedestrianRouteObservationsRequest,
+    context: PedestrianRoutingExecutionContext,
+  ): Promise<PedestrianRouteObservationsResultUnion> {
+    if (context.signal?.aborted || this.provider.providerId === 'DISABLED') {
+      return this.unavailableObservations(request, this.provider.providerId === 'DISABLED' ? 'PROVIDER_DISABLED' : 'CANCELLED');
+    }
+
+    const subController = new AbortController();
+    let timedOut = false;
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      timedOut = true;
+      subController.abort();
+    }, this.timeoutMs);
+    timer.unref?.();
+
+    const onAbort = () => {
+      cancelled = true;
+      subController.abort();
+    };
+    context.signal?.addEventListener('abort', onAbort, { once: true });
+
+    try {
+      const result = await Promise.race<PedestrianRouteObservationsResultUnion | typeof timeoutMarker>([
+        this.provider.observations(request, { signal: subController.signal }),
+        new Promise<typeof timeoutMarker>((resolve) => {
+          subController.signal.addEventListener('abort', () => resolve(timeoutMarker), { once: true });
+        }),
+      ]);
+
+      if (timedOut) return this.unavailableObservations(request, 'TIMEOUT');
+      if (cancelled) return this.unavailableObservations(request, 'CANCELLED');
+      if (result === timeoutMarker) return this.unavailableObservations(request, 'TIMEOUT');
+
+      let parsed: PedestrianRouteObservationsResultUnion;
+      try {
+        parsed = parsePedestrianRouteObservationsResult(result);
+      } catch {
+        return this.unavailableObservations(request, 'INVALID_RESPONSE');
+      }
+      if (parsed.providerId !== this.provider.providerId) return this.unavailableObservations(request, 'INVALID_RESPONSE');
+      return parsed;
+    } catch {
+      if (timedOut) return this.unavailableObservations(request, 'TIMEOUT');
+      if (cancelled) return this.unavailableObservations(request, 'CANCELLED');
+      return this.unavailableObservations(request, 'PROVIDER_ERROR');
     } finally {
       clearTimeout(timer);
       context.signal?.removeEventListener('abort', onAbort);
@@ -238,6 +368,34 @@ export class BoundedRoutingProvider implements PedestrianRoutingProvider {
   ): PedestrianRoutingResult {
     return {
       status: 'UNAVAILABLE',
+      timeContext: request.timeContext,
+      providerId: this.provider.providerId,
+      reason,
+    };
+  }
+
+  private unavailableSegments(
+    request: PedestrianRouteSegmentsRequest,
+    reason: Extract<PedestrianRouteSegmentsResultUnion, { status: 'UNAVAILABLE' }>['reason'],
+  ): PedestrianRouteSegmentsResultUnion {
+    return {
+      status: 'UNAVAILABLE',
+      gateId: request.gateId,
+      boardingId: request.boardingId,
+      timeContext: request.timeContext,
+      providerId: this.provider.providerId,
+      reason,
+    };
+  }
+
+  private unavailableObservations(
+    request: PedestrianRouteObservationsRequest,
+    reason: Extract<PedestrianRouteObservationsResultUnion, { status: 'UNAVAILABLE' }>['reason'],
+  ): PedestrianRouteObservationsResultUnion {
+    return {
+      status: 'UNAVAILABLE',
+      gateId: request.gateId,
+      boardingId: request.boardingId,
       timeContext: request.timeContext,
       providerId: this.provider.providerId,
       reason,

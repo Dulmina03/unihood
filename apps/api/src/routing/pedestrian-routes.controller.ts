@@ -1,5 +1,9 @@
 import { Controller, Get, Header, Query, Res } from '@nestjs/common';
-import { RoutePublicQuerySchema, type RoutePublicQuery } from '@unihood/contracts';
+import {
+  RoutePublicQuerySchema, type RoutePublicQuery,
+  PedestrianRouteSegmentsRequestSchema, type PedestrianRouteSegmentsRequest,
+  PedestrianRouteObservationsRequestSchema, type PedestrianRouteObservationsRequest,
+} from '@unihood/contracts';
 import { ContractValidationPipe } from '../http/contract-validation.pipe';
 import { ApiContract } from '../openapi/operation';
 import { PedestrianRoutesService } from './pedestrian-routes.service';
@@ -42,6 +46,54 @@ export class PedestrianRoutesController {
     response?.on?.('close', onClose);
     try {
       return await this.service.route(query, abort.signal);
+    } finally {
+      response?.off?.('close', onClose);
+    }
+  }
+
+  @Get('routes/segments')
+  @Header('Cache-Control', 'no-store')
+  @ApiContract({
+    summary: 'Route segments with condition observations for an eligible gate-to-boarding pair; synthetic fixture only, not a safety grade',
+    querySchema: 'PedestrianRouteSegmentsRequest',
+    responses: {
+      '200': { schema: 'PedestrianRouteSegmentsResultUnion', description: 'Available route segments or a typed unavailable result' },
+      ...errors,
+    },
+  })
+  async segments(
+    @Query(new ContractValidationPipe(PedestrianRouteSegmentsRequestSchema)) query: PedestrianRouteSegmentsRequest,
+    @Res({ passthrough: true }) response: CloseSignalResponse,
+  ) {
+    const abort = new AbortController();
+    const onClose = () => { if (!response.writableEnded) abort.abort(); };
+    response?.on?.('close', onClose);
+    try {
+      return await this.service.segments(query, abort.signal);
+    } finally {
+      response?.off?.('close', onClose);
+    }
+  }
+
+  @Get('routes/observations')
+  @Header('Cache-Control', 'no-store')
+  @ApiContract({
+    summary: 'Day/night structured observation reports for an eligible gate-to-boarding pair; synthetic fixture only, not a safety grade',
+    querySchema: 'PedestrianRouteObservationsRequest',
+    responses: {
+      '200': { schema: 'PedestrianRouteObservationsResultUnion', description: 'Available day/night observations or a typed unavailable result' },
+      ...errors,
+    },
+  })
+  async observations(
+    @Query(new ContractValidationPipe(PedestrianRouteObservationsRequestSchema)) query: PedestrianRouteObservationsRequest,
+    @Res({ passthrough: true }) response: CloseSignalResponse,
+  ) {
+    const abort = new AbortController();
+    const onClose = () => { if (!response.writableEnded) abort.abort(); };
+    response?.on?.('close', onClose);
+    try {
+      return await this.service.observations(query, abort.signal);
     } finally {
       response?.off?.('close', onClose);
     }

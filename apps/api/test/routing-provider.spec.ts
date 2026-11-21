@@ -4,6 +4,8 @@ import type {
   PedestrianAccessResult,
   PedestrianRoutingRequest,
   PedestrianRoutingResult,
+  PedestrianRouteSegmentsResultUnion,
+  PedestrianRouteObservationsResultUnion,
 } from '@unihood/contracts';
 import { SyntheticRoutingFixtureSchema } from '@unihood/contracts';
 import { AppModule } from '../src/app.module';
@@ -164,6 +166,8 @@ describe('UNI-050 provider boundary and configuration', () => {
       route: async () => { throw new Error('PRIVATE_UPSTREAM_CANARY'); },
       access: async () => { throw new Error('PRIVATE_UPSTREAM_CANARY'); },
       accessMany: async () => [],
+      segments: async () => ({ status: 'UNAVAILABLE', gateId: '', boardingId: '', timeContext: 'DAY', providerId: 'LOCAL_FIXTURE', reason: 'PROVIDER_ERROR' }),
+      observations: async () => ({ status: 'UNAVAILABLE', gateId: '', boardingId: '', timeContext: 'DAY', providerId: 'LOCAL_FIXTURE', reason: 'PROVIDER_ERROR' }),
     };
     const result = await new BoundedRoutingProvider(failing, 100).route(request);
     expect(unavailableReason(result)).toBe('PROVIDER_ERROR');
@@ -176,6 +180,8 @@ describe('UNI-050 provider boundary and configuration', () => {
       route: () => new Promise(() => {}),
       access: () => new Promise(() => {}),
       accessMany: async () => [],
+      segments: () => new Promise(() => {}),
+      observations: () => new Promise(() => {}),
     };
     const timeout = await new BoundedRoutingProvider(stalled, 10).route(request);
     expect(unavailableReason(timeout)).toBe('TIMEOUT');
@@ -198,6 +204,8 @@ describe('UNI-050 provider boundary and configuration', () => {
       } as unknown as PedestrianRoutingResult),
       access: async () => ({ status: 'AVAILABLE' as const } as unknown as PedestrianAccessResult),
       accessMany: async () => [],
+      segments: async () => ({ status: 'AVAILABLE' as const } as unknown as PedestrianRouteSegmentsResultUnion),
+      observations: async () => ({ status: 'AVAILABLE' as const } as unknown as PedestrianRouteObservationsResultUnion),
     };
     const result = await new BoundedRoutingProvider(malformed, 100).route(request);
     expect(unavailableReason(result)).toBe('INVALID_RESPONSE');

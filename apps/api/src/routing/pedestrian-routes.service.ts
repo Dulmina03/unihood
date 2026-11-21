@@ -5,6 +5,10 @@ import {
   type PedestrianRoutingResult,
   type PublicRouteResponse,
   type RoutePublicQuery,
+  type PedestrianRouteSegmentsRequest,
+  type PedestrianRouteSegmentsResultUnion,
+  type PedestrianRouteObservationsRequest,
+  type PedestrianRouteObservationsResultUnion,
 } from '@unihood/contracts';
 import { UniversityRepository } from '../universities/university.repository';
 import { RequestCancelledException } from '../http/request-cancelled.exception';
@@ -120,12 +124,86 @@ export class PedestrianRoutesService {
     throw new ServiceUnavailableException();
   }
 
+  async segments(query: PedestrianRouteSegmentsRequest, signal?: AbortSignal): Promise<PedestrianRouteSegmentsResultUnion> {
+    if (signal?.aborted) throw new RequestCancelledException();
+
+    const rows = await this.repository.query(resolveEndpoints, [
+      this.repository.includeSynthetic,
+      query.boardingId,
+      query.gateId,
+    ]);
+    const endpoint = rows[0];
+    if (!endpoint) throw new NotFoundException();
+
+    const result = await this.invokeSegments({
+      gateId: query.gateId,
+      boardingId: query.boardingId,
+      timeContext: query.timeContext,
+    }, signal);
+
+    if (result.status === 'UNAVAILABLE') {
+      if (result.reason === 'NO_ROUTE' || result.reason === 'UNSUPPORTED_TIME_CONTEXT') return result;
+      if (result.reason === 'CANCELLED') throw new RequestCancelledException();
+      throw new ServiceUnavailableException();
+    }
+    return result;
+  }
+
+  async observations(query: PedestrianRouteObservationsRequest, signal?: AbortSignal): Promise<PedestrianRouteObservationsResultUnion> {
+    if (signal?.aborted) throw new RequestCancelledException();
+
+    const rows = await this.repository.query(resolveEndpoints, [
+      this.repository.includeSynthetic,
+      query.boardingId,
+      query.gateId,
+    ]);
+    const endpoint = rows[0];
+    if (!endpoint) throw new NotFoundException();
+
+    const result = await this.invokeObservations({
+      gateId: query.gateId,
+      boardingId: query.boardingId,
+      timeContext: query.timeContext,
+    }, signal);
+
+    if (result.status === 'UNAVAILABLE') {
+      if (result.reason === 'NO_ROUTE' || result.reason === 'UNSUPPORTED_TIME_CONTEXT') return result;
+      if (result.reason === 'CANCELLED') throw new RequestCancelledException();
+      throw new ServiceUnavailableException();
+    }
+    return result;
+  }
+
   private async invoke(
     request: PedestrianRoutingRequest,
     signal?: AbortSignal,
   ): Promise<PedestrianRoutingResult> {
     try {
       return await this.provider.route(request, { signal });
+    } catch {
+      if (signal?.aborted) throw new RequestCancelledException();
+      throw new ServiceUnavailableException();
+    }
+  }
+
+  private async invokeSegments(
+    request: PedestrianRouteSegmentsRequest,
+    signal?: AbortSignal,
+  ): Promise<PedestrianRouteSegmentsResultUnion> {
+    try {
+      return await this.provider.segments(request, { signal });
+    } catch {
+      if (signal?.aborted) throw new RequestCancelledException();
+      throw new ServiceUnavailableException();
+    }
+  }
+
+  private async invokeObservations(
+    request: PedestrianRouteObservationsRequest,
+    signal?: AbortSignal,
+  ): Promise<PedestrianRouteObservationsResultUnion> {
+    try {
+      return await this.provider.observations(request, { signal });
     } catch {
       if (signal?.aborted) throw new RequestCancelledException();
       throw new ServiceUnavailableException();

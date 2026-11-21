@@ -1,0 +1,110 @@
+{
+  "fixtureVersion": "uni-053-synthetic-observations-v1",
+  "dataKind": "SYNTHETIC",
+  "sourceLabel": "UNI-053 synthetic day/night observation fixture; fictional observation dates, sources and confidence labels; not a safety grade",
+  "cases": [
+    {
+      "gateId": "30000000-0000-4000-8000-000000000001",
+      "boardingId": "00000000-0000-4000-8000-000000000001",
+      "timeContext": "DAY",
+      "status": "AVAILABLE",
+      "observations": [
+        {
+          "observationId": "uni-053-observation-day-1",
+          "routeId": "uni-053-route-day-a",
+          "timeContext": "DAY",
+          "observedAt": "2026-11-20T10:00:00Z",
+          "segments": [
+            {
+              "segmentId": "uni-053-segment-day-obs-1",
+              "routeId": "uni-053-route-day-a",
+              "geometry": {
+                "type": "LineString",
+                "coordinates": [[0, 0], [0.0002, 0.0002], [0.0005, 0.0004]]
+              },
+              "distanceMeters": 56,
+              "durationSeconds": 48,
+              "conditions": [
+                {
+                  "type": "LIGHTING",
+                  "status": "GOOD",
+                  "confidence": "SOURCE_CHECKED",
+                  "source": "uni-053-synthetic-observation-day-lighting",
+                  "observedAt": "2026-11-20T10:00:00Z"
+                },
+                {
+                  "type": "FOOTPATH",
+                  "status": "GOOD",
+                  "confidence": "SOURCE_CHECKED",
+                  "source": "uni-053-synthetic-observation-day-footpath",
+                  "observedAt": "2026-11-20T10:00:00Z"
+                }
+              ],
+              "source": "uni-053-synthetic-observation-day-source",
+              "confidence": "SOURCE_CHECKED",
+              "timeContext": "DAY"
+            }
+          ],
+          "overallNote": "Daytime synthetic observation; path well-lit and clear",
+          "source": "uni-053-synthetic-observation-day-source",
+          "confidence": "SOURCE_CHECKED"
+        }
+      ]
+    },
+    {
+      "gateId": "30000000-0000-4000-8000-000000000001",
+      "boardingId": "00000000-0000-4000-8000-000000000001",
+      "timeContext": "NIGHT",
+      "status": "AVAILABLE",
+      "observations": [
+        {
+          "observationId": "uni-053-observation-night-1",
+          "routeId": "uni-053-route-night-a",
+          "timeContext": "NIGHT",
+          "observedAt": "2026-11-20T22:00:00Z",
+          "segments": [
+            {
+              "segmentId": "uni-053-segment-night-obs-1",
+              "routeId": "uni-053-route-night-a",
+              "geometry": {
+                "type": "LineString",
+                "coordinates": [[0, 0], [0.0003, 0.0002], [0.0006, 0.0004]]
+              },
+              "distanceMeters": 59,
+              "durationSeconds": 51,
+              "conditions": [
+                {
+                  "type": "LIGHTING",
+                  "status": "POOR",
+                  "confidence": "SOURCE_CHECKED",
+                  "source": "uni-053-synthetic-observation-night-lighting",
+                  "observedAt": "2026-11-20T22:00:00Z"
+                },
+                {
+                  "type": "FOOTPATH",
+                  "status": "GOOD",
+                  "confidence": "SOURCE_CHECKED",
+                  "source": "uni-053-synthetic-observation-night-footpath",
+                  "observedAt": "2026-11-20T22:00:00Z"
+                }
+              ],
+              "source": "uni-053-synthetic-observation-night-source",
+              "confidence": "SOURCE_CHECKED",
+              "timeContext": "NIGHT"
+            }
+          ],
+          "overallNote": "Nighttime synthetic observation; limited lighting on segment one",
+          "source": "uni-053-synthetic-observation-night-source",
+          "confidence": "SOURCE_CHECKED"
+        }
+      ]
+    },
+    {
+      "gateId": "30000000-0000-4000-8000-000000000002",
+      "boardingId": "00000000-0000-4000-8000-000000000001",
+      "timeContext": "DAY",
+      "status": "UNAVAILABLE",
+      "reason": "NO_ROUTE"
+    }
+  ]
+}

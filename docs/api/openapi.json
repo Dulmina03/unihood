@@ -7085,6 +7085,266 @@
         }
       }
     },
+    "/api/v1/routes/segments": {
+      "get": {
+        "operationId": "PedestrianRoutesController_segments__api_v1_routes_segments",
+        "summary": "Route segments with condition observations for an eligible gate-to-boarding pair; synthetic fixture only, not a safety grade",
+        "security": [],
+        "parameters": [
+          {
+            "name": "gateId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PedestrianRouteSegmentsRequest/properties/gateId"
+            }
+          },
+          {
+            "name": "boardingId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PedestrianRouteSegmentsRequest/properties/boardingId"
+            }
+          },
+          {
+            "name": "timeContext",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PedestrianRouteSegmentsRequest/properties/timeContext"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Available route segments or a typed unavailable result",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PedestrianRouteSegmentsResultUnion"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid route query parameters",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Gate or boarding is not publicly eligible for routing",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Routing unavailable: disabled provider, timeout, provider error or invalid response",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/routes/observations": {
+      "get": {
+        "operationId": "PedestrianRoutesController_observations__api_v1_routes_observations",
+        "summary": "Day/night structured observation reports for an eligible gate-to-boarding pair; synthetic fixture only, not a safety grade",
+        "security": [],
+        "parameters": [
+          {
+            "name": "gateId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PedestrianRouteObservationsRequest/properties/gateId"
+            }
+          },
+          {
+            "name": "boardingId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PedestrianRouteObservationsRequest/properties/boardingId"
+            }
+          },
+          {
+            "name": "timeContext",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PedestrianRouteObservationsRequest/properties/timeContext"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Available day/night observations or a typed unavailable result",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PedestrianRouteObservationsResultUnion"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid route query parameters",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Gate or boarding is not publicly eligible for routing",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Routing unavailable: disabled provider, timeout, provider error or invalid response",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Server-generated correlation ID; inbound IDs are ignored.",
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/boardings": {
       "get": {
         "operationId": "BoardingController_list__api_v1_boardings",
@@ -16709,6 +16969,661 @@
               "boardingId",
               "timeContext",
               "status",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "PedestrianRouteSegmentsRequest": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "gateId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "boardingId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "timeContext": {
+            "type": "string",
+            "enum": [
+              "DAY",
+              "NIGHT"
+            ]
+          }
+        },
+        "required": [
+          "gateId",
+          "boardingId",
+          "timeContext"
+        ],
+        "additionalProperties": false
+      },
+      "PedestrianRouteSegmentsResultUnion": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "const": "AVAILABLE"
+              },
+              "gateId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "boardingId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "timeContext": {
+                "type": "string",
+                "enum": [
+                  "DAY",
+                  "NIGHT"
+                ]
+              },
+              "providerId": {
+                "type": "string",
+                "const": "LOCAL_FIXTURE"
+              },
+              "sourceVersion": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80,
+                "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+              },
+              "segments": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "segmentId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 80,
+                      "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+                    },
+                    "routeId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 80,
+                      "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+                    },
+                    "geometry": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "LineString"
+                        },
+                        "coordinates": {
+                          "minItems": 2,
+                          "maxItems": 5000,
+                          "type": "array",
+                          "items": {
+                            "type": "array",
+                            "prefixItems": [
+                              {
+                                "type": "number",
+                                "minimum": -180,
+                                "maximum": 180
+                              },
+                              {
+                                "type": "number",
+                                "minimum": -90,
+                                "maximum": 90
+                              }
+                            ],
+                            "items": false,
+                            "minItems": 2,
+                            "maxItems": 2
+                          }
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "coordinates"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "distanceMeters": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 50000
+                    },
+                    "durationSeconds": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 21600
+                    },
+                    "conditions": {
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "LIGHTING",
+                              "FOOTPATH",
+                              "TRAFFIC",
+                              "FLOODING",
+                              "OBSTRUCTIONS",
+                              "ACTIVITY"
+                            ]
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "GOOD",
+                              "POOR",
+                              "UNKNOWN"
+                            ]
+                          },
+                          "confidence": {
+                            "type": "string",
+                            "enum": [
+                              "COMMUNITY_SUBMITTED",
+                              "SOURCE_CHECKED",
+                              "OWNER_VERIFIED",
+                              "DISPUTED"
+                            ]
+                          },
+                          "source": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 160
+                          },
+                          "observedAt": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date-time",
+                                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "status",
+                          "confidence",
+                          "source"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "source": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    },
+                    "confidence": {
+                      "type": "string",
+                      "enum": [
+                        "COMMUNITY_SUBMITTED",
+                        "SOURCE_CHECKED",
+                        "OWNER_VERIFIED",
+                        "DISPUTED"
+                      ]
+                    },
+                    "timeContext": {
+                      "type": "string",
+                      "enum": [
+                        "DAY",
+                        "NIGHT"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "segmentId",
+                    "routeId",
+                    "geometry",
+                    "distanceMeters",
+                    "durationSeconds",
+                    "conditions",
+                    "source",
+                    "confidence",
+                    "timeContext"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "status",
+              "gateId",
+              "boardingId",
+              "timeContext",
+              "providerId",
+              "sourceVersion",
+              "segments"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "const": "UNAVAILABLE"
+              },
+              "gateId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "boardingId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "timeContext": {
+                "type": "string",
+                "enum": [
+                  "DAY",
+                  "NIGHT"
+                ]
+              },
+              "providerId": {
+                "type": "string",
+                "enum": [
+                  "LOCAL_FIXTURE",
+                  "DISABLED"
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "enum": [
+                  "NO_ROUTE",
+                  "PROVIDER_DISABLED",
+                  "CANCELLED",
+                  "TIMEOUT",
+                  "PROVIDER_ERROR",
+                  "INVALID_RESPONSE",
+                  "UNSUPPORTED_TIME_CONTEXT"
+                ]
+              }
+            },
+            "required": [
+              "status",
+              "gateId",
+              "boardingId",
+              "timeContext",
+              "providerId",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "PedestrianRouteObservationsRequest": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "gateId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "boardingId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "timeContext": {
+            "type": "string",
+            "enum": [
+              "DAY",
+              "NIGHT"
+            ]
+          }
+        },
+        "required": [
+          "gateId",
+          "boardingId",
+          "timeContext"
+        ],
+        "additionalProperties": false
+      },
+      "PedestrianRouteObservationsResultUnion": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "const": "AVAILABLE"
+              },
+              "gateId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "boardingId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "timeContext": {
+                "type": "string",
+                "enum": [
+                  "DAY",
+                  "NIGHT"
+                ]
+              },
+              "providerId": {
+                "type": "string",
+                "const": "LOCAL_FIXTURE"
+              },
+              "sourceVersion": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80,
+                "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+              },
+              "observations": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "observationId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 80,
+                      "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+                    },
+                    "routeId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 80,
+                      "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+                    },
+                    "timeContext": {
+                      "type": "string",
+                      "enum": [
+                        "DAY",
+                        "NIGHT"
+                      ]
+                    },
+                    "observedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    },
+                    "segments": {
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "segmentId": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 80,
+                            "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+                          },
+                          "routeId": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 80,
+                            "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+                          },
+                          "geometry": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "const": "LineString"
+                              },
+                              "coordinates": {
+                                "minItems": 2,
+                                "maxItems": 5000,
+                                "type": "array",
+                                "items": {
+                                  "type": "array",
+                                  "prefixItems": [
+                                    {
+                                      "type": "number",
+                                      "minimum": -180,
+                                      "maximum": 180
+                                    },
+                                    {
+                                      "type": "number",
+                                      "minimum": -90,
+                                      "maximum": 90
+                                    }
+                                  ],
+                                  "items": false,
+                                  "minItems": 2,
+                                  "maxItems": 2
+                                }
+                              }
+                            },
+                            "required": [
+                              "type",
+                              "coordinates"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "distanceMeters": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 50000
+                          },
+                          "durationSeconds": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 21600
+                          },
+                          "conditions": {
+                            "minItems": 1,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "enum": [
+                                    "LIGHTING",
+                                    "FOOTPATH",
+                                    "TRAFFIC",
+                                    "FLOODING",
+                                    "OBSTRUCTIONS",
+                                    "ACTIVITY"
+                                  ]
+                                },
+                                "status": {
+                                  "type": "string",
+                                  "enum": [
+                                    "GOOD",
+                                    "POOR",
+                                    "UNKNOWN"
+                                  ]
+                                },
+                                "confidence": {
+                                  "type": "string",
+                                  "enum": [
+                                    "COMMUNITY_SUBMITTED",
+                                    "SOURCE_CHECKED",
+                                    "OWNER_VERIFIED",
+                                    "DISPUTED"
+                                  ]
+                                },
+                                "source": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 160
+                                },
+                                "observedAt": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "type",
+                                "status",
+                                "confidence",
+                                "source"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "source": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 160
+                          },
+                          "confidence": {
+                            "type": "string",
+                            "enum": [
+                              "COMMUNITY_SUBMITTED",
+                              "SOURCE_CHECKED",
+                              "OWNER_VERIFIED",
+                              "DISPUTED"
+                            ]
+                          },
+                          "timeContext": {
+                            "type": "string",
+                            "enum": [
+                              "DAY",
+                              "NIGHT"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "segmentId",
+                          "routeId",
+                          "geometry",
+                          "distanceMeters",
+                          "durationSeconds",
+                          "conditions",
+                          "source",
+                          "confidence",
+                          "timeContext"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "overallNote": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    },
+                    "source": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    },
+                    "confidence": {
+                      "type": "string",
+                      "enum": [
+                        "COMMUNITY_SUBMITTED",
+                        "SOURCE_CHECKED",
+                        "OWNER_VERIFIED",
+                        "DISPUTED"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "observationId",
+                    "routeId",
+                    "timeContext",
+                    "observedAt",
+                    "segments",
+                    "overallNote",
+                    "source",
+                    "confidence"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "status",
+              "gateId",
+              "boardingId",
+              "timeContext",
+              "providerId",
+              "sourceVersion",
+              "observations"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "const": "UNAVAILABLE"
+              },
+              "gateId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "boardingId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "timeContext": {
+                "type": "string",
+                "enum": [
+                  "DAY",
+                  "NIGHT"
+                ]
+              },
+              "providerId": {
+                "type": "string",
+                "enum": [
+                  "LOCAL_FIXTURE",
+                  "DISABLED"
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "enum": [
+                  "NO_ROUTE",
+                  "PROVIDER_DISABLED",
+                  "CANCELLED",
+                  "TIMEOUT",
+                  "PROVIDER_ERROR",
+                  "INVALID_RESPONSE",
+                  "UNSUPPORTED_TIME_CONTEXT"
+                ]
+              }
+            },
+            "required": [
+              "status",
+              "gateId",
+              "boardingId",
+              "timeContext",
+              "providerId",
               "reason"
             ],
             "additionalProperties": false

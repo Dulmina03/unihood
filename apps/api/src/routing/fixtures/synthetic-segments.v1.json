@@ -1,0 +1,117 @@
+{
+  "fixtureVersion": "uni-053-synthetic-segments-v1",
+  "dataKind": "SYNTHETIC",
+  "sourceLabel": "UNI-053 synthetic route segment fixture; fictional segment geometries, conditions and times; not a real route, place or safety assessment",
+  "cases": [
+    {
+      "gateId": "30000000-0000-4000-8000-000000000001",
+      "boardingId": "00000000-0000-4000-8000-000000000001",
+      "timeContext": "DAY",
+      "status": "AVAILABLE",
+      "segments": [
+        {
+          "segmentId": "uni-053-segment-day-a-1",
+          "routeId": "uni-053-route-day-a",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [[0, 0], [0.0002, 0.0002], [0.0005, 0.0004]]
+          },
+          "distanceMeters": 56,
+          "durationSeconds": 48,
+          "conditions": [
+            {
+              "type": "LIGHTING",
+              "status": "GOOD",
+              "confidence": "SOURCE_CHECKED",
+              "source": "uni-053-synthetic-segment-day-lighting",
+              "observedAt": null
+            },
+            {
+              "type": "FOOTPATH",
+              "status": "GOOD",
+              "confidence": "SOURCE_CHECKED",
+              "source": "uni-053-synthetic-segment-day-footpath",
+              "observedAt": null
+            }
+          ],
+          "source": "uni-053-synthetic-segment-day-source",
+          "confidence": "SOURCE_CHECKED",
+          "timeContext": "DAY"
+        },
+        {
+          "segmentId": "uni-053-segment-day-a-2",
+          "routeId": "uni-053-route-day-a",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [[0.0005, 0.0004], [0.0008, 0.0006]]
+          },
+          "distanceMeters": 56,
+          "durationSeconds": 47,
+          "conditions": [
+            {
+              "type": "TRAFFIC",
+              "status": "GOOD",
+              "confidence": "COMMUNITY_SUBMITTED",
+              "source": "uni-053-synthetic-segment-day-traffic",
+              "observedAt": null
+            },
+            {
+              "type": "ACTIVITY",
+              "status": "GOOD",
+              "confidence": "COMMUNITY_SUBMITTED",
+              "source": "uni-053-synthetic-segment-day-activity",
+              "observedAt": null
+            }
+          ],
+          "source": "uni-053-synthetic-segment-day-source",
+          "confidence": "SOURCE_CHECKED",
+          "timeContext": "DAY"
+        }
+      ]
+    },
+    {
+      "gateId": "30000000-0000-4000-8000-000000000001",
+      "boardingId": "00000000-0000-4000-8000-000000000001",
+      "timeContext": "NIGHT",
+      "status": "AVAILABLE",
+      "segments": [
+        {
+          "segmentId": "uni-053-segment-night-a-1",
+          "routeId": "uni-053-route-night-a",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [[0, 0], [0.0003, 0.0002], [0.0006, 0.0004]]
+          },
+          "distanceMeters": 59,
+          "durationSeconds": 51,
+          "conditions": [
+            {
+              "type": "LIGHTING",
+              "status": "POOR",
+              "confidence": "SOURCE_CHECKED",
+              "source": "uni-053-synthetic-segment-night-lighting",
+              "observedAt": null
+            },
+            {
+              "type": "FOOTPATH",
+              "status": "GOOD",
+              "confidence": "SOURCE_CHECKED",
+              "source": "uni-053-synthetic-segment-night-footpath",
+              "observedAt": null
+            }
+          ],
+          "source": "uni-053-synthetic-segment-night-source",
+          "confidence": "SOURCE_CHECKED",
+          "timeContext": "NIGHT"
+        }
+      ]
+    },
+    {
+      "gateId": "30000000-0000-4000-8000-000000000002",
+      "boardingId": "00000000-0000-4000-8000-000000000001",
+      "timeContext": "DAY",
+      "status": "UNAVAILABLE",
+      "reason": "NO_ROUTE"
+    }
+  ]
+}

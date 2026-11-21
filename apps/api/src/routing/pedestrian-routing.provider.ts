@@ -1,4 +1,4 @@
-import type { PedestrianAccessRequest, PedestrianAccessResult, PedestrianRoutingRequest, PedestrianRoutingResult } from '@unihood/contracts';
+import type { PedestrianAccessRequest, PedestrianAccessResult, PedestrianRoutingRequest, PedestrianRoutingResult, PedestrianRouteSegmentsRequest, PedestrianRouteSegmentsResultUnion, PedestrianRouteObservationsRequest, PedestrianRouteObservationsResultUnion } from '@unihood/contracts';
 
 export type PedestrianRoutingExecutionContext = {
   readonly signal?: AbortSignal;
@@ -25,6 +25,18 @@ export interface PedestrianRoutingProvider {
     context?: PedestrianRoutingExecutionContext,
     options?: { concurrency?: number; budgetMs?: number },
   ): Promise<PedestrianAccessResult[]>;
+
+  // UNI-053: route segments for a gate-to-boarding pair under a time context.
+  segments(
+    request: PedestrianRouteSegmentsRequest,
+    context?: PedestrianRoutingExecutionContext,
+  ): Promise<PedestrianRouteSegmentsResultUnion>;
+
+  // UNI-053: day/night structured observation reports for a gate-to-boarding pair.
+  observations(
+    request: PedestrianRouteObservationsRequest,
+    context?: PedestrianRoutingExecutionContext,
+  ): Promise<PedestrianRouteObservationsResultUnion>;
 }
 
 export const ROUTING_TIMEOUT_MS = 2000;
