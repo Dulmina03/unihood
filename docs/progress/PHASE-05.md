@@ -44,4 +44,12 @@ Local verification: lint, typecheck, workspace tests, production build, reposito
 
 ## Remaining roadmap
 
-UNI-052 provider walking access for nearby essentials, UNI-053 route segments and day/night structured observations, UNI-054 route card design without safety promises, UNI-055 transparent neighborhood comparison, and UNI-056 privacy/confidence/stale/cancellation/timeout/alternate/no-route tests remain future work.
+UNI-052 provider walking access for nearby essentials, UNI-053 route segments and day/night structured observations, UNI-054 route card design without safety promises (UI/proxy task), UNI-055 transparent neighborhood comparison, UNI-056 route privacy tests, and UNI-057 verified boarding-to-campus association and gate authorization remain future work. UNI-057 establishes the verified boarding-to-campus association that route-card backend integration depends on; UNI-054 remains the route-card design/UI task and is not reclassified as a backend task.
+
+## UNI-057 — Verified boarding-to-campus association and gate authorization (planned)
+
+**Scope:** Private `unihood_private.verified_associations` data model and audit history; explicit association request, verification, suspension, rejection and revocation lifecycle; dedicated `canVerifyAssociation` permission; synthetic/local-test authorization only (Phase 7 authentication deferred); one active verified campus association per boarding; verified gate stored internally, never inferred by geographic proximity; fresh verification required after suspension; tests for permissions, state transitions, audit history and database constraints.
+
+**Dependencies:** Existing boarding property, campus and campus entrance foundations; UNI-053 (completed and integrated).
+
+**Follow-on:** Route-card backend integration (`GET /api/v1/routes/card/{boardingId}`) depends on UNI-057 and requires separate roadmap allocation or team approval. UNI-054 remains the route-card design/UI task.

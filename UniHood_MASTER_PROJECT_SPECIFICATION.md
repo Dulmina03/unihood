@@ -1267,6 +1267,7 @@ unihood/
 - [ ] **UNI-054** Route card design (lighting, footpath, traffic, flooding, obstructions, activity); don't promise safety.
 - [ ] **UNI-055** Neighborhood comparison filters and optional transparent convenience metric using only eligible public geo.
 - [ ] **UNI-056** Route privacy, confidence, stale reports, cancellation, timeouts, alternate/no-route tests.
+- [ ] **UNI-057** Verified boarding-to-campus association and gate authorization; private association and audit records, `canVerifyAssociation` permission, synthetic/local-test authorization only; one active verified campus association per boarding; verified gate stored internally, never inferred by proximity.
 
 **Git:** examples `feat/uni-050-pedestrian-routing`, `feat/uni-053-route-condition-reports`, `test/uni-056-route-privacy`.
 
