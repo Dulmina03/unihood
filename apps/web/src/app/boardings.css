@@ -35,3 +35,30 @@
 .boarding-request-receipt h3:focus-visible{outline:3px solid var(--teal-600);outline-offset:4px}
 .boarding-request-receipt code{font-size:12px;overflow-wrap:anywhere}
 @media(max-width:600px){.boarding-request-facts>div,.boarding-request-receipt dl>div{grid-template-columns:1fr;gap:2px}}
+
+
+/* UNI-054: Route card — walking route conditions without safety promises */
+.route-card{margin-top:28px;padding:28px;border:1px solid var(--divider);border-radius:18px;background:var(--surface)}
+.route-card-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:12px}
+.route-card-header h2{font:500 22px/1.2 var(--font-display);color:var(--navy-900);margin:0}
+.route-card-time-selector{display:flex;align-items:center;gap:10px}
+.route-card-time-label{font-size:12px;font-weight:600;color:var(--text-muted)}
+.route-card-provenance{font-size:11px;color:var(--text-muted);margin:0 0 16px;font-style:italic}
+.route-card-section-title{font:600 16px/1.3 var(--font-body);color:var(--navy-900);margin:0 0 12px}
+.route-card-segment-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px}
+.route-card-segment-item{border:1px solid var(--divider);border-radius:12px;padding:14px;background:var(--background)}
+.route-card-segment-meta{display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.route-card-segment-distance{font-size:13px;color:var(--foreground);font-weight:600}
+.route-card-segment-duration{font-size:13px;color:var(--text-muted)}
+.route-card-condition-list{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px}
+.route-card-condition-item{display:flex;align-items:center;gap:8px}
+.route-card-condition-name{font-size:11px;font-weight:600;color:var(--navy-900);text-transform:uppercase;letter-spacing:0.3px}
+.route-card-condition-confidence{font-size:10px;color:var(--text-muted)}
+.route-card-condition-observed{font-size:10px;color:var(--text-muted);margin-left:6px}
+.route-card-observations{display:flex;flex-direction:column;gap:12px}
+.route-card-observation-item{border:1px solid var(--divider);border-radius:12px;padding:14px;background:var(--background)}
+.route-card-observation-meta{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.route-card-observation-item time{font-size:12px;color:var(--foreground);font-weight:600}
+.route-card-observation-note{font-size:13px;color:var(--foreground);margin:0 0 8px;line-height:1.4}
+.route-card-observation-source{font-size:11px;color:var(--text-muted);font-style:italic}
+@media(max-width:600px){.route-card{padding:20px}.route-card-header{flex-direction:column;align-items:flex-start;gap:8px}.route-card-time-selector{width:100%;justify-content:space-between}}
